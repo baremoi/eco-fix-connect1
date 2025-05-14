@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
@@ -66,7 +67,7 @@ const ecoMetrics: EcoMetric[] = [
 ];
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [requests] = useState<ServiceRequest[]>(mockRequests);
 
   const getStatusColor = (status: ServiceRequest["status"]) => {
@@ -86,7 +87,7 @@ export default function Dashboard() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Welcome back, {user?.name}</h1>
+          <h1 className="text-2xl font-bold">Welcome back, {profile?.full_name || 'User'}</h1>
           <p className="text-muted-foreground">Here's your eco-home overview</p>
         </div>
         <Button>
@@ -163,4 +164,4 @@ export default function Dashboard() {
       </div>
     </div>
   );
-} 
+}
