@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -128,7 +129,7 @@ const Navigation = () => {
           <div className="p-4 border-t border-sidebar-border">
             <div className="flex items-center gap-3">
               <Avatar>
-                <AvatarImage src={profile.avatar_url} />
+                <AvatarImage src={profile.avatar_url || undefined} />
                 <AvatarFallback>
                   {profile.full_name?.charAt(0) || user.email?.charAt(0)}
                 </AvatarFallback>
@@ -168,7 +169,7 @@ const Navigation = () => {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="left">
               <div className="flex flex-col h-full">
                 <div className="mb-6">
                   <p className="text-xl font-bold text-primary mb-2">Eco-Fix Connect</p>
@@ -184,7 +185,7 @@ const Navigation = () => {
                   <div className="border-t border-border p-4 mt-auto">
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={profile.avatar_url} />
+                        <AvatarImage src={profile.avatar_url || undefined} />
                         <AvatarFallback>
                           {profile.full_name?.charAt(0) || user.email?.charAt(0)}
                         </AvatarFallback>
