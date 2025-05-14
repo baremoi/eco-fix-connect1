@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { fileURLToPath } from 'url';
@@ -30,7 +31,7 @@ export default defineConfig({
         "font-src 'self' data: https://fonts.gstatic.com",
         
         // Connect (API/XHR/WebSocket): Allow necessary endpoints
-        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:*",
+        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:* https://gquwbmdxvsxkxpauabuw.supabase.co",
         
         // Frames: Allow only specific trusted sources
         "frame-src 'self' https://accounts.google.com",
@@ -70,5 +71,3 @@ export default defineConfig({
     target: 'es2020'
   }
 });
-
-
