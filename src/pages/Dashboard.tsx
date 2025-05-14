@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
@@ -67,7 +66,7 @@ const ecoMetrics: EcoMetric[] = [
 ];
 
 export default function Dashboard() {
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
   const [requests] = useState<ServiceRequest[]>(mockRequests);
 
   const getStatusColor = (status: ServiceRequest["status"]) => {
