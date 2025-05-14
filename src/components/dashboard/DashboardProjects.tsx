@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -16,7 +17,8 @@ type Project = {
 };
 
 const DashboardProjects = () => {
-  const [projects, setProjects] = useState<Project[]>([
+  // Use useState but omit the setter since it's not currently used
+  const [projects] = useState<Project[]>([
     {
       id: "P001",
       title: "Kitchen Renovation",
@@ -113,4 +115,4 @@ const DashboardProjects = () => {
   );
 };
 
-export default DashboardProjects; 
+export default DashboardProjects;

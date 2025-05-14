@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bell, CheckCircle, AlertCircle, Calendar, MessageSquare } from "lucide-react";
+import { CheckCircle, AlertCircle, Calendar, MessageSquare } from "lucide-react";
 
 type Notification = {
   id: string;
@@ -138,4 +138,4 @@ const DashboardNotifications = () => {
   );
 };
 
-export default DashboardNotifications; 
+export default DashboardNotifications;

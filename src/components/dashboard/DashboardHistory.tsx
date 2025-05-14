@@ -17,7 +17,8 @@ type HistoryItem = {
 };
 
 const DashboardHistory = () => {
-  const [history, setHistory] = useState<HistoryItem[]>([
+  // Use useState but omit the setter since it's not currently used
+  const [history] = useState<HistoryItem[]>([
     {
       id: "H001",
       type: "trade",
@@ -123,4 +124,4 @@ const DashboardHistory = () => {
   );
 };
 
-export default DashboardHistory; 
+export default DashboardHistory;
