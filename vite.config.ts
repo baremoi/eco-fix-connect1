@@ -10,8 +10,8 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   server: {
     host: true,
-    port: parseInt(process.env.PORT || '5173'),
-    strictPort: false,
+    port: 8080,
+    strictPort: true,
     headers: {
       'Content-Security-Policy': [
         // Restrict default sources to same origin
