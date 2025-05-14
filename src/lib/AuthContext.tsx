@@ -1,10 +1,18 @@
+
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { authService, User, LoginInput, RegisterInput } from "./auth";
+import { supabase } from "./supabase";
+import { User, Session } from '@supabase/supabase-js';
+import { Database } from "../types/database.types";
+import { LoginInput, RegisterInput } from "./auth";
+
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
+  profile: Profile | null;
   isLoading: boolean;
   login: (data: LoginInput) => Promise<void>;
   register: (data: RegisterInput) => Promise<void>;
@@ -15,25 +23,65 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuth();
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Fetch user profile if user is authenticated
+        if (session?.user) {
+          setTimeout(() => {
+            fetchUserProfile(session.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const checkAuth = async () => {
+  const fetchUserProfile = async (userId: string) => {
     try {
-      const user = await authService.getCurrentUser();
-      setUser(user);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+        return;
+      }
+
+      setProfile(data);
     } catch (error) {
-      console.error("Auth check failed:", error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error in profile fetch:", error);
     }
   };
 
-  const navigateBasedOnRole = (role: User["role"]) => {
+  const navigateBasedOnRole = (role: "user" | "tradesperson" | "admin") => {
     switch (role) {
       case "tradesperson":
         navigate("/provider/projects");
@@ -48,36 +96,72 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (data: LoginInput) => {
     try {
-      const response = await authService.login(data);
-      setUser(response.user);
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) throw error;
+
       toast.success("Logged in successfully");
-      navigateBasedOnRole(response.user.role);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Login failed");
+      
+      if (authData.user) {
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", authData.user.id)
+          .single();
+          
+        if (profileData) {
+          navigateBasedOnRole(profileData.role);
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Login failed");
       throw error;
     }
   };
 
   const register = async (data: RegisterInput) => {
     try {
-      const response = await authService.register(data);
-      setUser(response.user);
-      toast.success("Registration successful");
-      navigateBasedOnRole(response.user.role);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Registration failed");
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            name: data.name,
+            role: data.role,
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success("Registration successful! Please check your email to verify your account.");
+      
+      if (authData.user) {
+        navigateBasedOnRole(data.role);
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Registration failed");
       throw error;
     }
   };
 
   const logout = async () => {
     try {
-      await authService.logout();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
       setUser(null);
+      setSession(null);
+      setProfile(null);
       toast.success("Logged out successfully");
       navigate("/login");
-    } catch (error) {
-      toast.error("Logout failed");
+    } catch (error: any) {
+      toast.error(error.message || "Logout failed");
       throw error;
     }
   };
@@ -86,6 +170,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        session,
+        profile,
         isLoading,
         login,
         register,
@@ -103,4 +189,4 @@ export function useAuth() {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-} 
+}

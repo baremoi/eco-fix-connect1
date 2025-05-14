@@ -1,5 +1,7 @@
+
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
+import { Spinner } from "./ui/spinner";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -7,11 +9,16 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth();
+  const { user, profile, isLoading } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spinner className="h-12 w-12 text-primary" />
+        <span className="sr-only">Loading</span>
+      </div>
+    );
   }
 
   if (!user) {
@@ -24,9 +31,9 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
   }
 
   // If specific roles are required and user's role is not included
-  if (!allowedRoles.includes(user.role)) {
+  if (profile && !allowedRoles.includes(profile.role)) {
     // Redirect based on user's role
-    switch (user.role) {
+    switch (profile.role) {
       case "tradesperson":
         return <Navigate to="/provider/projects" replace />;
       case "admin":
@@ -37,4 +44,4 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
   }
 
   return <>{children}</>;
-} 
+}
