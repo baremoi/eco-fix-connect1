@@ -19,8 +19,7 @@ import {
   BarChart, 
   Users, 
   LogOut, 
-  Menu, 
-  X 
+  Menu
 } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
@@ -176,7 +175,7 @@ export default function Navigation() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <SheetContent side="left">
                 <div className="flex flex-col h-full">
                   <div className="mb-6">
                     <p className="text-xl font-bold text-primary mb-2">Eco-Fix Connect</p>

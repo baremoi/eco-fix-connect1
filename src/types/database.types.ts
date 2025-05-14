@@ -18,14 +18,22 @@ export interface Database {
           role: "user" | "tradesperson" | "admin"
           created_at: string
           updated_at: string | null
+          avatar_url?: string
+          bio?: string
+          phone?: string
+          address?: string
         }
         Insert: {
           id: string
           full_name?: string | null
           email: string
-          role: "user" | "tradesperson" | "admin"
+          role?: "user" | "tradesperson" | "admin"
           created_at?: string
           updated_at?: string | null
+          avatar_url?: string
+          bio?: string
+          phone?: string
+          address?: string
         }
         Update: {
           id?: string
@@ -34,6 +42,10 @@ export interface Database {
           role?: "user" | "tradesperson" | "admin"
           created_at?: string
           updated_at?: string | null
+          avatar_url?: string
+          bio?: string
+          phone?: string
+          address?: string
         }
       }
     }
