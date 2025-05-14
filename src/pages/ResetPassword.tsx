@@ -1,124 +1,54 @@
+import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Icons } from '@/components/ui/icons';
+import { toast } from 'sonner';
+import { AlertTriangle } from 'lucide-react';
+import { useResetPassword } from '@/lib/auth';
 
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { resetPasswordSchema, type ResetPasswordInput } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Icons } from "@/components/ui/icons";
-import { AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
-
-export default function ResetPassword() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const navigate = useNavigate();
+const ResetPassword = () => {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token") || "";
+  const token = searchParams.get('token');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ResetPasswordInput>({
-    resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { token },
-  });
-
-  async function onSubmit(data: ResetPasswordInput) {
+  const resetPassword = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // Simulate API call for password reset
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setIsSuccess(true);
-      toast.success("Password has been reset successfully");
-      
-      // Redirect to login after success
-      setTimeout(() => navigate("/login"), 2000);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to reset password");
+      await useResetPassword(token, password);
+      toast.success('Password reset successfully!');
+    } catch (error) {
+      toast.error('Failed to reset password. Please try again.');
+    } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 p-8 bg-card rounded-lg shadow-lg">
-        <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Reset Password</h1>
-          <p className="text-sm text-muted-foreground">
-            Enter your new password below
-          </p>
-        </div>
-
-        {isSuccess ? (
-          <div className="bg-primary/10 p-4 rounded-md text-center">
-            <p className="text-primary font-medium">
-              Your password has been reset successfully!
-            </p>
-            <p className="text-sm mt-2">
-              You will be redirected to login...
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <input
-              type="hidden"
-              {...register("token")}
-            />
-            
-            <div className="space-y-2">
-              <Label htmlFor="password">New Password</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password")}
-                className={errors.password ? "border-destructive" : ""}
-              />
-              {errors.password && (
-                <p className="text-sm text-destructive">{errors.password.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                {...register("confirmPassword")}
-                className={errors.confirmPassword ? "border-destructive" : ""}
-              />
-              {errors.confirmPassword && (
-                <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
-              )}
-            </div>
-
-            {!token && (
-              <div className="p-4 bg-destructive/10 rounded-md flex items-start space-x-2">
-                <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-destructive">
-                  The password reset token is missing. Please use the link from your email.
-                </p>
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || !token}
-            >
-              {isLoading && (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Reset Password
-            </Button>
-          </form>
-        )}
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-2xl font-bold">Reset Password</h1>
+      <div className="mt-4">
+        <Label htmlFor="password">New Password</Label>
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
       </div>
+      <Button
+        className="mt-4"
+        onClick={resetPassword}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Resetting...' : 'Reset Password'}
+      </Button>
+      <AlertTriangle className="mt-4 h-6 w-6 text-red-500" />
     </div>
   );
-}
+};
+
+export default ResetPassword;
