@@ -70,6 +70,7 @@ export default function Register() {
                 id="name"
                 type="text"
                 placeholder="John Doe"
+                autoComplete="name"
                 {...register("name")}
                 className={errors.name ? "border-destructive" : ""}
               />
@@ -84,6 +85,7 @@ export default function Register() {
                 id="email"
                 type="email"
                 placeholder="name@example.com"
+                autoComplete="email"
                 {...register("email")}
                 className={errors.email ? "border-destructive" : ""}
               />
@@ -95,7 +97,7 @@ export default function Register() {
             <div className="space-y-2">
               <Label htmlFor="role">I am a</Label>
               <Select onValueChange={(value: "user" | "tradesperson" | "admin") => setValue("role", value)} defaultValue="user">
-                <SelectTrigger className={errors.role ? "border-destructive" : ""}>
+                <SelectTrigger id="role" className={errors.role ? "border-destructive" : ""}>
                   <SelectValue placeholder="Select your account type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -113,6 +115,7 @@ export default function Register() {
               <Input
                 id="password"
                 type="password"
+                autoComplete="new-password"
                 {...register("password")}
                 className={errors.password ? "border-destructive" : ""}
               />
@@ -126,6 +129,7 @@ export default function Register() {
               <Input
                 id="confirmPassword"
                 type="password"
+                autoComplete="new-password"
                 {...register("confirmPassword")}
                 className={errors.confirmPassword ? "border-destructive" : ""}
               />
