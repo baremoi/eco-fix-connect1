@@ -1,7 +1,8 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { Star, Shield, Clock, ThumbsUp } from 'lucide-react';
+import { Star, Clock, ThumbsUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Featured tradespeople data
 const featuredTradespeople = [
