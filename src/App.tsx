@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
@@ -5,6 +6,7 @@ import { AuthProvider } from "./lib/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 
+import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -18,6 +20,7 @@ import Projects from "./pages/Projects";
 import Reports from "./pages/Reports";
 import Analytics from "./pages/Analytics";
 import Team from "./pages/Team";
+import HowItWorks from "./pages/HowItWorks";
 
 const queryClient = new QueryClient();
 
@@ -28,15 +31,17 @@ export default function App() {
         <AuthProvider>
           <Routes>
             {/* Public routes */}
+            <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/oauth/callback" element={<OAuthCallback />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
 
             {/* Protected routes for all authenticated users */}
-            <Route path="/" element={<Layout />}>
+            <Route path="/dashboard" element={<Layout />}>
               <Route index element={
                 <ProtectedRoute>
                   <Dashboard />
