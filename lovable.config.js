@@ -19,8 +19,8 @@ export default {
         // Fonts: Allow same origin and Google Fonts
         "font-src 'self' data: https://fonts.gstatic.com",
         
-        // Connect (API/WebSocket): Allow necessary endpoints
-        "connect-src 'self' https://*.lovable.dev https://*.supabase.co wss://*.lovable.dev",
+        // Connect (API/WebSocket): Allow necessary endpoints - expand for Supabase connections
+        "connect-src 'self' https://*.lovable.dev https://*.supabase.co wss://*.lovable.dev https://gquwbmdxvsxkxpauabuw.supabase.co",
         
         // Frames: Allow specific trusted sources
         "frame-src 'self' https://accounts.google.com",
@@ -51,8 +51,8 @@ export default {
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       
-      // CORS headers
-      'Access-Control-Allow-Origin': 'https://*.lovable.dev',
+      // CORS headers - make more permissive
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Allow-Credentials': 'true'

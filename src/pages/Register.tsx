@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -33,10 +32,23 @@ export default function Register() {
   async function onSubmit(data: RegisterInput) {
     try {
       setIsLoading(true);
+      console.log("Register form submitted with data:", {
+        ...data,
+        password: "***REDACTED***",
+        confirmPassword: "***REDACTED***"
+      });
+      
+      // Check if environment variables are loaded
+      console.log("Environment variables loaded:", {
+        supabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
+        supabaseKeyExists: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+      });
+      
       await registerUser(data);
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Registration error in component:", error);
       setIsLoading(false);
+      // Error is already handled by the AuthContext
     }
   }
 

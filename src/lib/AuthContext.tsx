@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -126,6 +125,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (data: RegisterInput) => {
     try {
+      console.log("Starting registration process with Supabase...");
+      
+      // Log environment variables for debugging
+      console.log("Supabase URL exists:", !!import.meta.env.VITE_SUPABASE_URL);
+      console.log("Supabase Key exists:", !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+      
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -137,14 +142,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase registration error:", error);
+        toast.error(error.message || "Registration failed");
+        throw error;
+      }
 
+      console.log("Registration successful:", authData);
       toast.success("Registration successful! Please check your email to verify your account.");
       
       if (authData.user) {
         navigateBasedOnRole(data.role);
       }
     } catch (error: any) {
+      console.error("Registration exception:", error);
       toast.error(error.message || "Registration failed");
       throw error;
     }
