@@ -50,6 +50,39 @@ export default function App() {
       }
     };
 
+    // Initialize color scheme from localStorage
+    const initializeColorScheme = () => {
+      const root = window.document.documentElement;
+      const storedColorScheme = localStorage.getItem('colorScheme') as 'green' | 'blue' | 'purple' | null;
+      
+      if (storedColorScheme) {
+        root.classList.add(`theme-${storedColorScheme}`);
+        
+        // Apply the color scheme CSS variables
+        switch (storedColorScheme) {
+          case 'green':
+            // Green is the default, no need to change variables
+            break;
+          case 'blue':
+            root.style.setProperty('--primary', '210 100% 45%');
+            root.style.setProperty('--primary-foreground', '210 10% 98%');
+            root.style.setProperty('--secondary', '280 98% 39%');
+            root.style.setProperty('--secondary-foreground', '210 10% 98%');
+            root.style.setProperty('--accent', '210 30% 92%');
+            root.style.setProperty('--accent-foreground', '210 50% 10%');
+            break;
+          case 'purple':
+            root.style.setProperty('--primary', '270 70% 60%');
+            root.style.setProperty('--primary-foreground', '270 10% 98%');
+            root.style.setProperty('--secondary', '220 98% 39%');
+            root.style.setProperty('--secondary-foreground', '270 10% 98%');
+            root.style.setProperty('--accent', '270 30% 92%');
+            root.style.setProperty('--accent-foreground', '270 50% 10%');
+            break;
+        }
+      }
+    };
+
     // Initialize accessibility settings
     const initializeAccessibility = () => {
       const savedSettings = localStorage.getItem('accessibilitySettings');
@@ -67,6 +100,7 @@ export default function App() {
     };
 
     initializeTheme();
+    initializeColorScheme();
     initializeAccessibility();
 
     // Listen for system theme changes

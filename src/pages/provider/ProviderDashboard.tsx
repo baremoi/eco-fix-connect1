@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
+import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 
 interface Project {
   id: string;
@@ -74,6 +75,7 @@ const metrics: Metric[] = [
 export default function ProviderDashboard() {
   const { profile } = useAuth();
   const [projects] = useState<Project[]>(mockProjects);
+  const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
 
   const getStatusColor = (status: Project["status"]) => {
     switch (status) {
@@ -93,12 +95,10 @@ export default function ProviderDashboard() {
           <h1 className="text-2xl font-bold">Welcome back, {profile?.full_name || 'Provider'}</h1>
           <p className="text-muted-foreground">Here's your project overview</p>
         </div>
-        <Link to="/provider/projects">
-          <Button>
-            <Icons.plus className="mr-2 h-4 w-4" />
-            New Project
-          </Button>
-        </Link>
+        <Button onClick={() => setNewProjectDialogOpen(true)}>
+          <Icons.plus className="mr-2 h-4 w-4" />
+          New Project
+        </Button>
       </div>
 
       {/* Provider Metrics */}
@@ -173,6 +173,11 @@ export default function ProviderDashboard() {
           </Card>
         ))}
       </div>
+      
+      <NewProjectDialog 
+        open={newProjectDialogOpen}
+        onOpenChange={setNewProjectDialogOpen}
+      />
     </div>
   );
 }

@@ -23,6 +23,7 @@ export function ThemeSettings() {
     const storedColorScheme = localStorage.getItem('colorScheme') as 'green' | 'blue' | 'purple' | null;
     if (storedColorScheme) {
       setColorScheme(storedColorScheme);
+      applyColorScheme(storedColorScheme);
     }
   }, []);
 
@@ -39,6 +40,44 @@ export function ThemeSettings() {
     }
   };
 
+  const applyColorScheme = (selectedScheme: 'green' | 'blue' | 'purple') => {
+    const root = window.document.documentElement;
+    
+    // Remove existing color scheme classes
+    root.classList.remove('theme-green', 'theme-blue', 'theme-purple');
+    
+    // Add the new color scheme class
+    root.classList.add(`theme-${selectedScheme}`);
+    
+    // Update CSS variables for the selected color scheme
+    switch (selectedScheme) {
+      case 'green':
+        root.style.setProperty('--primary', '142 54% 35%');
+        root.style.setProperty('--primary-foreground', '142 10% 98%');
+        root.style.setProperty('--secondary', '200 98% 39%');
+        root.style.setProperty('--secondary-foreground', '142 10% 98%');
+        root.style.setProperty('--accent', '142 30% 92%');
+        root.style.setProperty('--accent-foreground', '142 50% 10%');
+        break;
+      case 'blue':
+        root.style.setProperty('--primary', '210 100% 45%');
+        root.style.setProperty('--primary-foreground', '210 10% 98%');
+        root.style.setProperty('--secondary', '280 98% 39%');
+        root.style.setProperty('--secondary-foreground', '210 10% 98%');
+        root.style.setProperty('--accent', '210 30% 92%');
+        root.style.setProperty('--accent-foreground', '210 50% 10%');
+        break;
+      case 'purple':
+        root.style.setProperty('--primary', '270 70% 60%');
+        root.style.setProperty('--primary-foreground', '270 10% 98%');
+        root.style.setProperty('--secondary', '220 98% 39%');
+        root.style.setProperty('--secondary-foreground', '270 10% 98%');
+        root.style.setProperty('--accent', '270 30% 92%');
+        root.style.setProperty('--accent-foreground', '270 50% 10%');
+        break;
+    }
+  };
+
   const handleThemeChange = (selectedTheme: 'light' | 'dark' | 'system') => {
     setTheme(selectedTheme);
     localStorage.setItem('theme', selectedTheme);
@@ -49,8 +88,7 @@ export function ThemeSettings() {
   const handleColorSchemeChange = (selectedScheme: 'green' | 'blue' | 'purple') => {
     setColorScheme(selectedScheme);
     localStorage.setItem('colorScheme', selectedScheme);
-    // We would apply color scheme changes to CSS variables here
-    // For now just show a toast
+    applyColorScheme(selectedScheme);
     toast.success(`Color scheme set to ${selectedScheme}`);
   };
 

@@ -1,8 +1,10 @@
+
 import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 
 interface Project {
   id: string;
@@ -42,6 +44,7 @@ const mockProjects: Project[] = [
 
 export default function Projects() {
   const [projects] = useState<Project[]>(mockProjects);
+  const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
 
   const getStatusColor = (status: Project["status"]) => {
     switch (status) {
@@ -58,7 +61,7 @@ export default function Projects() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Projects</h1>
-        <Button>
+        <Button onClick={() => setNewProjectDialogOpen(true)}>
           <Icons.plus className="mr-2 h-4 w-4" />
           New Project
         </Button>
@@ -104,6 +107,11 @@ export default function Projects() {
           </Card>
         ))}
       </div>
+      
+      <NewProjectDialog 
+        open={newProjectDialogOpen}
+        onOpenChange={setNewProjectDialogOpen}
+      />
     </div>
   );
 } 
