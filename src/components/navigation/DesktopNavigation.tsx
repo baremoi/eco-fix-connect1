@@ -30,8 +30,8 @@ export const DesktopNavigation = ({
         </Link>
       </div>
       
-      <ScrollArea className="flex-1 overflow-auto py-2">
-        <nav className="px-2 space-y-1">
+      <div className="flex-1 px-3 py-2">
+        <nav className="space-y-1">
           {navItems.map((item) => (
             <NavItem 
               key={item.href} 
@@ -40,7 +40,7 @@ export const DesktopNavigation = ({
             />
           ))}
         </nav>
-      </ScrollArea>
+      </div>
       
       <ProfileSection 
         user={user} 
