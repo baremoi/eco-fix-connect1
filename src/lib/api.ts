@@ -1,5 +1,4 @@
 
-import { authService } from "./auth";
 import { supabaseService } from "./supabaseService";
 import supabase from "./supabase";
 
