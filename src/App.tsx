@@ -12,12 +12,12 @@ import OAuthCallback from './pages/OAuthCallback';
 import VerifyEmail from './pages/VerifyEmail';
 import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
-import UserLayout from './components/Layout'; // Renamed for clarity
+import UserLayout from './components/Layout'; 
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './lib/AuthContext';
-import PublicLayout from './components/layout/Layout'; // Renamed for clarity
-import Profile from './pages/Profile'; // Import Profile page
-import Bookings from './pages/Bookings'; // Import Bookings page
+import PublicLayout from './components/layout/Layout';
+import Profile from './pages/Profile';
+import Bookings from './pages/Bookings';
 
 function App() {
   console.log("App rendering");
@@ -28,18 +28,26 @@ function App() {
         <Routes>
           {/* Public routes with PublicLayout */}
           <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+          <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+          <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
+          <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
           <Route path="/join" element={<PublicLayout><Join /></PublicLayout>} />
           <Route path="/trades" element={<PublicLayout><Trades /></PublicLayout>} />
           <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
-          <Route path="/oauth" element={<OAuthCallback />} />
-          <Route path="/email-verification" element={<VerifyEmail />} />
-          <Route path="/bookings" element={<PublicLayout><Bookings /></PublicLayout>} />
+          <Route path="/oauth" element={<PublicLayout><OAuthCallback /></PublicLayout>} />
+          <Route path="/email-verification" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
 
-          {/* Protected user routes */}
+          {/* User pages with UserLayout */}
+          <Route path="/bookings" element={
+            <ProtectedRoute>
+              <UserLayout>
+                <Bookings />
+              </UserLayout>
+            </ProtectedRoute>
+          } />
+
+          {/* Dashboard routes */}
           <Route 
             path="/dashboard" 
             element={

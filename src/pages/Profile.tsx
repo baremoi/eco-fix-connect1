@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { Icons } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { useState, useEffect } from "react";
 
@@ -16,7 +15,6 @@ import { AccessibilitySettings } from "@/components/profile/AccessibilitySetting
 
 export default function Profile() {
   const { profile: authProfile } = useAuth();
-  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState(null);
 
