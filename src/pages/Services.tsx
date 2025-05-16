@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -43,9 +42,7 @@ const Services = () => {
       date: format(requestData.date, 'MMM dd, yyyy'),
       time: requestData.timeSlot,
       status: "upcoming",
-      // Convert the string price to a number to fix the type error
       price: 99.99, // Fixed: using a number value instead of a string
-      address: requestData.location,
     };
     
     setBookings([newBooking, ...bookings]);
