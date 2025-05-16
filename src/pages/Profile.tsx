@@ -5,6 +5,7 @@ import { Icons } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/lib/AuthContext";
 import { useState, useEffect } from "react";
+import { Database } from "@/types/database.types";
 
 // Import refactored components
 import { PersonalInfo } from "@/components/profile/PersonalInfo";
@@ -13,10 +14,13 @@ import { PreferencesSettings } from "@/components/profile/PreferencesSettings";
 import { ThemeSettings } from "@/components/profile/ThemeSettings";
 import { AccessibilitySettings } from "@/components/profile/AccessibilitySettings";
 
+// Define ProfileData type based on the Database type
+type ProfileData = Database['public']['Tables']['profiles']['Row'];
+
 export default function Profile() {
-  const { profile: authProfile, user } = useAuth();
+  const { profile: authProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [profileData, setProfileData] = useState(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   // Fetch profile data from API with proper error handling
   useEffect(() => {

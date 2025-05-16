@@ -14,6 +14,7 @@ const bookingsData = [
     providerName: "Sarah Johnson",
     status: "upcoming",
     date: "2025-06-01T10:00:00",
+    time: "10:00 AM", // Added time property
     price: 85,
     address: "123 Main St, London",
     notes: "Problem with kitchen sink drain"
@@ -24,6 +25,7 @@ const bookingsData = [
     providerName: "Michael Chen",
     status: "upcoming",
     date: "2025-06-05T14:30:00",
+    time: "2:30 PM", // Added time property
     price: 0, // Free consultation
     address: "456 Park Ave, Manchester",
     notes: "Initial assessment for solar installation"
@@ -34,6 +36,7 @@ const bookingsData = [
     providerName: "Emma Wilson",
     status: "completed",
     date: "2025-05-12T09:15:00",
+    time: "9:15 AM", // Added time property
     price: 150,
     address: "789 Broadway, Birmingham",
     notes: "Installation of smart thermostat and lights"
@@ -44,6 +47,7 @@ const bookingsData = [
     providerName: "James Taylor",
     status: "cancelled",
     date: "2025-05-08T13:00:00",
+    time: "1:00 PM", // Added time property
     price: 120,
     address: "101 Pine St, Bristol",
     notes: "Antique table restoration - cancelled due to illness"
