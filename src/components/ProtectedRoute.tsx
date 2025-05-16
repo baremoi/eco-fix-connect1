@@ -13,9 +13,10 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
   const location = useLocation();
 
   console.log("Protected route check:", { 
-    user: !!user, 
+    user: user?.id, 
     profile: profile?.role,
-    isLoading
+    isLoading,
+    path: location.pathname
   });
 
   if (isLoading) {

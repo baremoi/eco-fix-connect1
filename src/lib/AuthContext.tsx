@@ -35,19 +35,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        console.log("Auth state change:", _event, "Session:", session?.user?.id);
-        setSession(session);
-        setUser(session?.user ?? null);
+      (event, currentSession) => {
+        console.log("Auth state change:", event, "User ID:", currentSession?.user?.id);
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
         
         // Check email verification status
-        if (session?.user) {
-          setIsEmailVerified(!!session.user.email_confirmed_at);
+        if (currentSession?.user) {
+          setIsEmailVerified(!!currentSession.user.email_confirmed_at);
           
-          // Fetch user profile if user is authenticated
-          setTimeout(() => {
-            fetchUserProfile(session.user.id);
-          }, 0);
+          // Fetch user profile if user is authenticated - using setTimeout to avoid auth deadlock
+          if (event !== 'INITIAL_SESSION') {
+            setTimeout(() => {
+              fetchUserProfile(currentSession.user.id);
+            }, 0);
+          }
         } else {
           setProfile(null);
           setIsEmailVerified(false);
@@ -57,14 +59,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // THEN check for existing session
     console.log("Checking for existing session");
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session check:", session?.user?.id);
-      setSession(session);
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Initial session check:", currentSession?.user?.id);
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
       
-      if (session?.user) {
-        setIsEmailVerified(!!session.user.email_confirmed_at);
-        fetchUserProfile(session.user.id);
+      if (currentSession?.user) {
+        setIsEmailVerified(!!currentSession.user.email_confirmed_at);
+        fetchUserProfile(currentSession.user.id);
       }
       setIsLoading(false);
     });
@@ -81,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .single();
+        .maybeSingle();  // Changed from .single() to handle no results case better
 
       if (error) {
         console.error("Error fetching profile:", error);
@@ -98,7 +100,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const navigateBasedOnRole = (role: "user" | "tradesperson" | "admin", isVerified: boolean) => {
     if (!isVerified) {
       // Don't navigate if email is not verified
-      // The Register component will show the verification message
       return;
     }
     
@@ -143,15 +144,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.success("Logged in successfully");
       
       if (authData.user) {
+        // Fetch profile using the user ID
         const { data: profileData } = await supabase
           .from("profiles")
           .select("role")
           .eq("id", authData.user.id)
-          .single();
+          .maybeSingle();
           
         if (profileData) {
           navigateBasedOnRole(profileData.role, isVerified);
         } else {
+          // Fallback if profile not found
           navigate("/dashboard");
         }
       }

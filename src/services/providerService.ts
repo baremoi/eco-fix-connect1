@@ -1,13 +1,14 @@
 
 import { Provider, ProviderFilters } from "./types/provider.types";
 import { mockProviders } from "./data/mockProviders";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase"; // Ensure correct import
 
 // Import the mock data for fallback
 import { serviceCategories as mockServiceCategories, popularLocations as mockPopularLocations } from "./data/mockProviders";
 
 export const getProviders = async (filters?: ProviderFilters) => {
   try {
+    console.log("Fetching providers with filters:", filters);
     let query = supabase.from('providers').select('*');
     
     if (filters) {
@@ -32,17 +33,25 @@ export const getProviders = async (filters?: ProviderFilters) => {
     
     if (error) {
       console.error('Error fetching providers from Supabase:', error);
+      console.log('Falling back to mock data');
       // Fallback to mock data if there's an error
       return filterMockProviders(filters);
     }
     
+    if (!data || data.length === 0) {
+      console.log('No providers found in database, using mock data');
+      return filterMockProviders(filters);
+    }
+    
+    console.log('Providers fetched successfully:', data.length);
     // Map the Supabase data to match our Provider type
     return data.map((item: any) => ({
       ...item,
-      completedProjects: item.completed_projects
+      completedProjects: item.completed_projects || 0
     }));
   } catch (error) {
     console.error('Exception fetching providers:', error);
+    console.log('Falling back to mock data due to exception');
     // Fallback to mock data if there's an exception
     return filterMockProviders(filters);
   }
@@ -76,6 +85,7 @@ export const getProviderById = async (id: string) => {
 
 // Helper function to filter mock providers (for fallback)
 const filterMockProviders = (filters?: ProviderFilters) => {
+  console.log('Using mock provider data');
   let filtered = [...mockProviders];
   
   if (filters) {

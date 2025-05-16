@@ -12,9 +12,10 @@ import OAuthCallback from './pages/OAuthCallback';
 import VerifyEmail from './pages/VerifyEmail';
 import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
-import Layout from './components/Layout';
+import UserLayout from './components/Layout'; // Renamed for clarity
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './lib/AuthContext';
+import PublicLayout from './components/layout/Layout'; // Renamed for clarity
 
 // Import the provider pages
 import Providers from "./pages/Providers";
@@ -27,30 +28,30 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Index />} />
+          {/* Public routes with PublicLayout */}
+          <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/join" element={<Join />} />
-          <Route path="/trades" element={<Trades />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/join" element={<PublicLayout><Join /></PublicLayout>} />
+          <Route path="/trades" element={<PublicLayout><Trades /></PublicLayout>} />
+          <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
           <Route path="/oauth" element={<OAuthCallback />} />
           <Route path="/email-verification" element={<VerifyEmail />} />
           
           {/* Provider routes */}
-          <Route path="/providers" element={<Providers />} />
-          <Route path="/providers/:id" element={<ProviderProfile />} />
+          <Route path="/providers" element={<PublicLayout><Providers /></PublicLayout>} />
+          <Route path="/providers/:id" element={<PublicLayout><ProviderProfile /></PublicLayout>} />
 
           {/* Protected user routes */}
           <Route 
             path="/dashboard" 
             element={
               <ProtectedRoute>
-                <Layout>
+                <UserLayout>
                   <Dashboard />
-                </Layout>
+                </UserLayout>
               </ProtectedRoute>
             } 
           />
@@ -59,9 +60,9 @@ function App() {
             path="/dashboard/profile" 
             element={
               <ProtectedRoute>
-                <Layout>
+                <UserLayout>
                   <div>Profile</div>
-                </Layout>
+                </UserLayout>
               </ProtectedRoute>
             } 
           />

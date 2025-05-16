@@ -7,7 +7,8 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => {
+const PublicLayout = ({ children }: LayoutProps) => {
+  console.log("Public layout rendering");
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -19,4 +20,4 @@ const Layout = ({ children }: LayoutProps) => {
   );
 };
 
-export default Layout;
+export default PublicLayout;
