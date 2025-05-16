@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -5,7 +6,6 @@ import {
   Wrench,
   CalendarClock,
   ClipboardList,
-  Settings,
   User,
   LogIn, 
   FileText, 
