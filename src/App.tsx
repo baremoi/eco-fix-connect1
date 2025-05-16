@@ -21,6 +21,8 @@ import Reports from "./pages/Reports";
 import Analytics from "./pages/Analytics";
 import Team from "./pages/Team";
 import HowItWorks from "./pages/HowItWorks";
+import ProviderDashboard from "./pages/provider/ProviderDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +45,7 @@ export default function App() {
             {/* Protected routes for all authenticated users */}
             <Route path="/dashboard" element={<Layout />}>
               <Route index element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={["user"]}>
                   <Dashboard />
                 </ProtectedRoute>
               } />
@@ -61,6 +63,11 @@ export default function App() {
 
             {/* Protected routes for service providers */}
             <Route path="/provider" element={<Layout />}>
+              <Route path="dashboard" element={
+                <ProtectedRoute allowedRoles={["tradesperson"]}>
+                  <ProviderDashboard />
+                </ProtectedRoute>
+              } />
               <Route path="projects" element={
                 <ProtectedRoute allowedRoles={["tradesperson"]}>
                   <Projects />
@@ -75,6 +82,11 @@ export default function App() {
 
             {/* Protected routes for admins */}
             <Route path="/admin" element={<Layout />}>
+              <Route path="dashboard" element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
               <Route path="analytics" element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <Analytics />

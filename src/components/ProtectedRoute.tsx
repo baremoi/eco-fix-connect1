@@ -37,9 +37,9 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
       case "tradesperson":
         return <Navigate to="/provider/projects" replace />;
       case "admin":
-        return <Navigate to="/admin/analytics" replace />;
+        return <Navigate to="/admin/dashboard" replace />;
       default:
-        return <Navigate to="/" replace />;
+        return <Navigate to="/dashboard" replace />;
     }
   }
 

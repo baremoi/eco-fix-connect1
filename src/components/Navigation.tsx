@@ -48,33 +48,35 @@ const Navigation = () => {
   ];
 
   const userItems: NavItem[] = [
+    { title: "Dashboard", href: "/dashboard", icon: Home },
     { title: "Find Services", href: "/trades", icon: Wrench },
     { title: "Bookings", href: "/bookings", icon: CalendarClock },
-    { title: "Profile", href: "/profile", icon: User },
-    { title: "Settings", href: "/settings", icon: Settings },
+    { title: "Profile", href: "/dashboard/profile", icon: User },
+    { title: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
   const tradeItems: NavItem[] = [
-    { title: "Dashboard", href: "/", icon: Home },
+    { title: "Dashboard", href: "/provider/dashboard", icon: Home },
     { title: "Projects", href: "/provider/projects", icon: ClipboardList },
     { title: "Reports", href: "/provider/reports", icon: FileText },
-    { title: "Profile", href: "/profile", icon: User },
-    { title: "Settings", href: "/settings", icon: Settings },
+    { title: "Profile", href: "/dashboard/profile", icon: User },
+    { title: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
   const adminItems: NavItem[] = [
-    { title: "Dashboard", href: "/", icon: Home },
+    { title: "Dashboard", href: "/admin/dashboard", icon: Home },
     { title: "Analytics", href: "/admin/analytics", icon: BarChart },
     { title: "Team", href: "/admin/team", icon: Users },
-    { title: "Settings", href: "/settings", icon: Settings },
+    { title: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
+  // Determine which nav items to show based on user role
   let navItems: NavItem[] = user ? commonItems : [...commonItems, ...guestItems];
 
   if (user && profile) {
     switch (profile.role) {
       case "user":
-        navItems = [...commonItems, ...userItems];
+        navItems = [...userItems];
         break;
       case "tradesperson":
         navItems = [...tradeItems];
@@ -83,7 +85,7 @@ const Navigation = () => {
         navItems = [...adminItems];
         break;
       default:
-        navItems = [...commonItems, ...userItems];
+        navItems = [...userItems];
     }
   }
 
