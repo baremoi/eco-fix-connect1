@@ -45,6 +45,8 @@
     --sidebar-accent-foreground: 142 50% 10%;
     --sidebar-border: 142 20% 88%;
     --sidebar-ring: 142 54% 35%;
+    
+    --content-zoom: 100%;
   }
 
   .dark {
@@ -94,10 +96,54 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    font-size: calc(100% * var(--content-zoom) / 100);
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-semibold;
+  }
+  
+  /* High contrast mode */
+  .high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --border: 0 0% 0%;
+    --input: 0 0% 0%;
+    
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+  }
+
+  .dark.high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 100%;
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    
+    --primary: 0 0% 70%;
+    --primary-foreground: 0 0% 0%;
+    
+    --secondary: 0 0% 50%;
+    --secondary-foreground: 0 0% 0%;
+  }
+  
+  /* Large text mode */
+  .large-text {
+    font-size: 120%;
+    line-height: 1.5;
+  }
+  
+  /* Reduced motion */
+  .reduce-motion * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
   }
 }
 

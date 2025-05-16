@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -51,23 +50,21 @@ const Navigation = () => {
     { title: "Dashboard", href: "/dashboard", icon: Home },
     { title: "Find Services", href: "/trades", icon: Wrench },
     { title: "Bookings", href: "/bookings", icon: CalendarClock },
-    { title: "Profile", href: "/dashboard/profile", icon: User },
-    { title: "Settings", href: "/dashboard/settings", icon: Settings },
+    { title: "Profile & Settings", href: "/dashboard/profile", icon: User },
   ];
 
   const tradeItems: NavItem[] = [
     { title: "Dashboard", href: "/provider/dashboard", icon: Home },
     { title: "Projects", href: "/provider/projects", icon: ClipboardList },
     { title: "Reports", href: "/provider/reports", icon: FileText },
-    { title: "Profile", href: "/dashboard/profile", icon: User },
-    { title: "Settings", href: "/dashboard/settings", icon: Settings },
+    { title: "Profile & Settings", href: "/dashboard/profile", icon: User },
   ];
 
   const adminItems: NavItem[] = [
     { title: "Dashboard", href: "/admin/dashboard", icon: Home },
     { title: "Analytics", href: "/admin/analytics", icon: BarChart },
     { title: "Team", href: "/admin/team", icon: Users },
-    { title: "Settings", href: "/dashboard/settings", icon: Settings },
+    { title: "Profile & Settings", href: "/dashboard/profile", icon: User },
   ];
 
   // Determine which nav items to show based on user role

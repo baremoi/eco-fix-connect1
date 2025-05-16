@@ -10,6 +10,8 @@ import { useAuth } from "@/lib/AuthContext";
 import { PersonalInfo } from "@/components/profile/PersonalInfo";
 import { SecuritySettings } from "@/components/profile/SecuritySettings";
 import { PreferencesSettings } from "@/components/profile/PreferencesSettings";
+import { ThemeSettings } from "@/components/profile/ThemeSettings";
+import { AccessibilitySettings } from "@/components/profile/AccessibilitySettings";
 
 export default function Profile() {
   const { profile: authProfile } = useAuth();
@@ -37,17 +39,19 @@ export default function Profile() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Profile</h1>
+        <h1 className="text-2xl font-bold">Profile & Settings</h1>
         <p className="text-muted-foreground">
-          Manage your personal information and account settings
+          Manage your personal information, account settings, and preferences
         </p>
       </div>
 
       <Tabs defaultValue="personalInfo" className="space-y-6">
-        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-3 mb-6">
-          <TabsTrigger value="personalInfo">Personal Information</TabsTrigger>
+        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 md:grid-cols-5 mb-6">
+          <TabsTrigger value="personalInfo">Personal Info</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          <TabsTrigger value="theme">Theme</TabsTrigger>
+          <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
         </TabsList>
 
         <TabsContent value="personalInfo">
@@ -60,6 +64,14 @@ export default function Profile() {
 
         <TabsContent value="preferences">
           <PreferencesSettings />
+        </TabsContent>
+
+        <TabsContent value="theme">
+          <ThemeSettings />
+        </TabsContent>
+
+        <TabsContent value="accessibility">
+          <AccessibilitySettings />
         </TabsContent>
       </Tabs>
     </div>

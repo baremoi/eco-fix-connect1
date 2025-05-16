@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "./lib/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
+import { useEffect } from "react";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -14,7 +15,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
 import OAuthCallback from "./pages/OAuthCallback";
 import Projects from "./pages/Projects";
 import Reports from "./pages/Reports";
@@ -27,6 +27,60 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 const queryClient = new QueryClient();
 
 export default function App() {
+  useEffect(() => {
+    // Initialize theme from localStorage or system preference
+    const initializeTheme = () => {
+      const root = window.document.documentElement;
+      const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'system' | null;
+      
+      if (storedTheme) {
+        if (storedTheme === 'system') {
+          const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          root.classList.add(systemTheme);
+        } else {
+          root.classList.add(storedTheme);
+        }
+      } else {
+        // Default to system preference if no theme is set
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        root.classList.add(systemTheme);
+      }
+    };
+
+    // Initialize accessibility settings
+    const initializeAccessibility = () => {
+      const savedSettings = localStorage.getItem('accessibilitySettings');
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        const html = document.documentElement;
+        
+        if (settings.reduceMotion) html.classList.add('reduce-motion');
+        if (settings.highContrast) html.classList.add('high-contrast');
+        if (settings.largeText) html.classList.add('large-text');
+        if (settings.contentZoom) {
+          html.style.setProperty('--content-zoom', `${settings.contentZoom}%`);
+        }
+      }
+    };
+
+    initializeTheme();
+    initializeAccessibility();
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme === 'system') {
+        const root = window.document.documentElement;
+        root.classList.remove('light', 'dark');
+        root.classList.add(mediaQuery.matches ? 'dark' : 'light');
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -52,11 +106,6 @@ export default function App() {
               <Route path="profile" element={
                 <ProtectedRoute>
                   <Profile />
-                </ProtectedRoute>
-              } />
-              <Route path="settings" element={
-                <ProtectedRoute>
-                  <Settings />
                 </ProtectedRoute>
               } />
             </Route>
