@@ -3,8 +3,9 @@ import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { Icons } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
+import { useState, useEffect } from "react";
 
 // Import refactored components
 import { PersonalInfo } from "@/components/profile/PersonalInfo";
@@ -15,18 +16,27 @@ import { AccessibilitySettings } from "@/components/profile/AccessibilitySetting
 
 export default function Profile() {
   const { profile: authProfile } = useAuth();
-  
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(true);
+  const [profileData, setProfileData] = useState(null);
+
   // Fetch profile data from API with proper error handling
-  const { data: profileData, isLoading } = useQuery({
-    queryKey: ['profile'],
-    queryFn: api.getProfile,
-    meta: {
-      onError: (error: Error) => {
+  useEffect(() => {
+    async function fetchProfileData() {
+      try {
+        const data = await api.getProfile();
+        setProfileData(data);
+        console.log("Profile data loaded:", data);
+      } catch (error) {
+        console.error("Error loading profile data:", error);
         toast.error("Failed to load profile data");
-        console.error("Profile data loading error:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
-  });
+    
+    fetchProfileData();
+  }, []);
 
   if (isLoading) {
     return (

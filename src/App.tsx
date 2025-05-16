@@ -16,6 +16,8 @@ import UserLayout from './components/Layout'; // Renamed for clarity
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './lib/AuthContext';
 import PublicLayout from './components/layout/Layout'; // Renamed for clarity
+import Profile from './pages/Profile'; // Import Profile page
+import Bookings from './pages/Bookings'; // Import Bookings page
 
 function App() {
   console.log("App rendering");
@@ -35,6 +37,7 @@ function App() {
           <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
           <Route path="/oauth" element={<OAuthCallback />} />
           <Route path="/email-verification" element={<VerifyEmail />} />
+          <Route path="/bookings" element={<PublicLayout><Bookings /></PublicLayout>} />
 
           {/* Protected user routes */}
           <Route 
@@ -53,7 +56,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <UserLayout>
-                  <div>Profile</div>
+                  <Profile />
                 </UserLayout>
               </ProtectedRoute>
             } 
