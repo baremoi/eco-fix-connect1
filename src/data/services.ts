@@ -1,4 +1,3 @@
-
 // Define types for our data
 export interface Service {
   id: string;
@@ -20,6 +19,8 @@ export interface Booking {
   time: string;
   price: number;
   status: "upcoming" | "completed" | "cancelled" | "in-progress";
+  address?: string;  // Added address property as optional
+  notes?: string;    // Added notes property as optional
 }
 
 // Sample services data
