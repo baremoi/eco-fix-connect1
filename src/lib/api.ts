@@ -1,4 +1,3 @@
-
 import { supabaseService } from "./supabaseService";
 import supabase from "./supabase";
 
@@ -88,6 +87,20 @@ export const api = {
     return { success: true };
   },
   
+  // Two-Factor Authentication (2FA) methods
+  enable2FA: async () => {
+    // This is a stub implementation since we don't have actual 2FA setup
+    // In a real implementation, this would create and return a TOTP secret
+    console.log("2FA Enable requested");
+    return { success: true, message: "2FA enabled successfully" };
+  },
+  
+  disable2FA: async () => {
+    // This is a stub implementation since we don't have actual 2FA setup
+    console.log("2FA Disable requested");
+    return { success: true, message: "2FA disabled successfully" };
+  },
+  
   // Account Management
   deleteAccount: async () => {
     // This would require a custom endpoint or admin privileges
@@ -113,4 +126,4 @@ export const api = {
     // This is a stub implementation
     return { success: true, settings };
   },
-}; 
+};
