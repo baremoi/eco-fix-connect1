@@ -66,7 +66,6 @@ export const Icons = {
   laptop: Laptop,
   refresh: RefreshCw,
   minus: Minus,
-  team: Users,
   google: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
