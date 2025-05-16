@@ -8,26 +8,38 @@ interface ProfileAvatarProps {
   avatarUrl: string;
   userName: string;
   isEditing: boolean;
-  onFileChange: (file: File) => void;
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement> | File) => void;
+  avatarPreview?: string | null;
 }
 
-export function ProfileAvatar({ avatarUrl, userName, isEditing, onFileChange }: ProfileAvatarProps) {
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+export function ProfileAvatar({ 
+  avatarUrl, 
+  userName, 
+  isEditing, 
+  onFileChange,
+  avatarPreview: externalAvatarPreview = null
+}: ProfileAvatarProps) {
+  const [internalAvatarPreview, setInternalAvatarPreview] = useState<string | null>(null);
+  const avatarPreview = externalAvatarPreview || internalAvatarPreview;
   
   // Handle file input change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
-      // Create a preview
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      // Create a preview if we're managing state internally
+      if (!externalAvatarPreview) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setInternalAvatarPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
       
-      // Pass the file to the parent component
-      onFileChange(file);
+      // Pass the file or event to the parent component
+      if (typeof onFileChange === 'function') {
+        onFileChange(file instanceof File ? file : e);
+      }
     }
   };
   

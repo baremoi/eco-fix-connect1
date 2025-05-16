@@ -77,6 +77,9 @@ export const useProfileFormState = ({ profile, setProfile, queryClient }: UsePro
     const updateData: UpdateProfileData = {
       name: data.name,
       email: data.email,
+      phone: data.phone,
+      address: data.address,
+      bio: data.bio
     };
 
     // Update profile
@@ -110,7 +113,6 @@ export const useProfileFormState = ({ profile, setProfile, queryClient }: UsePro
     isEditing,
     setIsEditing,
     avatarPreview,
-    setAvatarPreview,
     updateProfileMutation,
     register,
     handleSubmit,

@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ProfileAvatar } from "./ProfileAvatar";
-import { ProfileForm } from "./ProfileForm";
+import { ProfileAvatar } from "@/components/shared/ProfileAvatar";
+import { ProfileForm } from "@/components/shared/ProfileForm";
 import { ProfileActions } from "./ProfileActions";
 import { useProfileForm } from "./useProfileForm";
 

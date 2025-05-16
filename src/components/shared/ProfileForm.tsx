@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface ProfileFormProps {
   isEditing: boolean;
-  profile: {
+  defaultValues: {
     name: string;
     email: string;
     phone: string;
@@ -16,9 +16,9 @@ interface ProfileFormProps {
   errors: any;
 }
 
-export const ProfileForm = ({ isEditing, profile, register, errors }: ProfileFormProps) => {
+export function ProfileForm({ isEditing, defaultValues, register, errors }: ProfileFormProps) {
   return (
-    <>
+    <div className="flex-grow space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="name">Name</Label>
@@ -29,11 +29,11 @@ export const ProfileForm = ({ isEditing, profile, register, errors }: ProfileFor
                 {...register("name", { required: "Name is required" })}
               />
               {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
+                <p className="text-sm text-red-500">{errors.name.message as string}</p>
               )}
             </>
           ) : (
-            <p className="text-lg">{profile.name}</p>
+            <p className="text-lg">{defaultValues.name}</p>
           )}
         </div>
         
@@ -53,11 +53,11 @@ export const ProfileForm = ({ isEditing, profile, register, errors }: ProfileFor
                 })}
               />
               {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+                <p className="text-sm text-red-500">{errors.email.message as string}</p>
               )}
             </>
           ) : (
-            <p className="text-lg">{profile.email}</p>
+            <p className="text-lg">{defaultValues.email}</p>
           )}
         </div>
         
@@ -70,11 +70,11 @@ export const ProfileForm = ({ isEditing, profile, register, errors }: ProfileFor
                 {...register("phone")}
               />
               {errors.phone && (
-                <p className="text-sm text-red-500">{errors.phone.message}</p>
+                <p className="text-sm text-red-500">{errors.phone.message as string}</p>
               )}
             </>
           ) : (
-            <p className="text-lg">{profile.phone || "Not provided"}</p>
+            <p className="text-lg">{defaultValues.phone || "Not provided"}</p>
           )}
         </div>
         
@@ -87,11 +87,11 @@ export const ProfileForm = ({ isEditing, profile, register, errors }: ProfileFor
                 {...register("address")}
               />
               {errors.address && (
-                <p className="text-sm text-red-500">{errors.address.message}</p>
+                <p className="text-sm text-red-500">{errors.address.message as string}</p>
               )}
             </>
           ) : (
-            <p className="text-lg">{profile.address || "Not provided"}</p>
+            <p className="text-lg">{defaultValues.address || "Not provided"}</p>
           )}
         </div>
       </div>
@@ -107,15 +107,15 @@ export const ProfileForm = ({ isEditing, profile, register, errors }: ProfileFor
               placeholder="Tell us a little about yourself..."
             />
             {errors.bio && (
-              <p className="text-sm text-red-500">{errors.bio.message}</p>
+              <p className="text-sm text-red-500">{errors.bio.message as string}</p>
             )}
           </>
         ) : (
           <p className="text-lg whitespace-pre-wrap">
-            {profile.bio || "No bio provided yet."}
+            {defaultValues.bio || "No bio provided yet."}
           </p>
         )}
       </div>
-    </>
+    </div>
   );
-};
+}

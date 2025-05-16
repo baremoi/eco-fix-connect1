@@ -6,8 +6,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { toast } from "sonner";
-import { ProfileForm } from "./profile/ProfileForm";
-import { ProfileAvatar } from "./profile/ProfileAvatar";
+import { ProfileForm } from "@/components/shared/ProfileForm";
+import { ProfileAvatar } from "@/components/shared/ProfileAvatar";
 import { useProfileFormState } from "./profile/useProfileFormState";
 
 const DashboardProfile = () => {
@@ -55,12 +55,10 @@ const DashboardProfile = () => {
     isEditing,
     setIsEditing,
     avatarPreview,
-    setAvatarPreview,
     updateProfileMutation,
     register,
     handleSubmit,
     errors,
-    reset,
     handleCancel,
     handleFileChange,
     onSubmit
@@ -98,7 +96,7 @@ const DashboardProfile = () => {
               <div className="flex-grow space-y-4">
                 <ProfileForm
                   isEditing={isEditing}
-                  profile={profile}
+                  defaultValues={profile}
                   register={register}
                   errors={errors}
                 />
