@@ -52,6 +52,35 @@ export const supabaseService = {
       .eq("id", userId);
   },
 
+  // Avatar storage methods
+  async uploadAvatar(userId: string, file: File) {
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${userId}/avatar.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, {
+        upsert: true,
+        contentType: file.type,
+      });
+
+    if (error) {
+      throw error;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  },
+
+  async deleteAvatar(userId: string, path: string) {
+    return supabase.storage
+      .from('avatars')
+      .remove([`${userId}/${path}`]);
+  },
+
   // Email verification methods
   async resendVerificationEmail(email: string) {
     return supabase.auth.resend({

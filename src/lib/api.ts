@@ -1,4 +1,6 @@
+
 import { authService } from "./auth";
+import { supabaseService } from "./supabaseService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -31,6 +33,10 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
 export interface UpdateProfileData {
   name?: string;
   email?: string;
+  phone?: string;
+  address?: string;
+  bio?: string;
+  avatar_url?: string;
   notifications?: {
     email: boolean;
     marketing: boolean;
@@ -53,6 +59,24 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify(data),
     }),
+  
+  // Avatar upload
+  uploadAvatar: async (file: File) => {
+    const user = await authService.getCurrentUser();
+    if (!user) throw new Error("User not authenticated");
+    
+    try {
+      const publicUrl = await supabaseService.uploadAvatar(user.id, file);
+      
+      // Update the user profile with the new avatar URL
+      await api.updateProfile({ avatar_url: publicUrl });
+      
+      return publicUrl;
+    } catch (error) {
+      console.error("Avatar upload error:", error);
+      throw error;
+    }
+  },
   
   // Security
   changePassword: (data: ChangePasswordData) =>

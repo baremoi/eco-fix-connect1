@@ -19,7 +19,9 @@ interface PersonalInfoProps {
 
 export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const queryClient = useQueryClient();
   
   const defaultProfile = {
@@ -50,10 +52,26 @@ export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
     }
   });
 
+  // Avatar upload mutation
+  const uploadAvatarMutation = useMutation({
+    mutationFn: (file: File) => api.uploadAvatar(file),
+    onSuccess: (avatarUrl) => {
+      toast.success("Profile photo updated successfully");
+      setAvatarPreview(null);
+      setAvatarFile(null);
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+    onError: (error: Error) => {
+      toast.error("Failed to upload profile photo");
+      console.error("Avatar upload error:", error);
+    }
+  });
+
   // Handle file input change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      setAvatarFile(file);
       
       // Create a preview
       const reader = new FileReader();
@@ -65,7 +83,19 @@ export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
   };
 
   // Handle form submission
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
+    // Start with avatar upload if a new file was selected
+    if (avatarFile) {
+      setIsUploading(true);
+      try {
+        await uploadAvatarMutation.mutateAsync(avatarFile);
+      } catch (error) {
+        // Error is handled by the mutation
+      } finally {
+        setIsUploading(false);
+      }
+    }
+
     // Prepare update data
     const updateData = {
       name: data.name,
@@ -83,6 +113,7 @@ export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
   const handleCancel = () => {
     setIsEditing(false);
     setAvatarPreview(null);
+    setAvatarFile(null);
     reset(defaultProfile);
   };
 
@@ -235,9 +266,9 @@ export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
                     </Button>
                     <Button 
                       type="submit"
-                      disabled={updateProfileMutation.isPending}
+                      disabled={updateProfileMutation.isPending || isUploading}
                     >
-                      {updateProfileMutation.isPending ? (
+                      {(updateProfileMutation.isPending || isUploading) ? (
                         <>
                           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                           Saving
@@ -247,7 +278,7 @@ export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
                   </>
                 ) : (
                   <Button onClick={() => setIsEditing(true)}>
-                    <Icons.pencil className="mr-2 h-4 w-4" />
+                    <Icons.edit className="mr-2 h-4 w-4" />
                     Edit Profile
                   </Button>
                 )}
