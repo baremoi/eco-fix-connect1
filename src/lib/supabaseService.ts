@@ -1,5 +1,5 @@
 
-import supabase from "./supabase";
+import { supabase } from "./supabase";
 import { LoginInput, RegisterInput } from "./auth";
 
 export const supabaseService = {
