@@ -27,6 +27,7 @@ export const userItems: NavItem[] = [
 export const tradeItems: NavItem[] = [
   { title: "Dashboard", href: "/provider/dashboard", icon: Home },
   { title: "Projects", href: "/provider/projects", icon: ClipboardList },
+  { title: "Availability", href: "/provider/availability", icon: CalendarClock },
   { title: "Reports", href: "/provider/reports", icon: FileText },
   { title: "Profile & Settings", href: "/dashboard/profile", icon: User },
 ];

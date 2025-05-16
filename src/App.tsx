@@ -24,6 +24,8 @@ import HowItWorks from "./pages/HowItWorks";
 import ProviderDashboard from "./pages/provider/ProviderDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Services from "./pages/Services";
+import Bookings from "./pages/Bookings";
+import Availability from "./pages/provider/Availability";
 
 const queryClient = new QueryClient();
 
@@ -111,7 +113,16 @@ export default function App() {
               } />
             </Route>
             
-            {/* Services and Bookings route */}
+            {/* Bookings route */}
+            <Route path="/bookings" element={<Layout />}>
+              <Route index element={
+                <ProtectedRoute allowedRoles={["user"]}>
+                  <Bookings />
+                </ProtectedRoute>
+              } />
+            </Route>
+
+            {/* Services and Trades route */}
             <Route path="/trades" element={<Layout />}>
               <Route index element={
                 <ProtectedRoute allowedRoles={["user"]}>
@@ -130,6 +141,11 @@ export default function App() {
               <Route path="projects" element={
                 <ProtectedRoute allowedRoles={["tradesperson"]}>
                   <Projects />
+                </ProtectedRoute>
+              } />
+              <Route path="availability" element={
+                <ProtectedRoute allowedRoles={["tradesperson"]}>
+                  <Availability />
                 </ProtectedRoute>
               } />
               <Route path="reports" element={
