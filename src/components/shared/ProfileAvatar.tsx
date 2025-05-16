@@ -8,7 +8,7 @@ interface ProfileAvatarProps {
   avatarUrl: string;
   userName: string;
   isEditing: boolean;
-  onFileChange: (e: React.ChangeEvent<HTMLInputElement> | File) => void;
+  onFileChange: (file: File) => void;
   avatarPreview?: string | null;
 }
 
@@ -36,9 +36,9 @@ export function ProfileAvatar({
         reader.readAsDataURL(file);
       }
       
-      // Pass the file or event to the parent component
+      // Pass the file to the parent component
       if (typeof onFileChange === 'function') {
-        onFileChange(file instanceof File ? file : e);
+        onFileChange(file);
       }
     }
   };

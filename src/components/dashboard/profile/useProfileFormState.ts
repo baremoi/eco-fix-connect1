@@ -58,17 +58,16 @@ export const useProfileFormState = ({ profile, setProfile, queryClient }: UsePro
   });
 
   // Handle file input change
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      
-      // Create a preview
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleFileChange = (file: File) => {
+    // Create a preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    
+    // TODO: In a real implementation, you would upload the file here
+    console.log("File selected for upload:", file.name);
   };
 
   // Handle form submission
