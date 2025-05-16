@@ -121,8 +121,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsEmailVerified(isVerified);
       
       if (!isVerified) {
+        // Store the email temporarily to use for resending verification
+        sessionStorage.setItem('pendingEmail', data.email);
         toast.warning("Please verify your email before logging in");
-        return;
+        throw new Error("Email not confirmed");
       }
 
       toast.success("Logged in successfully");
@@ -149,10 +151,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (data: RegisterInput) => {
     try {
       console.log("Starting registration process with Supabase...");
-      
-      // Log environment variables for debugging
-      console.log("Supabase URL exists:", !!import.meta.env.VITE_SUPABASE_URL);
-      console.log("Supabase Key exists:", !!import.meta.env.VITE_SUPABASE_ANON_KEY);
       
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
@@ -183,6 +181,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           navigateBasedOnRole(data.role, true);
         }
       } else {
+        // Store the email temporarily for resending verification
+        sessionStorage.setItem('pendingEmail', data.email);
         toast.success("Registration successful! Please check your email to verify your account.");
       }
     } catch (error: any) {
@@ -201,6 +201,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(null);
       setProfile(null);
       setIsEmailVerified(false);
+      sessionStorage.removeItem('pendingEmail'); // Clean up stored email
       toast.success("Logged out successfully");
       navigate("/login");
     } catch (error: any) {

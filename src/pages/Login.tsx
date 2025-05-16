@@ -10,20 +10,26 @@ import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/ui/icons";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { supabaseService } from "@/lib/supabaseService";
 
 export default function Login() {
   const { login, session } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [emailVerificationSent, setEmailVerificationSent] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string>("");
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   });
+
+  // Watch the email field so we can use it for resending verification
+  const emailValue = watch("email");
 
   useEffect(() => {
     // If user is already authenticated and email is verified, redirect to dashboard
@@ -35,6 +41,7 @@ export default function Login() {
   async function onSubmit(data: LoginInput) {
     try {
       setIsLoading(true);
+      setPendingEmail(data.email);
       await login(data);
     } catch (error: any) {
       console.error("Login error:", error);
@@ -50,12 +57,21 @@ export default function Login() {
   async function resendVerificationEmail() {
     try {
       setIsLoading(true);
-      // Implementation would depend on Supabase's resend verification method
-      // For now, just show a toast message
+      const email = pendingEmail || emailValue;
+      
+      if (!email) {
+        toast.error("Email address is required to resend verification");
+        return;
+      }
+      
+      const { error } = await supabaseService.resendVerificationEmail(email);
+      
+      if (error) throw error;
+      
       toast.success("Verification email resent. Please check your inbox.");
-      setEmailVerificationSent(true);
-    } catch (error) {
-      toast.error("Failed to resend verification email. Please try again.");
+    } catch (error: any) {
+      console.error("Failed to resend verification email:", error);
+      toast.error(error.message || "Failed to resend verification email. Please try again.");
     } finally {
       setIsLoading(false);
     }

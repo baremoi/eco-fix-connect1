@@ -32,6 +32,9 @@ const VerifyEmail = () => {
 
           if (verifyError) throw verifyError;
           
+          // Remove any stored email from previous verification attempts
+          sessionStorage.removeItem('pendingEmail');
+          
           toast.success('Email verified successfully!');
           
           // Redirect to login after a short delay
