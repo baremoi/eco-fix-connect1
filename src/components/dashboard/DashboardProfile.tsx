@@ -21,19 +21,31 @@ interface ProfileFormValues {
   bio: string;
 }
 
+interface ProfileData {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  bio: string;
+  avatar_url?: string;
+}
+
 const DashboardProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  // Remove unused avatarFile state
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
   
-  // Fetch profile data
+  // Fetch profile data with fixed error handling
   const { data: profileData, isLoading } = useQuery({
     queryKey: ['profile'],
     queryFn: api.getProfile,
-    onError: () => {
-      toast.error("Failed to load profile data");
+    // Move error handling to meta property
+    meta: {
+      onError: () => {
+        toast.error("Failed to load profile data");
+      }
     }
   });
 
@@ -51,13 +63,14 @@ const DashboardProfile = () => {
   // Update profile when data is loaded
   useEffect(() => {
     if (profileData) {
+      const data = profileData as ProfileData;
       setProfile({
-        name: profileData.name || defaultProfile.name,
-        email: profileData.email || defaultProfile.email,
-        phone: profileData.phone || defaultProfile.phone,
-        address: profileData.address || defaultProfile.address,
-        bio: profileData.bio || defaultProfile.bio,
-        avatar: profileData.avatar_url || defaultProfile.avatar
+        name: data.name || defaultProfile.name,
+        email: data.email || defaultProfile.email,
+        phone: data.phone || defaultProfile.phone,
+        address: data.address || defaultProfile.address,
+        bio: data.bio || defaultProfile.bio,
+        avatar: data.avatar_url || defaultProfile.avatar
       });
     }
   }, [profileData]);
@@ -102,7 +115,8 @@ const DashboardProfile = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setAvatarFile(file);
+      // Store file for upload implementation
+      const fileData = file; // Use this when implementing file upload
       
       // Create a preview
       const reader = new FileReader();
@@ -138,7 +152,6 @@ const DashboardProfile = () => {
   // Handle cancel
   const handleCancel = () => {
     setIsEditing(false);
-    setAvatarFile(null);
     setAvatarPreview(null);
     reset({
       name: profile.name,

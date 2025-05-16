@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -17,30 +16,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DashboardProfile from "@/components/dashboard/DashboardProfile";
 
 export default function Profile() {
-  const { profile, updateProfile } = useAuth();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { profile } = useAuth();
 
-  // Fetch profile data from API
-  const { data: profileData, isLoading } = useQuery({
+  // Fetch profile data from API with proper error handling
+  const { isLoading } = useQuery({
     queryKey: ['profile'],
     queryFn: api.getProfile,
-    onError: (error) => {
-      toast.error("Failed to load profile data");
-      console.error("Profile data loading error:", error);
-    }
-  });
-
-  // Update profile mutation
-  const updateProfileMutation = useMutation({
-    mutationFn: (data: UpdateProfileData) => api.updateProfile(data),
-    onSuccess: () => {
-      toast.success("Profile updated successfully");
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-    },
-    onError: (error) => {
-      toast.error("Failed to update profile");
-      console.error("Profile update error:", error);
+    meta: {
+      onError: (error: Error) => {
+        toast.error("Failed to load profile data");
+        console.error("Profile data loading error:", error);
+      }
     }
   });
 
