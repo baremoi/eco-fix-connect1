@@ -5,9 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { BookingCard } from "@/components/services/BookingCard";
+import { Booking } from "@/data/services";
 
 // Import bookings data directly to avoid undefined errors
-const bookingsData = [
+const bookingsData: Booking[] = [
   {
     id: "1",
     serviceName: "Plumbing Repair",
