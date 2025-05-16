@@ -40,6 +40,8 @@ import {
   Info,
   RefreshCw,
   Minus,
+  Upload,
+  Camera,
 } from "lucide-react";
 
 export const Icons = {
@@ -101,4 +103,6 @@ export const Icons = {
   trendingUp: TrendingUp,
   trendingDown: TrendingDown,
   info: Info,
+  upload: Upload,
+  camera: Camera,
 } as const; 
