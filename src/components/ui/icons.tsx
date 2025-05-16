@@ -39,6 +39,7 @@ import {
   TrendingDown,
   Info,
   RefreshCw,
+  Minus,
 } from "lucide-react";
 
 export const Icons = {
@@ -64,6 +65,8 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   refresh: RefreshCw,
+  minus: Minus,
+  team: Users,
   google: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
