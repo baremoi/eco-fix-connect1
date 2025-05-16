@@ -1,7 +1,5 @@
-
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "@/lib/AuthContext";
 import { api } from "@/lib/api";
 import { Icons } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,8 +8,7 @@ import DashboardProfile from "@/components/dashboard/DashboardProfile";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 
 export default function Profile() {
@@ -20,7 +17,7 @@ export default function Profile() {
     queryKey: ['profile'],
     queryFn: api.getProfile,
     meta: {
-      onError: (error) => {
+      onError: (error: Error) => {
         toast.error("Failed to load profile data");
         console.error("Profile data loading error:", error);
       }
