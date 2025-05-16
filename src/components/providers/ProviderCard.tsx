@@ -1,11 +1,10 @@
-
 import { Link } from "react-router-dom";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StarIcon, MapPin, CheckCircle } from "lucide-react";
-import { Provider } from "@/services/providerService";
+import { Provider } from "@/services/types/provider.types";
 
 interface ProviderCardProps {
   provider: Provider;

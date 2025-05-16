@@ -1,5 +1,4 @@
-
-import { Provider } from "@/services/providerService";
+import { Provider } from "@/services/types/provider.types";
 import { ProviderCard } from "./ProviderCard";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";

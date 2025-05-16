@@ -2,15 +2,16 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { getProviders } from "@/services/providerService";
+import { getProviders, serviceCategories, popularLocations } from "@/services/providerService";
 import { Filter } from "lucide-react";
 import { ProviderFilters } from "@/components/providers/ProviderFilters";
 import { ProviderResults } from "@/components/providers/ProviderResults";
 import { ProviderSearch } from "@/components/providers/ProviderSearch";
+import { Provider, ProviderFilters as ProviderFiltersType } from "@/services/types/provider.types";
 
 export default function Providers() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [providers, setProviders] = useState([]);
+  const [providers, setProviders] = useState<Provider[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobileFiltersVisible, setIsMobileFiltersVisible] = useState(false);
 
@@ -24,7 +25,7 @@ export default function Providers() {
     const fetchProviders = async () => {
       setLoading(true);
       try {
-        const filters = {};
+        const filters: ProviderFiltersType = {};
         if (selectedCategory) filters.category = selectedCategory;
         if (selectedLocation) filters.location = selectedLocation;
         if (minRating > 0) filters.minRating = minRating;
@@ -43,7 +44,7 @@ export default function Providers() {
   }, [selectedCategory, selectedLocation, minRating, searchTerm]);
 
   const applyFilters = () => {
-    const params = {};
+    const params: Record<string, string> = {};
     if (selectedCategory) params.category = selectedCategory;
     if (selectedLocation) params.location = selectedLocation;
     if (minRating > 0) params.rating = minRating.toString();
