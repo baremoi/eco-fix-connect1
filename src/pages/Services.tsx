@@ -43,7 +43,8 @@ const Services = () => {
       date: format(requestData.date, 'MMM dd, yyyy'),
       time: requestData.timeSlot,
       status: "upcoming",
-      price: "99.99", // This would be calculated based on service type and other factors
+      // Convert the string price to a number to fix the type error
+      price: 99.99, // Fixed: using a number value instead of a string
       address: requestData.location,
     };
     
