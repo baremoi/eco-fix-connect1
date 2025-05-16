@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -91,7 +90,7 @@ export default function Login() {
                 {isLoading ? (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <Icons.refresh className="mr-2 h-4 w-4" />
+                  <Icons.spinner className="mr-2 h-4 w-4" />
                 )}
                 Resend verification email
               </Button>

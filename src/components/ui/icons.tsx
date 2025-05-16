@@ -1,3 +1,4 @@
+
 import {
   AlertTriangle,
   ArrowRight,
@@ -37,6 +38,7 @@ import {
   TrendingUp,
   TrendingDown,
   Info,
+  RefreshCw,
 } from "lucide-react";
 
 export const Icons = {
@@ -61,6 +63,7 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  refresh: RefreshCw,
   google: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
