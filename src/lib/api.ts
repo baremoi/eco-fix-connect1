@@ -1,34 +1,7 @@
 
 import { authService } from "./auth";
 import { supabaseService } from "./supabaseService";
-
-const API_URL = import.meta.env.VITE_API_URL;
-
-async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
-  const token = authService.getToken();
-  const headers = {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...options.headers,
-  };
-
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
-
-  if (response.status === 401) {
-    authService.logout();
-    window.location.href = "/login";
-    throw new Error("Unauthorized");
-  }
-
-  if (!response.ok) {
-    throw new Error("API request failed");
-  }
-
-  return response.json();
-}
+import supabase from "./supabase";
 
 export interface UpdateProfileData {
   name?: string;
@@ -53,24 +26,52 @@ export interface ChangePasswordData {
 
 export const api = {
   // User Profile
-  getProfile: () => fetchWithAuth("/user/profile"),
-  updateProfile: (data: UpdateProfileData) => 
-    fetchWithAuth("/user/profile", {
-      method: "PATCH",
-      body: JSON.stringify(data),
-    }),
+  getProfile: async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error("Not authenticated");
+    
+    const { data, error } = await supabaseService.getUserProfile(session.user.id);
+    if (error) throw error;
+    return data;
+  },
+  
+  updateProfile: async (data: UpdateProfileData) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error("Not authenticated");
+    
+    // Map the input data to the database structure expected by Supabase profiles table
+    const profileUpdate = {
+      full_name: data.name,
+      email: data.email,
+      phone: data.phone,
+      address: data.address,
+      bio: data.bio,
+      avatar_url: data.avatar_url
+    };
+    
+    const { data: updatedProfile, error } = await supabaseService.updateUserProfile(
+      session.user.id, 
+      profileUpdate
+    );
+    
+    if (error) {
+      console.error("Profile update error:", error);
+      throw error;
+    }
+    
+    return updatedProfile;
+  },
   
   // Avatar upload
   uploadAvatar: async (file: File) => {
-    const user = await authService.getCurrentUser();
-    if (!user) throw new Error("User not authenticated");
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error("User not authenticated");
     
     try {
-      const publicUrl = await supabaseService.uploadAvatar(user.id, file);
+      const publicUrl = await supabaseService.uploadAvatar(session.user.id, file);
       
-      // Update the user profile with the new avatar URL
-      await api.updateProfile({ avatar_url: publicUrl });
-      
+      // Return the URL without calling updateProfile here
+      // The component will handle the profile update separately
       return publicUrl;
     } catch (error) {
       console.error("Avatar upload error:", error);
@@ -79,33 +80,38 @@ export const api = {
   },
   
   // Security
-  changePassword: (data: ChangePasswordData) =>
-    fetchWithAuth("/user/change-password", {
-      method: "POST",
-      body: JSON.stringify(data),
-    }),
-  enable2FA: () => fetchWithAuth("/user/2fa/enable", { method: "POST" }),
-  disable2FA: () => fetchWithAuth("/user/2fa/disable", { method: "POST" }),
-  verify2FAToken: (token: string) =>
-    fetchWithAuth("/user/2fa/verify", {
-      method: "POST",
-      body: JSON.stringify({ token }),
-    }),
-
+  changePassword: async (data: ChangePasswordData) => {
+    const { error } = await supabase.auth.updateUser({
+      password: data.newPassword
+    });
+    
+    if (error) throw error;
+    return { success: true };
+  },
+  
   // Account Management
-  deleteAccount: () => fetchWithAuth("/user/account", { method: "DELETE" }),
+  deleteAccount: async () => {
+    // This would require a custom endpoint or admin privileges
+    throw new Error("Not implemented - requires server-side implementation");
+  },
 
   // Notifications
-  updateNotificationPreferences: (preferences: UpdateProfileData["notifications"]) =>
-    fetchWithAuth("/user/notifications", {
-      method: "PATCH",
-      body: JSON.stringify(preferences),
-    }),
+  updateNotificationPreferences: async (preferences: UpdateProfileData["notifications"]) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error("Not authenticated");
+    
+    // This would typically store to a separate notifications table
+    // This is a stub implementation
+    return { success: true, preferences };
+  },
 
   // Privacy
-  updatePrivacySettings: (settings: UpdateProfileData["privacy"]) =>
-    fetchWithAuth("/user/privacy", {
-      method: "PATCH",
-      body: JSON.stringify(settings),
-    }),
+  updatePrivacySettings: async (settings: UpdateProfileData["privacy"]) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error("Not authenticated");
+    
+    // This would typically store to a separate privacy_settings table
+    // This is a stub implementation
+    return { success: true, settings };
+  },
 }; 

@@ -57,7 +57,7 @@ export const supabaseService = {
     const fileExt = file.name.split('.').pop();
     const filePath = `${userId}/avatar.${fileExt}`;
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('avatars')
       .upload(filePath, file, {
         upsert: true,
@@ -68,6 +68,7 @@ export const supabaseService = {
       throw error;
     }
 
+    // Get the public URL using the getPublicUrl method
     const { data: { publicUrl } } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);

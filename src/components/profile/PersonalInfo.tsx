@@ -55,11 +55,12 @@ export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
   // Avatar upload mutation
   const uploadAvatarMutation = useMutation({
     mutationFn: (file: File) => api.uploadAvatar(file),
-    onSuccess: (avatarUrl) => {
+    onSuccess: (publicUrl) => {
       toast.success("Profile photo updated successfully");
+      // After successful upload, update the profile with the new avatar URL
+      updateProfileMutation.mutate({ avatar_url: publicUrl });
       setAvatarPreview(null);
       setAvatarFile(null);
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
     onError: (error: Error) => {
       toast.error("Failed to upload profile photo");
@@ -94,19 +95,19 @@ export function PersonalInfo({ profileData, authProfile }: PersonalInfoProps) {
       } finally {
         setIsUploading(false);
       }
+    } else {
+      // If no avatar upload, just update the profile
+      const updateData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        bio: data.bio,
+      };
+
+      // Update profile
+      updateProfileMutation.mutate(updateData);
     }
-
-    // Prepare update data
-    const updateData = {
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      address: data.address,
-      bio: data.bio,
-    };
-
-    // Update profile
-    updateProfileMutation.mutate(updateData);
   };
 
   // Handle cancel
