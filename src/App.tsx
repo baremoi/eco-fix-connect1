@@ -33,12 +33,22 @@ function App() {
           <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
           <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
           <Route path="/join" element={<PublicLayout><Join /></PublicLayout>} />
-          <Route path="/trades" element={<PublicLayout><Trades /></PublicLayout>} />
           <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
           <Route path="/oauth" element={<PublicLayout><OAuthCallback /></PublicLayout>} />
           <Route path="/email-verification" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
 
           {/* Protected routes with UserLayout */}
+          <Route 
+            path="/trades" 
+            element={
+              <ProtectedRoute>
+                <UserLayout>
+                  <Trades />
+                </UserLayout>
+              </ProtectedRoute>
+            } 
+          />
+          
           <Route 
             path="/bookings" 
             element={
