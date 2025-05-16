@@ -18,6 +18,7 @@ import { AuthProvider } from './lib/AuthContext';
 import PublicLayout from './components/layout/Layout';
 import Profile from './pages/Profile';
 import Bookings from './pages/Bookings';
+import { AccessibilityProvider } from './components/providers/AccessibilityProvider';
 
 function App() {
   console.log("App rendering");
@@ -25,65 +26,67 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Routes>
-          {/* Public routes with PublicLayout */}
-          <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
-          <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
-          <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
-          <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
-          <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
-          <Route path="/join" element={<PublicLayout><Join /></PublicLayout>} />
-          <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
-          <Route path="/oauth" element={<PublicLayout><OAuthCallback /></PublicLayout>} />
-          <Route path="/email-verification" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
+        <AccessibilityProvider>
+          <Routes>
+            {/* Public routes with PublicLayout */}
+            <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
+            <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+            <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+            <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
+            <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
+            <Route path="/join" element={<PublicLayout><Join /></PublicLayout>} />
+            <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
+            <Route path="/oauth" element={<PublicLayout><OAuthCallback /></PublicLayout>} />
+            <Route path="/email-verification" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
 
-          {/* Protected routes with UserLayout */}
-          <Route 
-            path="/trades" 
-            element={
-              <ProtectedRoute>
-                <UserLayout>
-                  <Trades />
-                </UserLayout>
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/bookings" 
-            element={
-              <ProtectedRoute>
-                <UserLayout>
-                  <Bookings />
-                </UserLayout>
-              </ProtectedRoute>
-            }
-          />
-          
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <UserLayout>
-                  <Dashboard />
-                </UserLayout>
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/dashboard/profile" 
-            element={
-              <ProtectedRoute>
-                <UserLayout>
-                  <Profile />
-                </UserLayout>
-              </ProtectedRoute>
-            } 
-          />
+            {/* Protected routes with UserLayout */}
+            <Route 
+              path="/trades" 
+              element={
+                <ProtectedRoute>
+                  <UserLayout>
+                    <Trades />
+                  </UserLayout>
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/bookings" 
+              element={
+                <ProtectedRoute>
+                  <UserLayout>
+                    <Bookings />
+                  </UserLayout>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <UserLayout>
+                    <Dashboard />
+                  </UserLayout>
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/dashboard/profile" 
+              element={
+                <ProtectedRoute>
+                  <UserLayout>
+                    <Profile />
+                  </UserLayout>
+                </ProtectedRoute>
+              } 
+            />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AccessibilityProvider>
       </AuthProvider>
     </Router>
   );
