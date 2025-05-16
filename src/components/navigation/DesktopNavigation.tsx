@@ -1,6 +1,5 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { NavItem } from "./NavItem";
 import { NavItem as NavItemType } from "./NavItems";
 import { ProfileSection } from "./ProfileSection";
