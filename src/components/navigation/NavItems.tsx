@@ -21,7 +21,7 @@ export const userItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: Home },
   { title: "Services", href: "/trades", icon: Wrench },
   { title: "Bookings", href: "/bookings", icon: CalendarClock },
-  { title: "Profile & Settings", href: "/dashboard/profile", icon: User },
+  { title: "Profile & Settings", href: "/profile", icon: User },
 ];
 
 export const tradeItems: NavItem[] = [
@@ -29,14 +29,14 @@ export const tradeItems: NavItem[] = [
   { title: "Projects", href: "/provider/projects", icon: ClipboardList },
   { title: "Availability", href: "/provider/availability", icon: CalendarClock },
   { title: "Reports", href: "/provider/reports", icon: FileText },
-  { title: "Profile & Settings", href: "/dashboard/profile", icon: User },
+  { title: "Profile & Settings", href: "/profile", icon: User },
 ];
 
 export const adminItems: NavItem[] = [
   { title: "Dashboard", href: "/admin/dashboard", icon: Home },
   { title: "Analytics", href: "/admin/analytics", icon: BarChart },
   { title: "Team", href: "/admin/team", icon: Users },
-  { title: "Profile & Settings", href: "/dashboard/profile", icon: User },
+  { title: "Profile & Settings", href: "/profile", icon: User },
 ];
 
 export const getNavItems = (userRole?: string | null, isAuthenticated: boolean = false) => {

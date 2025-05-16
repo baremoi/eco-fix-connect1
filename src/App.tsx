@@ -74,7 +74,7 @@ function App() {
             />
             
             <Route 
-              path="/dashboard/profile" 
+              path="/profile" 
               element={
                 <ProtectedRoute>
                   <UserLayout>
