@@ -31,9 +31,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Setting up auth state listener");
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        console.log("Auth state change:", _event, "Session:", session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -53,7 +56,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     // THEN check for existing session
+    console.log("Checking for existing session");
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -71,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log("Fetching user profile for:", userId);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -82,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      console.log("Profile fetched:", data);
       setProfile(data);
     } catch (error) {
       console.error("Error in profile fetch:", error);
@@ -109,12 +116,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (data: LoginInput) => {
     try {
+      console.log("Login attempt with:", data.email);
       const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
+      
+      console.log("Login successful:", authData.user?.id);
       
       // Check if email is verified
       const isVerified = !!authData.user?.email_confirmed_at;

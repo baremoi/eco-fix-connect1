@@ -16,11 +16,13 @@ import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './lib/AuthContext';
 
-// Import the new provider pages
+// Import the provider pages
 import Providers from "./pages/Providers";
 import ProviderProfile from "./pages/ProviderProfile";
 
 function App() {
+  console.log("App rendering");
+  
   return (
     <Router>
       <AuthProvider>
@@ -37,7 +39,7 @@ function App() {
           <Route path="/oauth" element={<OAuthCallback />} />
           <Route path="/email-verification" element={<VerifyEmail />} />
           
-          {/* New provider routes */}
+          {/* Provider routes */}
           <Route path="/providers" element={<Providers />} />
           <Route path="/providers/:id" element={<ProviderProfile />} />
 
@@ -46,8 +48,9 @@ function App() {
             path="/dashboard" 
             element={
               <ProtectedRoute>
-                <Layout />
-                <Dashboard />
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </ProtectedRoute>
             } 
           />
@@ -56,8 +59,9 @@ function App() {
             path="/dashboard/profile" 
             element={
               <ProtectedRoute>
-                <Layout />
-                <div>Profile</div>
+                <Layout>
+                  <div>Profile</div>
+                </Layout>
               </ProtectedRoute>
             } 
           />

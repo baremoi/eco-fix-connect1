@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -26,12 +27,19 @@ export default function Login() {
     watch,
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: ""
+    }
   });
 
   // Watch the email field so we can use it for resending verification
   const emailValue = watch("email");
 
   useEffect(() => {
+    // Debug session to see what's happening
+    console.log("Current session:", session);
+    
     // If user is already authenticated and email is verified, redirect to dashboard
     if (session?.user?.email_confirmed_at) {
       navigate("/dashboard");
@@ -40,6 +48,7 @@ export default function Login() {
 
   async function onSubmit(data: LoginInput) {
     try {
+      console.log("Attempting login with email:", data.email);
       setIsLoading(true);
       setPendingEmail(data.email);
       await login(data);
@@ -106,7 +115,7 @@ export default function Login() {
                 {isLoading ? (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <Icons.spinner className="mr-2 h-4 w-4" />
+                  <Icons.refresh className="mr-2 h-4 w-4" />
                 )}
                 Resend verification email
               </Button>

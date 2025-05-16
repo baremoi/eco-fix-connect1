@@ -12,6 +12,12 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
   const { user, profile, isLoading } = useAuth();
   const location = useLocation();
 
+  console.log("Protected route check:", { 
+    user: !!user, 
+    profile: profile?.role,
+    isLoading
+  });
+
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -22,6 +28,7 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
   }
 
   if (!user) {
+    console.log("No user, redirecting to login");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -32,6 +39,8 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
 
   // If specific roles are required and user's role is not included
   if (profile && !allowedRoles.includes(profile.role)) {
+    console.log("User role not allowed:", profile.role, "Required:", allowedRoles);
+    
     // Redirect based on user's role
     switch (profile.role) {
       case "tradesperson":
