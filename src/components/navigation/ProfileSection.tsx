@@ -21,6 +21,11 @@ export const ProfileSection = ({
 }: ProfileSectionProps) => {
   if (!user || !profile) return null;
   
+  // Extract first name from full name or use first part of email
+  const firstName = profile.full_name
+    ? profile.full_name.split(' ')[0]
+    : user.email?.split('@')[0];
+  
   const handleLogout = () => {
     logout();
     if (mobile && onCloseSheet) {
@@ -37,11 +42,11 @@ export const ProfileSection = ({
             {profile.full_name?.charAt(0) || user.email?.charAt(0)}
           </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col truncate">
-          <span className="text-sm font-medium truncate">
-            {profile.full_name || user.email}
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">
+            {firstName}
           </span>
-          <span className="text-xs text-muted-foreground truncate">
+          <span className="text-xs text-muted-foreground truncate max-w-28">
             {user.email}
           </span>
         </div>
@@ -60,3 +65,4 @@ export const ProfileSection = ({
 };
 
 export default ProfileSection;
+
