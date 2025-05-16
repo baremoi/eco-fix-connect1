@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Index from './pages/Index';
 import Login from './pages/Login';
@@ -46,7 +46,8 @@ function App() {
             path="/dashboard" 
             element={
               <ProtectedRoute>
-                <Layout><Dashboard /></Layout>
+                <Layout />
+                <Dashboard />
               </ProtectedRoute>
             } 
           />
@@ -55,7 +56,8 @@ function App() {
             path="/dashboard/profile" 
             element={
               <ProtectedRoute>
-                <Layout><div>Profile</div></Layout>
+                <Layout />
+                <div>Profile</div>
               </ProtectedRoute>
             } 
           />

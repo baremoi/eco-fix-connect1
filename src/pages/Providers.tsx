@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { getProviders, serviceCategories, popularLocations, Provider } from "@/services/providerService";
 import { ProviderCard } from "@/components/providers/ProviderCard";
 import { Spinner } from "@/components/ui/spinner";
-import { Filter, MapPin, Search, Star } from "lucide-react";
+import { Filter, MapPin, Search } from "lucide-react";
 
 export default function Providers() {
   const [searchParams, setSearchParams] = useSearchParams();

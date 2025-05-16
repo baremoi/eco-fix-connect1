@@ -1,6 +1,3 @@
-
-import supabase from "@/lib/supabase";
-
 export type Provider = {
   id: string;
   name: string;
