@@ -16,7 +16,8 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
     user: user?.id, 
     profile: profile?.role,
     isLoading,
-    path: location.pathname
+    path: location.pathname,
+    allowedRoles
   });
 
   if (isLoading) {
@@ -39,13 +40,13 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
   }
 
   // If specific roles are required and user's role is not included
-  if (profile && !allowedRoles.includes(profile.role)) {
+  if (profile && !allowedRoles.includes(profile.role as any)) {
     console.log("User role not allowed:", profile.role, "Required:", allowedRoles);
     
     // Redirect based on user's role
     switch (profile.role) {
       case "tradesperson":
-        return <Navigate to="/provider/projects" replace />;
+        return <Navigate to="/provider/dashboard" replace />;
       case "admin":
         return <Navigate to="/admin/dashboard" replace />;
       default:

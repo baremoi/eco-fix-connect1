@@ -18,9 +18,11 @@ import { AccessibilitySettings } from "@/components/profile/AccessibilitySetting
 type ProfileData = Database['public']['Tables']['profiles']['Row'];
 
 export default function Profile() {
-  const { profile: authProfile } = useAuth();
+  const { profile: authProfile, user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
+
+  console.log("Profile component rendering", { authProfile, user });
 
   // Fetch profile data from API with proper error handling
   useEffect(() => {
@@ -28,15 +30,22 @@ export default function Profile() {
       try {
         // First check if we already have the profile from AuthContext
         if (authProfile) {
+          console.log("Using profile from auth context:", authProfile);
           setProfileData(authProfile);
           setIsLoading(false);
           return;
         }
         
         // If not, fetch it
-        const data = await api.getProfile();
-        setProfileData(data);
-        console.log("Profile data loaded:", data);
+        if (user) {
+          console.log("Fetching profile data for user:", user.id);
+          const data = await api.getProfile();
+          console.log("Profile data loaded:", data);
+          setProfileData(data);
+        } else {
+          console.log("No user found, can't fetch profile");
+          toast.error("User not found");
+        }
       } catch (error) {
         console.error("Error loading profile data:", error);
         toast.error("Failed to load profile data");
@@ -46,7 +55,7 @@ export default function Profile() {
     }
     
     fetchProfileData();
-  }, [authProfile]);
+  }, [authProfile, user]);
 
   if (isLoading) {
     return (

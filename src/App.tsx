@@ -19,6 +19,10 @@ import PublicLayout from './components/layout/Layout';
 import Profile from './pages/Profile';
 import Bookings from './pages/Bookings';
 import { AccessibilityProvider } from './components/providers/AccessibilityProvider';
+import ProviderDashboard from './pages/provider/ProviderDashboard';
+import Projects from './pages/Projects';
+import Availability from './pages/provider/Availability';
+import Reports from './pages/Reports';
 
 function App() {
   console.log("App rendering");
@@ -79,6 +83,51 @@ function App() {
                 <ProtectedRoute>
                   <UserLayout>
                     <Profile />
+                  </UserLayout>
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* Provider routes */}
+            <Route 
+              path="/provider/dashboard" 
+              element={
+                <ProtectedRoute allowedRoles={["tradesperson"]}>
+                  <UserLayout>
+                    <ProviderDashboard />
+                  </UserLayout>
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/provider/projects" 
+              element={
+                <ProtectedRoute allowedRoles={["tradesperson"]}>
+                  <UserLayout>
+                    <Projects />
+                  </UserLayout>
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/provider/availability" 
+              element={
+                <ProtectedRoute allowedRoles={["tradesperson"]}>
+                  <UserLayout>
+                    <Availability />
+                  </UserLayout>
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/provider/reports" 
+              element={
+                <ProtectedRoute allowedRoles={["tradesperson"]}>
+                  <UserLayout>
+                    <Reports />
                   </UserLayout>
                 </ProtectedRoute>
               } 
