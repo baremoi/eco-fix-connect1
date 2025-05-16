@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
+import { toast } from "sonner";
 
 interface Project {
   id: string;
@@ -43,7 +44,7 @@ const mockProjects: Project[] = [
 ];
 
 export default function Projects() {
-  const [projects] = useState<Project[]>(mockProjects);
+  const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
 
   const getStatusColor = (status: Project["status"]) => {
@@ -55,6 +56,20 @@ export default function Projects() {
       case "completed":
         return "bg-green-100 text-green-800";
     }
+  };
+
+  const handleCreateProject = (projectData: any) => {
+    const newProject = {
+      id: (projects.length + 1).toString(),
+      title: projectData.title,
+      client: projectData.clientName,
+      status: "pending" as const,
+      dueDate: projectData.dueDate.toISOString().split('T')[0],
+      description: projectData.description
+    };
+    
+    setProjects([newProject, ...projects]);
+    toast.success(`Project "${projectData.title}" created successfully!`);
   };
 
   return (
@@ -111,7 +126,8 @@ export default function Projects() {
       <NewProjectDialog 
         open={newProjectDialogOpen}
         onOpenChange={setNewProjectDialogOpen}
+        onCreateProject={handleCreateProject}
       />
     </div>
   );
-} 
+}

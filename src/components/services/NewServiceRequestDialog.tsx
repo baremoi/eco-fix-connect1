@@ -36,14 +36,27 @@ const mockAvailableTimes = [
 interface NewServiceRequestDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreateRequest?: (data: ServiceRequestFormData) => void;
 }
 
-export function NewServiceRequestDialog({ open, onOpenChange }: NewServiceRequestDialogProps) {
-  const [formData, setFormData] = useState({
+export interface ServiceRequestFormData {
+  serviceType: string;
+  description: string;
+  location: string;
+  date: Date;
+  timeSlot: string;
+}
+
+export function NewServiceRequestDialog({ 
+  open, 
+  onOpenChange, 
+  onCreateRequest 
+}: NewServiceRequestDialogProps) {
+  const [formData, setFormData] = useState<ServiceRequestFormData>({
     serviceType: "",
     description: "",
     location: "",
-    date: null as Date | null,
+    date: new Date(),
     timeSlot: "",
   });
 
@@ -52,21 +65,45 @@ export function NewServiceRequestDialog({ open, onOpenChange }: NewServiceReques
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
-    setFormData({ ...formData, date: date || null });
-    
-    // In a real app, you'd fetch available times for this provider on this date
-    // For now we're just showing the mock data
-    setAvailableTimes(mockAvailableTimes);
+    if (date) {
+      setFormData({ ...formData, date });
+      
+      // In a real app, you'd fetch available times for this provider on this date
+      // For now we're just showing the mock data
+      setAvailableTimes(mockAvailableTimes);
+    }
   };
 
   const handleSubmit = () => {
     // Here you would call an API to submit the request
-    toast.success("Service request submitted successfully!");
+    if (onCreateRequest && selectedDate) {
+      onCreateRequest(formData);
+    } else {
+      toast.success("Service request submitted successfully!");
+    }
+    resetForm();
     onOpenChange(false);
+  };
+  
+  const resetForm = () => {
+    setFormData({
+      serviceType: "",
+      description: "",
+      location: "",
+      date: new Date(),
+      timeSlot: "",
+    });
+    setSelectedDate(undefined);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog 
+      open={open} 
+      onOpenChange={(isOpen) => {
+        if (!isOpen) resetForm();
+        onOpenChange(isOpen);
+      }}
+    >
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Request a Service</DialogTitle>
@@ -137,7 +174,7 @@ export function NewServiceRequestDialog({ open, onOpenChange }: NewServiceReques
                   selected={selectedDate}
                   onSelect={handleDateSelect}
                   initialFocus
-                  className={cn("p-3 pointer-events-auto")}
+                  className="p-3 pointer-events-auto"
                   disabled={(date) => 
                     date < new Date() || 
                     date > new Date(new Date().setMonth(new Date().getMonth() + 2))
@@ -184,7 +221,7 @@ export function NewServiceRequestDialog({ open, onOpenChange }: NewServiceReques
               !formData.serviceType ||
               !formData.description ||
               !formData.location ||
-              !formData.date ||
+              !selectedDate ||
               !formData.timeSlot
             }
           >

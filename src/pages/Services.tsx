@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,13 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Search } from "lucide-react";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { BookingCard } from "@/components/services/BookingCard";
-import { servicesData, bookingsData } from "@/data/services";
-import { NewServiceRequestDialog } from "@/components/services/NewServiceRequestDialog";
+import { servicesData, bookingsData, Booking } from "@/data/services";
+import { NewServiceRequestDialog, ServiceRequestFormData } from "@/components/services/NewServiceRequestDialog";
+import { format } from "date-fns";
+import { toast } from "sonner";
 
 const Services = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [bookings, setBookings] = useState(bookingsData);
   
   // Filter services based on search query and category
   const filteredServices = servicesData.filter(service => {
@@ -24,12 +28,28 @@ const Services = () => {
   });
 
   // Filter bookings based on search query
-  const filteredBookings = bookingsData.filter(booking => 
+  const filteredBookings = bookings.filter(booking => 
     booking.serviceName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Get unique categories for filter dropdown
   const categories = ["all", ...new Set(servicesData.map(service => service.category))];
+
+  const handleCreateServiceRequest = (requestData: ServiceRequestFormData) => {
+    const newBooking: Booking = {
+      id: (bookings.length + 1).toString(),
+      serviceName: `${requestData.serviceType.charAt(0).toUpperCase()}${requestData.serviceType.slice(1)} Service`,
+      providerName: "Assigned Provider", // In a real app, this would be matched to an available provider
+      date: format(requestData.date, 'MMM dd, yyyy'),
+      time: requestData.timeSlot,
+      status: "upcoming",
+      price: "99.99", // This would be calculated based on service type and other factors
+      address: requestData.location,
+    };
+    
+    setBookings([newBooking, ...bookings]);
+    toast.success("Service request submitted successfully!");
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -108,7 +128,11 @@ const Services = () => {
         </TabsContent>
       </Tabs>
 
-      <NewServiceRequestDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      <NewServiceRequestDialog 
+        open={isDialogOpen} 
+        onOpenChange={setIsDialogOpen} 
+        onCreateRequest={handleCreateServiceRequest}
+      />
     </div>
   );
 };

@@ -16,26 +16,55 @@ import { toast } from "sonner";
 interface NewProjectDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreateProject?: (data: ProjectFormData) => void;
 }
 
-export function NewProjectDialog({ open, onOpenChange }: NewProjectDialogProps) {
-  const [formData, setFormData] = useState({
+export interface ProjectFormData {
+  title: string;
+  description: string;
+  clientName: string;
+  projectType: string;
+  startDate: Date;
+  dueDate: Date;
+}
+
+export function NewProjectDialog({ open, onOpenChange, onCreateProject }: NewProjectDialogProps) {
+  const [formData, setFormData] = useState<ProjectFormData>({
     title: "",
     description: "",
     clientName: "",
     projectType: "",
-    startDate: undefined as Date | undefined,
-    dueDate: undefined as Date | undefined,
+    startDate: new Date(),
+    dueDate: new Date(new Date().setDate(new Date().getDate() + 14)), // Default to 2 weeks from today
   });
 
   const handleSubmit = () => {
-    // Here you would call an API to create the project
-    toast.success("New project created successfully!");
+    if (onCreateProject) {
+      onCreateProject(formData);
+    } else {
+      // Fallback if no callback provided
+      toast.success("New project created successfully!");
+    }
+    resetForm();
     onOpenChange(false);
+  };
+  
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      clientName: "",
+      projectType: "",
+      startDate: new Date(),
+      dueDate: new Date(new Date().setDate(new Date().getDate() + 14)),
+    });
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      if (!isOpen) resetForm();
+      onOpenChange(isOpen);
+    }}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
@@ -114,7 +143,7 @@ export function NewProjectDialog({ open, onOpenChange }: NewProjectDialogProps) 
                   <Calendar
                     mode="single"
                     selected={formData.startDate}
-                    onSelect={(date) => setFormData({ ...formData, startDate: date })}
+                    onSelect={(date) => date && setFormData({ ...formData, startDate: date })}
                     initialFocus
                     className="p-3 pointer-events-auto"
                   />
@@ -141,7 +170,7 @@ export function NewProjectDialog({ open, onOpenChange }: NewProjectDialogProps) 
                   <Calendar
                     mode="single"
                     selected={formData.dueDate}
-                    onSelect={(date) => setFormData({ ...formData, dueDate: date })}
+                    onSelect={(date) => date && setFormData({ ...formData, dueDate: date })}
                     initialFocus
                     className="p-3 pointer-events-auto"
                     disabled={(date) => 
