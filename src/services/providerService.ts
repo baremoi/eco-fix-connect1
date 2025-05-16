@@ -3,6 +3,9 @@ import { Provider, ProviderFilters } from "./types/provider.types";
 import { mockProviders } from "./data/mockProviders";
 import { supabase } from "@/lib/supabase";
 
+// Import the mock data for fallback
+import { serviceCategories as mockServiceCategories, popularLocations as mockPopularLocations } from "./data/mockProviders";
+
 export const getProviders = async (filters?: ProviderFilters) => {
   try {
     let query = supabase.from('providers').select('*');
@@ -109,14 +112,14 @@ export const getServiceCategories = async () => {
     if (error) {
       console.error('Error fetching service categories from Supabase:', error);
       // Fallback to mock data if there's an error
-      return serviceCategories;
+      return mockServiceCategories;
     }
     
     return data.map(category => category.name);
   } catch (error) {
     console.error('Exception fetching service categories:', error);
     // Fallback to mock data if there's an exception
-    return serviceCategories;
+    return mockServiceCategories;
   }
 };
 
@@ -130,19 +133,16 @@ export const getPopularLocations = async () => {
     if (error) {
       console.error('Error fetching popular locations from Supabase:', error);
       // Fallback to mock data if there's an error
-      return popularLocations;
+      return mockPopularLocations;
     }
     
     return data.map(location => location.name);
   } catch (error) {
     console.error('Exception fetching popular locations:', error);
     // Fallback to mock data if there's an exception
-    return popularLocations;
+    return mockPopularLocations;
   }
 };
-
-// Export mock data as fallback
-export { serviceCategories, popularLocations } from "./data/mockProviders";
 
 // Export the Provider type for use in other files
 export type { Provider };
