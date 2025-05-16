@@ -1,23 +1,13 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/AuthContext";
-import { api, UpdateProfileData } from "@/lib/api";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { api } from "@/lib/api";
 import { Icons } from "@/components/ui/icons";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import DashboardProfile from "@/components/dashboard/DashboardProfile";
 
 export default function Profile() {
-  const { profile } = useAuth();
-
   // Fetch profile data from API with proper error handling
   const { isLoading } = useQuery({
     queryKey: ['profile'],

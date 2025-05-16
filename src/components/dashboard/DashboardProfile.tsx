@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,7 +31,6 @@ interface ProfileData {
 
 const DashboardProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  // Remove unused avatarFile state
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
@@ -115,8 +113,6 @@ const DashboardProfile = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // Store file for upload implementation
-      const fileData = file; // Use this when implementing file upload
       
       // Create a preview
       const reader = new FileReader();
