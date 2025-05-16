@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -53,7 +54,7 @@ export function BookingCard({ booking }: BookingCardProps) {
 
           <div className="flex flex-col gap-2">
             <div className="text-right">
-              <div className="font-medium">${booking.price}</div>
+              <div className="font-medium">£{booking.price.toFixed(2)}</div>
               <div className="text-sm text-muted-foreground">Total price</div>
             </div>
             {booking.status === "upcoming" && (

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,10 +40,10 @@ const Services = () => {
       id: (bookings.length + 1).toString(),
       serviceName: `${requestData.serviceType.charAt(0).toUpperCase()}${requestData.serviceType.slice(1)} Service`,
       providerName: "Assigned Provider", // In a real app, this would be matched to an available provider
-      date: format(requestData.date, 'MMM dd, yyyy'),
+      date: format(requestData.date, 'dd/MM/yyyy'), // UK date format
       time: requestData.timeSlot,
       status: "upcoming",
-      price: 99.99, // Fixed: using a number value instead of a string
+      price: 99.99, // Using number value
     };
     
     setBookings([newBooking, ...bookings]);

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,7 @@ const DashboardTrades = () => {
       id: "TR001",
       service: "Plumbing Repair",
       status: "pending",
-      date: "2024-03-15",
+      date: "15/03/2024", // UK date format
       tradesperson: "Mike Smith",
       description: "Leaking kitchen sink"
     },
@@ -34,7 +35,7 @@ const DashboardTrades = () => {
       id: "TR002",
       service: "Electrical Installation",
       status: "in_progress",
-      date: "2024-03-14",
+      date: "14/03/2024", // UK date format
       tradesperson: "Sarah Johnson",
       description: "New light fixtures installation"
     },
@@ -42,21 +43,25 @@ const DashboardTrades = () => {
       id: "TR003",
       service: "Carpentry",
       status: "completed",
-      date: "2024-03-10",
+      date: "10/03/2024", // UK date format
       tradesperson: "John Brown",
       description: "Custom cabinet building"
     }
   ]);
 
   const getStatusColor = (status: TradeRequest['status']) => {
-    const colors = {
-      pending: "bg-yellow-100 text-yellow-800",
-      accepted: "bg-blue-100 text-blue-800",
-      in_progress: "bg-purple-100 text-purple-800",
-      completed: "bg-green-100 text-green-800",
-      cancelled: "bg-red-100 text-red-800"
-    };
-    return colors[status];
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "accepted":
+        return "bg-blue-100 text-blue-800";
+      case "in_progress":
+        return "bg-purple-100 text-purple-800";
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+    }
   };
 
   const handleCancelRequest = (id: string) => {
@@ -130,4 +135,4 @@ const DashboardTrades = () => {
   );
 };
 
-export default DashboardTrades; 
+export default DashboardTrades;

@@ -84,7 +84,7 @@ export default function Dashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">Date</p>
                   <p className="font-medium">
-                    {new Date(request.date).toLocaleDateString()}
+                    {new Date(request.date).toLocaleDateString('en-GB')}
                   </p>
                 </div>
                 <div className="flex space-x-2">

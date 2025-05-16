@@ -64,20 +64,34 @@ export default function App() {
             // Green is the default, no need to change variables
             break;
           case 'blue':
+            // Primary colors
             root.style.setProperty('--primary', '210 100% 45%');
             root.style.setProperty('--primary-foreground', '210 10% 98%');
+            // Secondary colors
             root.style.setProperty('--secondary', '280 98% 39%');
             root.style.setProperty('--secondary-foreground', '210 10% 98%');
+            // Accent colors
             root.style.setProperty('--accent', '210 30% 92%');
             root.style.setProperty('--accent-foreground', '210 50% 10%');
+            // Sidebar colors
+            root.style.setProperty('--sidebar-primary', '210 100% 45%');
+            root.style.setProperty('--sidebar-accent', '210 30% 92%');
+            root.style.setProperty('--sidebar-ring', '210 100% 45%');
             break;
           case 'purple':
+            // Primary colors
             root.style.setProperty('--primary', '270 70% 60%');
             root.style.setProperty('--primary-foreground', '270 10% 98%');
+            // Secondary colors
             root.style.setProperty('--secondary', '220 98% 39%');
             root.style.setProperty('--secondary-foreground', '270 10% 98%');
+            // Accent colors
             root.style.setProperty('--accent', '270 30% 92%');
             root.style.setProperty('--accent-foreground', '270 50% 10%');
+            // Sidebar colors
+            root.style.setProperty('--sidebar-primary', '270 70% 60%');
+            root.style.setProperty('--sidebar-accent', '270 30% 92%');
+            root.style.setProperty('--sidebar-ring', '270 70% 60%');
             break;
         }
       }
