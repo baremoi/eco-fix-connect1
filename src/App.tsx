@@ -23,6 +23,7 @@ import Team from "./pages/Team";
 import HowItWorks from "./pages/HowItWorks";
 import ProviderDashboard from "./pages/provider/ProviderDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import Services from "./pages/Services";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +107,15 @@ export default function App() {
               <Route path="profile" element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              } />
+            </Route>
+            
+            {/* Services and Bookings route */}
+            <Route path="/trades" element={<Layout />}>
+              <Route index element={
+                <ProtectedRoute allowedRoles={["user"]}>
+                  <Services />
                 </ProtectedRoute>
               } />
             </Route>
