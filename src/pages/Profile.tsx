@@ -14,7 +14,7 @@ import { ThemeSettings } from "@/components/profile/ThemeSettings";
 import { AccessibilitySettings } from "@/components/profile/AccessibilitySettings";
 
 export default function Profile() {
-  const { profile: authProfile } = useAuth();
+  const { profile: authProfile, user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState(null);
 
@@ -22,6 +22,14 @@ export default function Profile() {
   useEffect(() => {
     async function fetchProfileData() {
       try {
+        // First check if we already have the profile from AuthContext
+        if (authProfile) {
+          setProfileData(authProfile);
+          setIsLoading(false);
+          return;
+        }
+        
+        // If not, fetch it
         const data = await api.getProfile();
         setProfileData(data);
         console.log("Profile data loaded:", data);
@@ -34,12 +42,32 @@ export default function Profile() {
     }
     
     fetchProfileData();
-  }, []);
+  }, [authProfile]);
 
   if (isLoading) {
     return (
       <div className="container mx-auto py-8 flex items-center justify-center">
         <Icons.spinner className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // If we still don't have profile data after loading
+  if (!profileData && !isLoading) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="text-center p-8 bg-muted rounded-lg">
+          <h2 className="text-xl font-semibold mb-2">Profile Not Found</h2>
+          <p className="text-muted-foreground mb-4">
+            We couldn't find your profile information. Please try refreshing the page.
+          </p>
+          <button 
+            className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
+            onClick={() => window.location.reload()}
+          >
+            Refresh Page
+          </button>
+        </div>
       </div>
     );
   }

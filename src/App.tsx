@@ -38,16 +38,18 @@ function App() {
           <Route path="/oauth" element={<PublicLayout><OAuthCallback /></PublicLayout>} />
           <Route path="/email-verification" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
 
-          {/* User pages with UserLayout */}
-          <Route path="/bookings" element={
-            <ProtectedRoute>
-              <UserLayout>
-                <Bookings />
-              </UserLayout>
-            </ProtectedRoute>
-          } />
-
-          {/* Dashboard routes */}
+          {/* Protected routes with UserLayout */}
+          <Route 
+            path="/bookings" 
+            element={
+              <ProtectedRoute>
+                <UserLayout>
+                  <Bookings />
+                </UserLayout>
+              </ProtectedRoute>
+            }
+          />
+          
           <Route 
             path="/dashboard" 
             element={

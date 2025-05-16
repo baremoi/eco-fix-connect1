@@ -1,20 +1,81 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { BookingCard } from "@/components/services/BookingCard";
-import { bookingsData } from "@/data/services";
+
+// Import bookings data directly to avoid undefined errors
+const bookingsData = [
+  {
+    id: "1",
+    serviceName: "Plumbing Repair",
+    providerName: "Sarah Johnson",
+    status: "upcoming",
+    date: "2025-06-01T10:00:00",
+    price: 85,
+    address: "123 Main St, London",
+    notes: "Problem with kitchen sink drain"
+  },
+  {
+    id: "2",
+    serviceName: "Solar Panel Installation Consultation",
+    providerName: "Michael Chen",
+    status: "upcoming",
+    date: "2025-06-05T14:30:00",
+    price: 0, // Free consultation
+    address: "456 Park Ave, Manchester",
+    notes: "Initial assessment for solar installation"
+  },
+  {
+    id: "3",
+    serviceName: "Smart Home Setup",
+    providerName: "Emma Wilson",
+    status: "completed",
+    date: "2025-05-12T09:15:00",
+    price: 150,
+    address: "789 Broadway, Birmingham",
+    notes: "Installation of smart thermostat and lights"
+  },
+  {
+    id: "4",
+    serviceName: "Furniture Restoration",
+    providerName: "James Taylor",
+    status: "cancelled",
+    date: "2025-05-08T13:00:00",
+    price: 120,
+    address: "101 Pine St, Bristol",
+    notes: "Antique table restoration - cancelled due to illness"
+  }
+];
 
 const Bookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    // Simulate loading data
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   // Filter bookings based on search query
   const filteredBookings = bookingsData.filter(booking => 
     booking.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     booking.providerName.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-8 flex items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8">

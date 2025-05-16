@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -45,11 +44,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsEmailVerified(!!currentSession.user.email_confirmed_at);
           
           // Fetch user profile if user is authenticated - using setTimeout to avoid auth deadlock
-          if (event !== 'INITIAL_SESSION') {
-            setTimeout(() => {
+          setTimeout(() => {
+            if (currentSession.user) {
               fetchUserProfile(currentSession.user.id);
-            }, 0);
-          }
+            }
+          }, 0);
         } else {
           setProfile(null);
           setIsEmailVerified(false);
@@ -83,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .maybeSingle();  // Changed from .single() to handle no results case better
+        .maybeSingle();
 
       if (error) {
         console.error("Error fetching profile:", error);
@@ -108,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         navigate("/provider/projects");
         break;
       case "admin":
-        navigate("/admin/analytics");
+        navigate("/admin/dashboard");
         break;
       default:
         navigate("/dashboard");
