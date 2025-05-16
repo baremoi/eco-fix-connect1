@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/AuthContext";
@@ -11,13 +10,6 @@ interface ServiceRequest {
   provider: string;
   status: "pending" | "accepted" | "in-progress" | "completed";
   date: string;
-}
-
-interface EcoMetric {
-  label: string;
-  value: string;
-  change: string;
-  trend: "up" | "down";
 }
 
 const mockRequests: ServiceRequest[] = [
@@ -44,27 +36,6 @@ const mockRequests: ServiceRequest[] = [
   }
 ];
 
-const ecoMetrics: EcoMetric[] = [
-  {
-    label: "Energy Savings",
-    value: "450 kWh",
-    change: "+15%",
-    trend: "up"
-  },
-  {
-    label: "Carbon Footprint",
-    value: "2.5 tons",
-    change: "-20%",
-    trend: "down"
-  },
-  {
-    label: "Water Usage",
-    value: "12,000 L",
-    change: "-10%",
-    trend: "down"
-  }
-];
-
 export default function Dashboard() {
   const { profile } = useAuth();
   const [requests] = useState<ServiceRequest[]>(mockRequests);
@@ -84,41 +55,9 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-2xl font-bold">Welcome back, {profile?.full_name || 'User'}</h1>
-          <p className="text-muted-foreground">Here's your eco-home overview</p>
-        </div>
-        <Button>
-          <Icons.plus className="mr-2 h-4 w-4" />
-          New Service Request
-        </Button>
-      </div>
-
-      {/* Eco Metrics */}
-      <div className="grid gap-6 md:grid-cols-3 mb-8">
-        {ecoMetrics.map((metric, index) => (
-          <Card key={index}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {metric.label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold">{metric.value}</div>
-                <Badge variant={metric.trend === "up" ? "default" : "secondary"}>
-                  {metric.trend === "up" ? (
-                    <Icons.trendingUp className="mr-1 h-4 w-4" />
-                  ) : (
-                    <Icons.trendingDown className="mr-1 h-4 w-4" />
-                  )}
-                  {metric.change}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold">Welcome back, {profile?.full_name || 'User'}</h1>
+        <p className="text-muted-foreground">Here's your dashboard overview</p>
       </div>
 
       {/* Service Requests */}
