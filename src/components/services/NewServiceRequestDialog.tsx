@@ -47,12 +47,12 @@ export function NewServiceRequestDialog({ open, onOpenChange }: NewServiceReques
     timeSlot: "",
   });
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [availableTimes, setAvailableTimes] = useState(mockAvailableTimes);
 
-  const handleDateSelect = (date: Date | null) => {
+  const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
-    setFormData({ ...formData, date });
+    setFormData({ ...formData, date: date || null });
     
     // In a real app, you'd fetch available times for this provider on this date
     // For now we're just showing the mock data
@@ -137,7 +137,11 @@ export function NewServiceRequestDialog({ open, onOpenChange }: NewServiceReques
                   selected={selectedDate}
                   onSelect={handleDateSelect}
                   initialFocus
-                  disabled={(date) => date < new Date() || date > new Date(new Date().setMonth(new Date().getMonth() + 2))}
+                  className={cn("p-3 pointer-events-auto")}
+                  disabled={(date) => 
+                    date < new Date() || 
+                    date > new Date(new Date().setMonth(new Date().getMonth() + 2))
+                  }
                 />
               </PopoverContent>
             </Popover>
