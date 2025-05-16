@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/AuthContext";
-import { Link } from "react-router-dom";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 
 interface Project {
