@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ interface AuthContextType {
   login: (data: LoginInput) => Promise<void>;
   register: (data: RegisterInput) => Promise<void>;
   logout: () => Promise<void>;
+  isEmailVerified: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,13 +37,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Fetch user profile if user is authenticated
+        // Check email verification status
         if (session?.user) {
+          setIsEmailVerified(!!session.user.email_confirmed_at);
+          
+          // Fetch user profile if user is authenticated
           setTimeout(() => {
             fetchUserProfile(session.user.id);
           }, 0);
         } else {
           setProfile(null);
+          setIsEmailVerified(false);
         }
       }
     );
@@ -51,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
+        setIsEmailVerified(!!session.user.email_confirmed_at);
         fetchUserProfile(session.user.id);
       }
       setIsLoading(false);
@@ -80,7 +88,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const navigateBasedOnRole = (role: "user" | "tradesperson" | "admin") => {
+  const navigateBasedOnRole = (role: "user" | "tradesperson" | "admin", isVerified: boolean) => {
+    if (!isVerified) {
+      // Don't navigate if email is not verified
+      // The Register component will show the verification message
+      return;
+    }
+    
     switch (role) {
       case "tradesperson":
         navigate("/provider/projects");
@@ -89,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         navigate("/admin/analytics");
         break;
       default:
-        navigate("/");
+        navigate("/dashboard");
     }
   };
 
@@ -101,6 +115,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) throw error;
+      
+      // Check if email is verified
+      const isVerified = !!authData.user?.email_confirmed_at;
+      setIsEmailVerified(isVerified);
+      
+      if (!isVerified) {
+        toast.warning("Please verify your email before logging in");
+        return;
+      }
 
       toast.success("Logged in successfully");
       
@@ -112,9 +135,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .single();
           
         if (profileData) {
-          navigateBasedOnRole(profileData.role);
+          navigateBasedOnRole(profileData.role, isVerified);
         } else {
-          navigate("/");
+          navigate("/dashboard");
         }
       }
     } catch (error: any) {
@@ -149,10 +172,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       console.log("Registration successful:", authData);
-      toast.success("Registration successful! Please check your email to verify your account.");
       
-      if (authData.user) {
-        navigateBasedOnRole(data.role);
+      // Check if email verification is required
+      const isVerified = !!authData.user?.email_confirmed_at;
+      setIsEmailVerified(isVerified);
+      
+      if (isVerified) {
+        toast.success("Registration successful! You are now logged in.");
+        if (authData.user) {
+          navigateBasedOnRole(data.role, true);
+        }
+      } else {
+        toast.success("Registration successful! Please check your email to verify your account.");
       }
     } catch (error: any) {
       console.error("Registration exception:", error);
@@ -169,6 +200,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       setSession(null);
       setProfile(null);
+      setIsEmailVerified(false);
       toast.success("Logged out successfully");
       navigate("/login");
     } catch (error: any) {
@@ -184,6 +216,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         profile,
         isLoading,
+        isEmailVerified,
         login,
         register,
         logout,
