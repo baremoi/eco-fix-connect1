@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Home, Wrench, CalendarClock, ClipboardList, User, LogIn, FileText, UserPlus, BarChart, Users, Search } from "lucide-react";
+import { Home, Wrench, CalendarClock, ClipboardList, User, LogIn, FileText, UserPlus, BarChart, Users } from "lucide-react";
 
 export type NavItem = {
   title: string;
@@ -19,7 +19,6 @@ export const guestItems: NavItem[] = [
 
 export const userItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: Home },
-  { title: "Find Providers", href: "/providers", icon: Search },
   { title: "Services", href: "/trades", icon: Wrench },
   { title: "Bookings", href: "/bookings", icon: CalendarClock },
   { title: "Profile & Settings", href: "/dashboard/profile", icon: User },

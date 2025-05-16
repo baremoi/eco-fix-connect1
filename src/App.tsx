@@ -17,10 +17,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './lib/AuthContext';
 import PublicLayout from './components/layout/Layout'; // Renamed for clarity
 
-// Import the provider pages
-import Providers from "./pages/Providers";
-import ProviderProfile from "./pages/ProviderProfile";
-
 function App() {
   console.log("App rendering");
   
@@ -39,10 +35,6 @@ function App() {
           <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
           <Route path="/oauth" element={<OAuthCallback />} />
           <Route path="/email-verification" element={<VerifyEmail />} />
-          
-          {/* Provider routes */}
-          <Route path="/providers" element={<PublicLayout><Providers /></PublicLayout>} />
-          <Route path="/providers/:id" element={<PublicLayout><ProviderProfile /></PublicLayout>} />
 
           {/* Protected user routes */}
           <Route 
