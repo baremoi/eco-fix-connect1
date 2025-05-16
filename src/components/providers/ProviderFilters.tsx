@@ -1,10 +1,10 @@
+
 import { Dispatch, SetStateAction } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { serviceCategories, popularLocations } from "@/services/providerService";
 
 interface ProviderFiltersProps {
   selectedCategory: string;
@@ -16,6 +16,8 @@ interface ProviderFiltersProps {
   applyFilters: () => void;
   resetFilters: () => void;
   isMobileFiltersVisible: boolean;
+  serviceCategories: string[];
+  popularLocations: string[];
 }
 
 export function ProviderFilters({
@@ -27,7 +29,9 @@ export function ProviderFilters({
   setMinRating,
   applyFilters,
   resetFilters,
-  isMobileFiltersVisible
+  isMobileFiltersVisible,
+  serviceCategories,
+  popularLocations
 }: ProviderFiltersProps) {
   return (
     <div className={`${isMobileFiltersVisible ? 'block' : 'hidden'} md:block`}>

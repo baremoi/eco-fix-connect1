@@ -20,3 +20,6 @@ export type ProviderFilters = {
   minRating?: number;
   specialty?: string;
 };
+
+// Export the Provider type for reuse in other files
+export type { Provider as ProviderType };

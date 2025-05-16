@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getProviderById, Provider } from "@/services/providerService";
+import { getProviderById } from "@/services/providerService";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,10 +13,11 @@ import { ServiceCard } from "@/components/services/ServiceCard";
 import { servicesData } from "@/data/services";
 import { Calendar, CheckCircle, MapPin, Phone, Mail, ArrowLeft, Star } from "lucide-react";
 import { toast } from "sonner";
+import { ProviderType } from "@/services/types/provider.types";
 
 export default function ProviderProfile() {
   const { id } = useParams<{ id: string }>();
-  const [provider, setProvider] = useState<Provider | null>(null);
+  const [provider, setProvider] = useState<ProviderType | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -130,7 +131,7 @@ export default function ProviderProfile() {
               <div className="space-y-4">
                 <h3 className="font-medium">Specialties</h3>
                 <div className="space-y-2">
-                  {provider.specialties.map((specialty) => (
+                  {provider.specialties.map((specialty: string) => (
                     <div key={specialty} className="flex items-start">
                       <CheckCircle className="h-4 w-4 mr-3 text-green-600 translate-y-0.5" />
                       <span>{specialty}</span>
@@ -144,7 +145,7 @@ export default function ProviderProfile() {
               <div className="space-y-4">
                 <h3 className="font-medium">Services</h3>
                 <div className="flex flex-wrap gap-2">
-                  {provider.services.map((service) => (
+                  {provider.services.map((service: string) => (
                     <Badge key={service} variant="outline">
                       {service}
                     </Badge>

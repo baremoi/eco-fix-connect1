@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { getProviders, serviceCategories, popularLocations } from "@/services/providerService";
+import { getProviders, getServiceCategories, getPopularLocations } from "@/services/providerService";
 import { Filter } from "lucide-react";
 import { ProviderFilters } from "@/components/providers/ProviderFilters";
 import { ProviderResults } from "@/components/providers/ProviderResults";
@@ -12,6 +12,8 @@ import { Provider, ProviderFilters as ProviderFiltersType } from "@/services/typ
 export default function Providers() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [providers, setProviders] = useState<Provider[]>([]);
+  const [serviceCategories, setServiceCategories] = useState<string[]>([]);
+  const [popularLocations, setPopularLocations] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobileFiltersVisible, setIsMobileFiltersVisible] = useState(false);
 
@@ -20,6 +22,21 @@ export default function Providers() {
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get("location") || "");
   const [minRating, setMinRating] = useState(parseInt(searchParams.get("rating") || "0") || 0);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categories = await getServiceCategories();
+      setServiceCategories(categories);
+    };
+
+    const fetchLocations = async () => {
+      const locations = await getPopularLocations();
+      setPopularLocations(locations);
+    };
+
+    fetchCategories();
+    fetchLocations();
+  }, []);
 
   useEffect(() => {
     const fetchProviders = async () => {
@@ -102,6 +119,8 @@ export default function Providers() {
             applyFilters={applyFilters}
             resetFilters={resetFilters}
             isMobileFiltersVisible={isMobileFiltersVisible}
+            serviceCategories={serviceCategories}
+            popularLocations={popularLocations}
           />
           
           {/* Results */}
