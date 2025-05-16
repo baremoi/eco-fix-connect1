@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
 import { Volume2, Eye, Contrast } from "lucide-react";
 
 export function AccessibilitySettings() {
@@ -13,7 +12,6 @@ export function AccessibilitySettings() {
     highContrast: false,
     largeText: false,
     textToSpeech: false,
-    contentZoom: 100,
   });
 
   useEffect(() => {
@@ -56,9 +54,6 @@ export function AccessibilitySettings() {
     } else {
       html.classList.remove('large-text');
     }
-    
-    // Apply content zoom
-    html.style.setProperty('--content-zoom', `${newSettings.contentZoom}%`);
   };
 
   return (
@@ -117,26 +112,6 @@ export function AccessibilitySettings() {
               checked={settings.largeText}
               onCheckedChange={(checked) => updateSettings('largeText', checked)}
             />
-          </div>
-          
-          <div className="space-y-3">
-            <div className="space-y-0.5">
-              <Label>Content Zoom</Label>
-              <p className="text-sm text-muted-foreground">
-                Adjust the zoom level of content
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm w-8 text-right">{settings.contentZoom}%</span>
-              <Slider 
-                value={[settings.contentZoom]} 
-                min={75} 
-                max={150} 
-                step={5}
-                onValueChange={(value) => updateSettings('contentZoom', value[0])}
-                className="flex-1"
-              />
-            </div>
           </div>
         </CardContent>
       </Card>
