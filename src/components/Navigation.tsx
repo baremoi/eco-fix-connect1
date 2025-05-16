@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import {
@@ -116,13 +115,13 @@ const Navigation = () => {
           </Link>
         </div>
         
-        <div className="flex-1 overflow-auto py-2">
+        <ScrollArea className="flex-1 overflow-auto py-2">
           <nav className="px-2 space-y-1">
             {navItems.map((item) => (
               <NavItem key={item.href} item={item} />
             ))}
           </nav>
-        </div>
+        </ScrollArea>
         
         {user && profile && (
           <div className="p-4 border-t border-sidebar-border">
@@ -179,35 +178,36 @@ const Navigation = () => {
                       <NavItem key={item.href} item={item} />
                     ))}
                   </nav>
-                </ScrollArea>
-                {user && profile && (
-                  <div className="border-t border-border p-4 mt-auto">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={profile.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {profile.full_name?.charAt(0) || user.email?.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">{profile.full_name || user.email}</span>
-                        <span className="text-xs text-muted-foreground">{user.email}</span>
+                  
+                  {user && profile && (
+                    <div className="border-t border-border p-4 mt-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={profile.avatar_url || undefined} />
+                          <AvatarFallback>
+                            {profile.full_name?.charAt(0) || user.email?.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">{profile.full_name || user.email}</span>
+                          <span className="text-xs text-muted-foreground">{user.email}</span>
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => {
+                            logout();
+                            closeSheet();
+                          }}
+                          className="ml-auto"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          <span className="sr-only">Log out</span>
+                        </Button>
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={() => {
-                          logout();
-                          closeSheet();
-                        }}
-                        className="ml-auto"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span className="sr-only">Log out</span>
-                      </Button>
                     </div>
-                  </div>
-                )}
+                  )}
+                </ScrollArea>
               </div>
             </SheetContent>
           </Sheet>
