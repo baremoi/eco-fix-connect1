@@ -48,6 +48,35 @@ export interface Database {
           address?: string
         }
       }
+      messages: {
+        Row: {
+          id: string
+          sender_id: string
+          receiver_id: string
+          content: string
+          read: boolean
+          project_id?: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          sender_id: string
+          receiver_id: string
+          content: string
+          read?: boolean
+          project_id?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          sender_id?: string
+          receiver_id?: string
+          content?: string
+          read?: boolean
+          project_id?: string
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

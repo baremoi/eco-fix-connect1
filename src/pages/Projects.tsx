@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Project {
   id: string;
@@ -46,6 +48,7 @@ const mockProjects: Project[] = [
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
+  const { profile } = useAuth();
 
   const getStatusColor = (status: Project["status"]) => {
     switch (status) {
@@ -112,7 +115,12 @@ export default function Projects() {
                     <Icons.edit className="mr-2 h-4 w-4" />
                     Edit
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    as={Link}
+                    to={`/messages/project/${project.id}`}
+                  >
                     <Icons.message className="mr-2 h-4 w-4" />
                     Message
                   </Button>
