@@ -1,5 +1,4 @@
 
-import React from "react";
 import { TradesHeader } from "@/components/trades/TradesHeader";
 import { TradesController } from "@/components/trades/TradesController";
 

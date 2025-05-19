@@ -1,4 +1,3 @@
-
 import { supabase } from "@/lib/supabase";
 import { Tradesperson, TradeSearchFilters, TradeCategory } from "@/components/trades/TradeTypes";
 
@@ -45,7 +44,10 @@ export const tradesService = {
           .ilike('name', `%${filters.selectedCategory}%`);
         
         if (matchingCategories && matchingCategories.length > 0) {
-          query = query.eq('tradesperson_services.service_categories.id', matchingCategories[0].id);
+          const categoryId = matchingCategories[0]?.id;
+          if (categoryId) {
+            query = query.eq('tradesperson_services.service_categories.id', categoryId);
+          }
         }
       }
       

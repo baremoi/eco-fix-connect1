@@ -1,6 +1,3 @@
-
-import { Icons } from "@/components/ui/icons";
-
 export interface Service {
   id: string;
   name: string;
