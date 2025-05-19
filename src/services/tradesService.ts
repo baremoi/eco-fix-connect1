@@ -45,6 +45,7 @@ export const tradesService = {
           .ilike('name', `%${filters.selectedCategory}%`);
         
         if (matchingCategories && matchingCategories.length > 0) {
+          // Fix: Access the first item of the array before accessing its 'id' property
           const categoryId = matchingCategories[0]?.id;
           if (categoryId) {
             query = query.eq('tradesperson_services.service_categories.id', categoryId);
