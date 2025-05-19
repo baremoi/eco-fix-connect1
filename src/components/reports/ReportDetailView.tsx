@@ -12,9 +12,7 @@ import {
   XAxis, 
   YAxis, 
   CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+  Legend 
 } from "recharts";
 
 interface ReportDetailViewProps {

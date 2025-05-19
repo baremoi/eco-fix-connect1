@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -38,7 +37,7 @@ type ReportFormValues = {
   repeatClients: string;
 };
 
-export function ReportsDataForm({ period, onSuccess, onCancel }: ReportsDataFormProps) {
+export function ReportsDataForm({ onSuccess, onCancel }: ReportsDataFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<ReportFormValues>({
@@ -55,7 +54,7 @@ export function ReportsDataForm({ period, onSuccess, onCancel }: ReportsDataForm
 
   const reportType = form.watch("type");
   
-  const onSubmit = async (values: ReportFormValues) => {
+  const onSubmit = async () => {
     setIsSubmitting(true);
     
     try {
