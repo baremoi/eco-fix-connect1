@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -8,12 +9,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/ui/icons";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { supabase } from "@/lib/supabase";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { 
+  CheckboxItem,
+  CheckboxList 
+} from "@/components/ui/checkbox-list";
 
 export default function Register() {
   const { register: registerUser, session } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const {
@@ -36,7 +56,38 @@ export default function Register() {
     if (session?.user?.email_confirmed_at) {
       navigate("/dashboard");
     }
+    
+    // Load service categories
+    loadServiceCategories();
   }, [session, navigate]);
+  
+  const loadServiceCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('service_categories')
+        .select('id, name')
+        .order('name');
+      
+      if (error) {
+        console.error('Error loading service categories:', error);
+        return;
+      }
+      
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Exception loading service categories:', error);
+    }
+  };
+  
+  const handleCategorySelection = (categoryId: string) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(categoryId)) {
+        return prev.filter(id => id !== categoryId);
+      } else {
+        return [...prev, categoryId];
+      }
+    });
+  };
 
   async function onSubmit(data: RegisterInput) {
     try {
@@ -44,7 +95,8 @@ export default function Register() {
       console.log("Register form submitted with data:", {
         ...data,
         password: "***REDACTED***",
-        confirmPassword: "***REDACTED***"
+        confirmPassword: "***REDACTED***",
+        selectedCategories
       });
       
       // Check if environment variables are loaded
@@ -53,7 +105,13 @@ export default function Register() {
         supabaseKeyExists: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
       });
       
-      await registerUser(data);
+      // Pass the selected categories to the registration
+      const userData = {
+        ...data,
+        services: selectedCategories
+      };
+      
+      await registerUser(userData);
       setIsSuccess(true);
     } catch (error) {
       console.error("Registration error in component:", error);
@@ -135,6 +193,39 @@ export default function Register() {
                     <p className="text-sm text-destructive">{errors.role.message}</p>
                   )}
                 </div>
+
+                {selectedRole === "tradesperson" && (
+                  <div className="space-y-2">
+                    <Label>Your Services</Label>
+                    <div className="border rounded-md">
+                      <Accordion type="multiple" className="w-full">
+                        <AccordionItem value="services">
+                          <AccordionTrigger className="px-4">
+                            Select the services you provide
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pb-4">
+                            <CheckboxList>
+                              {categories.map((category) => (
+                                <CheckboxItem
+                                  key={category.id}
+                                  checked={selectedCategories.includes(category.id)}
+                                  onCheckedChange={() => handleCategorySelection(category.id)}
+                                  label={category.name}
+                                />
+                              ))}
+                            </CheckboxList>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
+                    {selectedCategories.length === 0 && selectedRole === "tradesperson" && (
+                      <p className="text-sm text-amber-600">
+                        <Icons.info className="inline-block mr-1 h-4 w-4" />
+                        Select at least one service category to make your profile discoverable.
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>

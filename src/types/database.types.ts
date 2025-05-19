@@ -77,6 +77,58 @@ export interface Database {
           created_at?: string
         }
       }
+      service_categories: {
+        Row: {
+          id: string
+          name: string
+          description?: string
+          icon?: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string
+          icon?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string
+          icon?: string
+          created_at?: string
+        }
+      }
+      tradesperson_services: {
+        Row: {
+          id: string
+          tradesperson_id: string
+          category_id: string
+          hourly_rate?: number
+          availability_status?: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tradesperson_id: string
+          category_id: string
+          hourly_rate?: number
+          availability_status?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          tradesperson_id?: string
+          category_id?: string
+          hourly_rate?: number
+          availability_status?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -86,6 +138,14 @@ export interface Database {
     }
     Enums: {
       user_role: "user" | "tradesperson" | "admin"
+      service_category: 
+        | "handyman" | "car_wash" | "valet" | "domestic_cleaner" | "commercial_cleaner"
+        | "painter" | "gardener" | "furniture_assembler" | "mover" | "organizer"
+        | "babysitter" | "pet_sitter" | "plumber" | "electrician" | "hairdresser"
+        | "nail_technician" | "photographer" | "driver" | "gas_engineer" | "hvac_technician"
+        | "scaffolder" | "roofer" | "stonemason" | "asbestos_specialist" | "bricklayer"
+        | "carpenter" | "drainage_specialist" | "security_installer" | "dog_walker"
+        | "dog_trainer" | "dog_groomer"
     }
   }
 }

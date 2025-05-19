@@ -30,10 +30,9 @@ export function MessageButton({
     <Button
       variant="outline"
       size="sm"
-      asChild
       {...props}
     >
-      <Link to={getUrl()}>
+      <Link to={getUrl()} className="flex items-center">
         <Icons.message className="mr-2 h-4 w-4" />
         {label}
       </Link>
