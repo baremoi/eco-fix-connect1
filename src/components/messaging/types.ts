@@ -1,4 +1,6 @@
 
+import { Message } from "@/services/messagingService";
+
 export interface ProjectConversation {
   id: string;
   fullName: string;
@@ -7,3 +9,5 @@ export interface ProjectConversation {
   lastMessageDate: string;
   projectId?: string;
 }
+
+export type { Message };

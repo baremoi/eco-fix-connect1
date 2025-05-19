@@ -2,21 +2,26 @@
 import { supabase } from "@/lib/supabase";
 import { Database } from "@/types/database.types";
 
-type Message = Database['public']['Tables']['messages']['Row'];
+export type Message = Database['public']['Tables']['messages']['Row'];
 
 export const messagingService = {
   /**
    * Send a message
    */
-  async sendMessage(senderId: string, receiverId: string, content: string, projectId?: string) {
+  async sendMessage({ sender_id, receiver_id, content, project_id }: {
+    sender_id: string;
+    receiver_id: string;
+    content: string;
+    project_id?: string;
+  }) {
     try {
       const { data, error } = await supabase
         .from('messages')
         .insert({
-          sender_id: senderId,
-          receiver_id: receiverId,
+          sender_id,
+          receiver_id,
           content,
-          project_id: projectId
+          project_id
         })
         .select('*')
         .single();
@@ -34,31 +39,34 @@ export const messagingService = {
   },
 
   /**
-   * Get conversation between two users
+   * Fetch messages for a conversation
    */
-  async getConversation(userId1: string, userId2: string, projectId?: string) {
+  async fetchMessages({ conversationPartnerId, projectId }: {
+    conversationPartnerId: string;
+    projectId?: string;
+  }) {
     try {
       let query = supabase
         .from('messages')
         .select('*')
-        .or(`sender_id.eq.${userId1},receiver_id.eq.${userId1}`)
-        .or(`sender_id.eq.${userId2},receiver_id.eq.${userId2}`);
+        .or(`sender_id.eq.${conversationPartnerId},receiver_id.eq.${conversationPartnerId}`)
+        .order('created_at', { ascending: false });
 
       // If project ID is provided, filter by project
       if (projectId) {
         query = query.eq('project_id', projectId);
       }
       
-      const { data, error } = await query.order('created_at');
+      const { data, error } = await query;
       
       if (error) {
-        console.error('Error fetching conversation:', error);
+        console.error('Error fetching messages:', error);
         throw error;
       }
       
-      return data;
+      return data || [];
     } catch (error) {
-      console.error('Exception fetching conversation:', error);
+      console.error('Exception fetching messages:', error);
       throw error;
     }
   },

@@ -26,13 +26,15 @@ export function MessageButton({
     return '/messages';
   };
 
+  const url = getUrl();
+
   return (
     <Button
       variant="outline"
       size="sm"
       {...props}
     >
-      <Link to={getUrl()} className="flex items-center">
+      <Link to={url} className="flex items-center">
         <Icons.message className="mr-2 h-4 w-4" />
         {label}
       </Link>

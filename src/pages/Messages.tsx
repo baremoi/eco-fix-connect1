@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 
 export default function Messages() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const { projectId, userId } = useParams();
   const [activeConversation, setActiveConversation] = useState<string | null>(userId || null);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ export default function Messages() {
   useEffect(() => {
     if (!user) return;
 
-    const unsubscribe = messagingService.subscribeToMessages(
+    const channel = messagingService.subscribeToMessages(
       user.id,
       (newMessage) => {
         // If this message belongs to active conversation, add it to state
@@ -58,7 +58,7 @@ export default function Messages() {
     );
 
     return () => {
-      unsubscribe();
+      supabase.removeChannel(channel);
     };
   }, [user, activeConversation, projectId]);
 

@@ -25,7 +25,6 @@ export default function MessageThread({
 }: MessageThreadProps) {
   const [newMessage, setNewMessage] = useState("");
   const [partnerProfile, setPartnerProfile] = useState<any>(null);
-  const { profile } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Fetch conversation partner profile
@@ -119,7 +118,7 @@ export default function MessageThread({
             className="flex-1 min-h-[60px] max-h-[120px]"
           />
           <Button type="submit" size="icon" disabled={!newMessage.trim()}>
-            <Icons.send className="h-4 w-4" />
+            <Icons.message className="h-4 w-4" />
             <span className="sr-only">Send message</span>
           </Button>
         </form>

@@ -15,6 +15,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageButton } from "@/components/messaging/MessageButton";
 import { Icons } from "@/components/ui/icons";
+import { Search, UserX } from "lucide-react";
 
 interface Tradesperson {
   id: string;
@@ -202,7 +203,7 @@ export default function Trades() {
                   </>
                 ) : (
                   <>
-                    <Icons.search className="mr-2 h-4 w-4" />
+                    <Search className="mr-2 h-4 w-4" />
                     Search
                   </>
                 )}
@@ -274,7 +275,7 @@ export default function Trades() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <Icons.searchX className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <UserX className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">No tradespeople found</h3>
               <p className="text-muted-foreground">
                 Try adjusting your search criteria or browse through our trade categories.

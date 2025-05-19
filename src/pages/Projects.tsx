@@ -8,6 +8,7 @@ import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
+import { MessageButton } from "@/components/messaging/MessageButton";
 
 interface Project {
   id: string;
@@ -48,7 +49,7 @@ const mockProjects: Project[] = [
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
-  const { profile } = useAuth();
+  const { user } = useAuth();
 
   const getStatusColor = (status: Project["status"]) => {
     switch (status) {
@@ -115,15 +116,12 @@ export default function Projects() {
                     <Icons.edit className="mr-2 h-4 w-4" />
                     Edit
                   </Button>
-                  <Button 
+                  <MessageButton 
                     variant="outline" 
                     size="sm"
-                    as={Link}
-                    to={`/messages/project/${project.id}`}
-                  >
-                    <Icons.message className="mr-2 h-4 w-4" />
-                    Message
-                  </Button>
+                    projectId={project.id}
+                    label="Message"
+                  />
                 </div>
               </div>
             </CardContent>
