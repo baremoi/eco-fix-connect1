@@ -24,6 +24,7 @@ export const tradesService = {
 
   async searchTradespeople(filters: TradeSearchFilters): Promise<Tradesperson[]> {
     try {
+      console.log("Searching with filters:", filters);
       // Find profiles with the role 'tradesperson'
       let query = supabase
         .from('profiles')
@@ -39,14 +40,18 @@ export const tradesService = {
       
       // Add category filter if provided
       if (filters.selectedCategory) {
-        const { data: matchingCategories } = await supabase
+        console.log("Filtering by category:", filters.selectedCategory);
+        const { data: matchingCategories, error } = await supabase
           .from('service_categories')
           .select('id, name')
           .ilike('name', `%${filters.selectedCategory}%`);
         
+        console.log("Matching categories:", matchingCategories);
+        
         if (matchingCategories && matchingCategories.length > 0) {
           // Fix: Access the first item of the array before accessing its 'id' property
           const categoryId = matchingCategories[0]?.id;
+          console.log("Using category ID:", categoryId);
           if (categoryId) {
             query = query.eq('tradesperson_services.service_categories.id', categoryId);
           }
@@ -55,11 +60,13 @@ export const tradesService = {
       
       // Add postcode filter if provided (this would be more complex in a real app)
       if (filters.postcode) {
+        console.log("Filtering by postcode:", filters.postcode);
         query = query.ilike('address', `%${filters.postcode}%`);
       }
       
       // Apply hourly rate filter
       if (filters.priceRange[0] > 0 || filters.priceRange[1] < 200) {
+        console.log("Filtering by price range:", filters.priceRange);
         query = query
           .gte('tradesperson_services.hourly_rate', filters.priceRange[0])
           .lte('tradesperson_services.hourly_rate', filters.priceRange[1]);
@@ -67,6 +74,7 @@ export const tradesService = {
       
       // Apply availability filter
       if (filters.availabilityFilter) {
+        console.log("Filtering by availability");
         query = query.eq('tradesperson_services.availability_status', true);
       }
       
@@ -76,6 +84,8 @@ export const tradesService = {
         console.error('Error searching tradespeople:', error);
         return [];
       }
+      
+      console.log("Raw data from query:", data);
       
       // Transform the data to a more usable format
       const formattedData = data.map(item => ({
@@ -89,6 +99,8 @@ export const tradesService = {
         avg_rating: 0,
         review_count: 0
       }));
+      
+      console.log("Formatted data:", formattedData);
       
       // Fetch ratings for each tradesperson
       const tradespeopleWithRatings = await Promise.all(
@@ -109,9 +121,12 @@ export const tradesService = {
         })
       );
       
+      console.log("With ratings:", tradespeopleWithRatings);
+      
       // Apply rating filter
       let filteredData = tradespeopleWithRatings;
       if (filters.ratingFilter > 0) {
+        console.log("Filtering by rating:", filters.ratingFilter);
         filteredData = filteredData.filter(person => 
           (person.avg_rating || 0) >= filters.ratingFilter
         );
@@ -130,6 +145,7 @@ export const tradesService = {
           break;
       }
       
+      console.log("Final filtered data:", filteredData);
       return filteredData;
     } catch (error) {
       console.error('Exception searching tradespeople:', error);
