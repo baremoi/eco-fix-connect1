@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { Message, messagingService } from "@/services/messagingService";
 import { Icons } from "@/components/ui/icons";
 import { useParams } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
 import ConversationList from "@/components/messaging/ConversationList";
 import MessageThread from "@/components/messaging/MessageThread";
 import { Card } from "@/components/ui/card";

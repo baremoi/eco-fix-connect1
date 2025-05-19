@@ -1,7 +1,7 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { Database } from "@/types/database.types";
 import { Icons } from "@/components/ui/icons";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ProjectConversation } from "./types";

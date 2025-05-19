@@ -1,5 +1,5 @@
 
-import { Message } from "@/services/messagingService";
+import { Message as DbMessage } from "@/services/messagingService";
 
 export interface ProjectConversation {
   id: string;
@@ -10,4 +10,4 @@ export interface ProjectConversation {
   projectId?: string;
 }
 
-export type { Message };
+export type Message = DbMessage;

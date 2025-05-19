@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { MessageButton } from "@/components/messaging/MessageButton";
 

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
@@ -215,6 +214,7 @@ export default function Trades() {
         {/* Search results */}
         <div className="mt-6">
           {loading ? (
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
                 <Card key={i} className="overflow-hidden">
@@ -238,6 +238,7 @@ export default function Trades() {
               ))}
             </div>
           ) : tradespeople.length > 0 ? (
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tradespeople.map((person) => (
                 <Card key={person.id} className="overflow-hidden">
@@ -274,6 +275,7 @@ export default function Trades() {
               ))}
             </div>
           ) : (
+            
             <div className="text-center py-8">
               <UserX className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">No tradespeople found</h3>

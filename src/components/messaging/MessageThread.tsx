@@ -1,7 +1,5 @@
-
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "@/lib/AuthContext";
-import { Message } from "@/services/messagingService";
+import { Message } from "@/components/messaging/types";
 import { Icons } from "@/components/ui/icons";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
