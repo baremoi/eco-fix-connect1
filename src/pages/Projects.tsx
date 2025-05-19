@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -21,7 +20,10 @@ interface Project {
 }
 
 export default function Projects() {
-  const { user: currentUser } = useAuth(); // eslint-disable-line @typescript-eslint/no-unused-vars
+  // We're not using currentUser yet, but we'll keep it commented for future use
+  // const { user: currentUser } = useAuth();
+  const { user: _ } = useAuth(); // Ignore the unused variable
+  
   const [projects, setProjects] = useState<Project[]>([
     {
       id: "1",
