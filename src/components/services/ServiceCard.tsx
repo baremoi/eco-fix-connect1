@@ -23,7 +23,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
             {service.category}
           </Badge>
           <Badge variant="outline" className="bg-soft-blue text-blue-700">
-            ${service.rate}/{service.rateType}
+            ${service.price}/{service.pricingUnit}
           </Badge>
         </div>
         <CardTitle className="line-clamp-1">{service.name}</CardTitle>
@@ -32,7 +32,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         <p className="text-muted-foreground text-sm line-clamp-3 mb-4">{service.description}</p>
         <div className="flex items-center text-sm text-muted-foreground">
           <Calendar className="h-4 w-4 mr-2" />
-          <span>Available {service.availability}</span>
+          <span>Available {service.availabilityLabel}</span>
         </div>
       </CardContent>
       <CardFooter className="pt-2">
