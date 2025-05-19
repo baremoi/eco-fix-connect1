@@ -1,4 +1,3 @@
-
 import { supabase } from "@/lib/supabase";
 import { Tradesperson, TradeSearchFilters, TradeCategory } from "@/components/trades/TradeTypes";
 
