@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -20,7 +21,7 @@ interface Project {
 }
 
 export default function Projects() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser } = useAuth(); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [projects, setProjects] = useState<Project[]>([
     {
       id: "1",
