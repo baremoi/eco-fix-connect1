@@ -32,7 +32,7 @@ export function BookingCard({ service }: ServiceCardProps) {
         <p className="text-muted-foreground text-sm line-clamp-3 mb-4">{service.description}</p>
         <div className="flex items-center text-sm text-muted-foreground">
           <Calendar className="h-4 w-4 mr-2" />
-          <span>Available {service.availability}</span>
+          <span>Available {service.availabilityText || "Upon request"}</span>
         </div>
       </CardContent>
       <CardFooter className="pt-2">
