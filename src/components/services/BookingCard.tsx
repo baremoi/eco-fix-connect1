@@ -1,16 +1,26 @@
 
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Booking } from "@/data/services";
 import { Calendar, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
+import { useAuth } from "@/lib/AuthContext";
+import { reviewService } from "@/services/reviewService";
+import { StarRating } from "@/components/reviews/StarRating";
 
 interface BookingCardProps {
   booking: Booking;
 }
 
 export function BookingCard({ booking }: BookingCardProps) {
+  const { user } = useAuth();
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case "upcoming":
@@ -26,6 +36,31 @@ export function BookingCard({ booking }: BookingCardProps) {
 
   const handleCancelBooking = () => {
     toast.success(`Booking for ${booking.serviceName} has been cancelled.`);
+  };
+  
+  const checkIfReviewed = async () => {
+    if (!user || !booking.id || hasReviewed || isChecking) return;
+    
+    setIsChecking(true);
+    try {
+      const exists = await reviewService.checkReviewExists(user.id, booking.id);
+      setHasReviewed(exists);
+    } catch (error) {
+      console.error("Error checking if booking is reviewed:", error);
+    } finally {
+      setIsChecking(false);
+    }
+  };
+  
+  // Check if user has already reviewed this booking when review button is clicked
+  const handleReviewClick = async () => {
+    await checkIfReviewed();
+    
+    if (!hasReviewed) {
+      setIsReviewOpen(true);
+    } else {
+      toast.info("You've already reviewed this booking");
+    }
   };
 
   return (
@@ -57,14 +92,46 @@ export function BookingCard({ booking }: BookingCardProps) {
               <div className="font-medium">£{booking.price.toFixed(2)}</div>
               <div className="text-sm text-muted-foreground">Total price</div>
             </div>
-            {booking.status === "upcoming" && (
-              <Button variant="outline" className="mt-2" onClick={handleCancelBooking}>
-                Cancel Booking
-              </Button>
-            )}
+            <div className="flex flex-col gap-2">
+              {booking.status === "upcoming" && (
+                <Button variant="outline" onClick={handleCancelBooking}>
+                  Cancel Booking
+                </Button>
+              )}
+              
+              {booking.status === "completed" && (
+                <Button 
+                  onClick={handleReviewClick} 
+                  variant="outline" 
+                  className="flex items-center gap-1"
+                  disabled={isChecking}
+                >
+                  {isChecking ? (
+                    <Icons.spinner className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <StarRating rating={1} size="sm" showEmpty={false} />
+                      <span>Leave Review</span>
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>
+      
+      {user && booking.tradesperson_id && (
+        <ReviewForm
+          open={isReviewOpen}
+          onOpenChange={setIsReviewOpen}
+          tradespersonId={booking.tradesperson_id}
+          bookingId={booking.id}
+          userId={user.id}
+          tradespersonName={booking.providerName}
+          onReviewSubmitted={() => setHasReviewed(true)}
+        />
+      )}
     </Card>
   );
 }

@@ -1,176 +1,141 @@
-// Define types for our data
+
+import { Icons } from "@/components/ui/icons";
+
 export interface Service {
   id: string;
   name: string;
   description: string;
+  price: number;
+  priceUnit: "hour" | "day" | "fixed";
   category: string;
-  rate: number;
-  rateType: string;
-  availability: string;
-  providerName: string;
-  providerRating: number;
+  image?: string;
+  eco_rating: 1 | 2 | 3 | 4 | 5;
+  features: string[];
 }
 
 export interface Booking {
   id: string;
   serviceName: string;
   providerName: string;
+  tradesperson_id?: string; // Added for review functionality
+  status: "upcoming" | "completed" | "cancelled" | "in_progress";
   date: string;
   time: string;
   price: number;
-  status: "upcoming" | "completed" | "cancelled" | "in-progress";
-  address?: string;  // Added address property as optional
-  notes?: string;    // Added notes property as optional
+  address?: string;
+  notes?: string;
 }
 
-// Sample services data
 export const servicesData: Service[] = [
   {
-    id: "s1",
-    name: "Solar Panel Installation",
-    description: "Complete solar panel installation service with premium panels and inverters. Includes assessment, design, and setup.",
-    category: "renewable energy",
-    rate: 2500,
-    rateType: "project",
-    availability: "Weekdays",
-    providerName: "EcoSolar Solutions",
-    providerRating: 4.8
+    id: "1",
+    name: "Plumbing Services",
+    description: "Professional eco-friendly plumbing services for all your needs. We use sustainable materials and water-saving techniques.",
+    price: 60,
+    priceUnit: "hour",
+    category: "plumbing",
+    eco_rating: 4,
+    features: ["Water-saving techniques", "Sustainable materials", "Energy-efficient solutions"]
   },
   {
-    id: "s2",
-    name: "Home Energy Audit",
-    description: "Comprehensive energy audit to identify energy waste and recommend improvements to make your home more efficient.",
-    category: "energy efficiency",
-    rate: 150,
-    rateType: "service",
-    availability: "Mon-Sat",
-    providerName: "Green Home Advisors",
-    providerRating: 4.9
+    id: "2",
+    name: "Electrical Installation",
+    description: "Expert electrical services with a focus on energy efficiency. We specialize in smart home installations and LED lighting.",
+    price: 75,
+    priceUnit: "hour",
+    category: "electrical",
+    eco_rating: 5,
+    features: ["Energy-efficient lighting", "Smart home integration", "Solar-ready installations"]
   },
   {
-    id: "s3",
-    name: "Rainwater Harvesting System",
-    description: "Design and installation of rainwater collection systems for garden irrigation and other non-potable uses.",
-    category: "water conservation",
-    rate: 1200,
-    rateType: "project",
-    availability: "Weekends",
-    providerName: "AquaEco Systems",
-    providerRating: 4.7
+    id: "3",
+    name: "Painting & Decoration",
+    description: "Transform your space with our eco-friendly painting services. We use only low-VOC and non-toxic paints for healthier homes.",
+    price: 300,
+    priceUnit: "day",
+    category: "decoration",
+    eco_rating: 5,
+    features: ["Low-VOC paints", "Non-toxic materials", "Proper waste disposal"]
   },
   {
-    id: "s4",
-    name: "Organic Garden Setup",
-    description: "Design and setup of organic vegetable gardens using sustainable practices and local plants.",
-    category: "landscaping",
-    rate: 45,
-    rateType: "hour",
-    availability: "Tue-Sun",
-    providerName: "Urban Harvest",
-    providerRating: 4.5
+    id: "4",
+    name: "Gardening & Landscaping",
+    description: "Sustainable gardening services that work with nature. We create beautiful, water-efficient gardens using native plants.",
+    price: 45,
+    priceUnit: "hour",
+    category: "gardening",
+    eco_rating: 5,
+    features: ["Water conservation", "Native plant expertise", "Organic pest management"]
   },
   {
-    id: "s5",
-    name: "EV Charging Station Installation",
-    description: "Professional installation of home electric vehicle charging stations with electrical upgrades if needed.",
-    category: "renewable energy",
-    rate: 800,
-    rateType: "project",
-    availability: "Weekdays",
-    providerName: "ChargePoint Pros",
-    providerRating: 4.9
+    id: "5",
+    name: "Cleaning Services",
+    description: "Thorough home cleaning using environmentally friendly and biodegradable cleaning products that are safe for your family.",
+    price: 35,
+    priceUnit: "hour",
+    category: "cleaning",
+    eco_rating: 4,
+    features: ["Eco-friendly products", "Microfiber technology", "Water conservation"]
   },
   {
-    id: "s6",
-    name: "Home Insulation Upgrade",
-    description: "Eco-friendly insulation solutions to improve your home's energy efficiency and reduce heating/cooling costs.",
-    category: "energy efficiency",
-    rate: 1500,
-    rateType: "project",
-    availability: "Mon-Fri",
-    providerName: "Comfort Green",
-    providerRating: 4.6
-  },
-  {
-    id: "s7",
-    name: "LED Lighting Conversion",
-    description: "Full service conversion of your home lighting to energy-efficient LED solutions.",
-    category: "energy efficiency",
-    rate: 75,
-    rateType: "hour",
-    availability: "Mon-Sat",
-    providerName: "Bright Green Electric",
-    providerRating: 4.8
-  },
-  {
-    id: "s8",
-    name: "Composting System Setup",
-    description: "Design and installation of home composting systems tailored to your space and needs.",
-    category: "waste management",
-    rate: 300,
-    rateType: "service",
-    availability: "Weekends",
-    providerName: "Earth Cycle",
-    providerRating: 4.7
-  },
-  {
-    id: "s9",
-    name: "Sustainable Flooring Installation",
-    description: "Installation of eco-friendly flooring options including bamboo, cork, and reclaimed wood.",
-    category: "home improvement",
-    rate: 12,
-    rateType: "sqft",
-    availability: "Tue-Sun",
-    providerName: "Green Floors Co.",
-    providerRating: 4.9
+    id: "6",
+    name: "Carpet Cleaning",
+    description: "Deep carpet cleaning with minimal water usage and biodegradable cleaning solutions. Safe for kids and pets.",
+    price: 120,
+    priceUnit: "fixed",
+    category: "cleaning",
+    eco_rating: 3,
+    features: ["Low-moisture methods", "Non-toxic solutions", "Reduced energy usage"]
   }
 ];
 
-// Sample bookings data
 export const bookingsData: Booking[] = [
   {
-    id: "b1",
-    serviceName: "Home Energy Audit",
-    providerName: "Green Home Advisors",
-    date: "May 25, 2025",
-    time: "10:00 AM - 12:00 PM",
+    id: "1",
+    serviceName: "Plumbing Repair",
+    providerName: "Sarah Johnson",
+    tradesperson_id: "e12b78e9-4a1f-4dab-b427-ef67d6de7957", // Added for testing review functionality
+    status: "upcoming",
+    date: "01/06/2025",
+    time: "10:00 AM",
+    price: 85,
+    address: "123 Main St, London",
+    notes: "Problem with kitchen sink drain"
+  },
+  {
+    id: "2",
+    serviceName: "Solar Panel Installation Consultation",
+    providerName: "Michael Chen",
+    tradesperson_id: "f23c89f0-5b2g-5ebc-c538-fg78e7f8a068",
+    status: "upcoming",
+    date: "05/06/2025",
+    time: "2:30 PM",
+    price: 0,
+    address: "456 Park Ave, Manchester",
+    notes: "Initial assessment for solar installation"
+  },
+  {
+    id: "3",
+    serviceName: "Smart Home Setup",
+    providerName: "Emma Wilson",
+    tradesperson_id: "g34d90g1-6c3h-6fcd-d649-gh89f8g9b179",
+    status: "completed",
+    date: "12/05/2025",
+    time: "9:15 AM",
     price: 150,
-    status: "upcoming"
+    address: "789 Broadway, Birmingham",
+    notes: "Installation of smart thermostat and lights"
   },
   {
-    id: "b2",
-    serviceName: "Solar Panel Installation",
-    providerName: "EcoSolar Solutions",
-    date: "May 18, 2025",
-    time: "9:00 AM - 5:00 PM",
-    price: 2500,
-    status: "completed"
-  },
-  {
-    id: "b3",
-    serviceName: "LED Lighting Conversion",
-    providerName: "Bright Green Electric",
-    date: "May 10, 2025",
-    time: "1:00 PM - 4:00 PM",
-    price: 225,
-    status: "completed"
-  },
-  {
-    id: "b4",
-    serviceName: "EV Charging Station Installation",
-    providerName: "ChargePoint Pros",
-    date: "Apr 30, 2025",
-    time: "11:00 AM - 2:00 PM",
-    price: 800,
-    status: "cancelled"
-  },
-  {
-    id: "b5",
-    serviceName: "Organic Garden Setup",
-    providerName: "Urban Harvest",
-    date: "Jun 5, 2025",
-    time: "9:00 AM - 2:00 PM",
-    price: 225,
-    status: "upcoming"
+    id: "4",
+    serviceName: "Furniture Restoration",
+    providerName: "James Taylor",
+    tradesperson_id: "h45e01h2-7d4i-7gde-e750-hi90g9h0c280",
+    status: "cancelled",
+    date: "08/05/2025",
+    time: "1:00 PM",
+    price: 120,
+    address: "101 Pine St, Bristol",
+    notes: "Antique table restoration - cancelled due to illness"
   }
 ];

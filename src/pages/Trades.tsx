@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
@@ -14,7 +15,11 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageButton } from "@/components/messaging/MessageButton";
 import { Icons } from "@/components/ui/icons";
-import { Search, UserX } from "lucide-react";
+import { Search, UserX, Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { StarRating } from "@/components/reviews/StarRating";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Tradesperson {
   id: string;
@@ -24,6 +29,8 @@ interface Tradesperson {
   bio?: string;
   serviceCategory: string;
   hourlyRate?: number;
+  avg_rating?: number;
+  review_count?: number;
 }
 
 export default function Trades() {
@@ -32,6 +39,11 @@ export default function Trades() {
   const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [postcode, setPostcode] = useState<string>("");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
+  const [ratingFilter, setRatingFilter] = useState<number>(0);
+  const [sortBy, setSortBy] = useState<string>("rating");
+  const [availabilityFilter, setAvailabilityFilter] = useState<boolean>(false);
+  const [showFilters, setShowFilters] = useState(false);
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -41,6 +53,11 @@ export default function Trades() {
     const params = new URLSearchParams(location.search);
     const tradeParam = params.get('trade');
     const postcodeParam = params.get('postcode');
+    const priceMinParam = params.get('priceMin');
+    const priceMaxParam = params.get('priceMax');
+    const ratingParam = params.get('rating');
+    const sortParam = params.get('sort');
+    const availabilityParam = params.get('availability');
     
     if (tradeParam) {
       setSelectedCategory(tradeParam);
@@ -50,11 +67,27 @@ export default function Trades() {
       setPostcode(postcodeParam);
     }
     
+    if (priceMinParam && priceMaxParam) {
+      setPriceRange([parseInt(priceMinParam), parseInt(priceMaxParam)]);
+    }
+    
+    if (ratingParam) {
+      setRatingFilter(parseInt(ratingParam));
+    }
+    
+    if (sortParam) {
+      setSortBy(sortParam);
+    }
+    
+    if (availabilityParam === 'true') {
+      setAvailabilityFilter(true);
+    }
+    
     // Load categories
     loadCategories();
     
     // Initial search if parameters exist
-    if (tradeParam || postcodeParam) {
+    if (tradeParam || postcodeParam || priceMinParam || ratingParam) {
       searchTradespeople(tradeParam || "", postcodeParam || "");
     } else {
       setLoading(false);
@@ -90,6 +123,7 @@ export default function Trades() {
           id, full_name, avatar_url, role, bio,
           tradesperson_services!inner(
             hourly_rate,
+            availability_status,
             service_categories!inner(id, name)
           )
         `)
@@ -111,6 +145,18 @@ export default function Trades() {
         query = query.ilike('address', `%${searchPostcode}%`);
       }
       
+      // Apply hourly rate filter
+      if (priceRange[0] > 0 || priceRange[1] < 200) {
+        query = query
+          .gte('tradesperson_services.hourly_rate', priceRange[0])
+          .lte('tradesperson_services.hourly_rate', priceRange[1]);
+      }
+      
+      // Apply availability filter
+      if (availabilityFilter) {
+        query = query.eq('tradesperson_services.availability_status', true);
+      }
+      
       const { data, error } = await query;
       
       if (error) {
@@ -125,10 +171,52 @@ export default function Trades() {
           role: item.role,
           bio: item.bio,
           serviceCategory: item.tradesperson_services[0]?.service_categories?.name || 'General',
-          hourlyRate: item.tradesperson_services[0]?.hourly_rate
+          hourlyRate: item.tradesperson_services[0]?.hourly_rate,
+          avg_rating: 0,
+          review_count: 0
         }));
         
-        setTradespeople(formattedData);
+        // Fetch ratings for each tradesperson
+        const tradespeopleWithRatings = await Promise.all(
+          formattedData.map(async (person) => {
+            try {
+              const stats = await supabase.rpc('get_tradesperson_review_stats', {
+                tradesperson_id_param: person.id
+              });
+              
+              return {
+                ...person,
+                avg_rating: stats.data?.avg_rating || 0,
+                review_count: stats.data?.review_count || 0
+              };
+            } catch (e) {
+              return person;
+            }
+          })
+        );
+        
+        // Apply rating filter
+        let filteredData = tradespeopleWithRatings;
+        if (ratingFilter > 0) {
+          filteredData = filteredData.filter(person => 
+            (person.avg_rating || 0) >= ratingFilter
+          );
+        }
+        
+        // Apply sorting
+        switch (sortBy) {
+          case 'rating':
+            filteredData.sort((a, b) => (b.avg_rating || 0) - (a.avg_rating || 0));
+            break;
+          case 'price_low':
+            filteredData.sort((a, b) => (a.hourlyRate || 0) - (b.hourlyRate || 0));
+            break;
+          case 'price_high':
+            filteredData.sort((a, b) => (b.hourlyRate || 0) - (a.hourlyRate || 0));
+            break;
+        }
+        
+        setTradespeople(filteredData);
       }
     } catch (error) {
       console.error('Exception searching tradespeople:', error);
@@ -143,11 +231,28 @@ export default function Trades() {
     const params = new URLSearchParams();
     if (selectedCategory) params.set('trade', selectedCategory);
     if (postcode) params.set('postcode', postcode);
+    if (priceRange[0] > 0) params.set('priceMin', priceRange[0].toString());
+    if (priceRange[1] < 200) params.set('priceMax', priceRange[1].toString());
+    if (ratingFilter > 0) params.set('rating', ratingFilter.toString());
+    if (sortBy) params.set('sort', sortBy);
+    if (availabilityFilter) params.set('availability', 'true');
     
     navigate(`/trades?${params.toString()}`);
     
     // Execute search
     searchTradespeople(selectedCategory, postcode);
+  };
+  
+  const handleResetFilters = () => {
+    setSelectedCategory("");
+    setPostcode("");
+    setPriceRange([0, 200]);
+    setRatingFilter(0);
+    setSortBy("rating");
+    setAvailabilityFilter(false);
+    
+    navigate("/trades");
+    searchTradespeople("", "");
   };
 
   return (
@@ -209,6 +314,111 @@ export default function Trades() {
               </Button>
             </div>
           </div>
+          
+          {/* Advanced Filters */}
+          <Collapsible open={showFilters} onOpenChange={setShowFilters} className="mt-6">
+            <div className="flex items-center justify-between">
+              <Button variant="ghost" size="sm" asChild>
+                <CollapsibleTrigger className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  <span>Advanced Filters</span>
+                  {showFilters ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </CollapsibleTrigger>
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleResetFilters}
+                className="text-muted-foreground"
+              >
+                Reset all
+              </Button>
+            </div>
+            
+            <CollapsibleContent className="mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      Price Range (£ per hour)
+                    </label>
+                    <div className="px-2">
+                      <Slider 
+                        defaultValue={priceRange} 
+                        min={0} 
+                        max={200} 
+                        step={5} 
+                        value={priceRange}
+                        onValueChange={(value) => setPriceRange(value as [number, number])}
+                      />
+                      <div className="flex justify-between mt-2 text-sm text-muted-foreground">
+                        <span>£{priceRange[0]}</span>
+                        <span>£{priceRange[1]}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      Minimum Rating
+                    </label>
+                    <div className="flex items-center gap-2">
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <Button 
+                          key={rating}
+                          variant={ratingFilter === rating ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setRatingFilter(ratingFilter === rating ? 0 : rating)}
+                          className="px-3"
+                        >
+                          <StarRating rating={rating} size="sm" showEmpty={false} />
+                          {rating === 1 && "+"}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      Sort By
+                    </label>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rating">Highest Rating</SelectItem>
+                        <SelectItem value="price_low">Price: Low to High</SelectItem>
+                        <SelectItem value="price_high">Price: High to Low</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2 pt-4">
+                    <Checkbox 
+                      id="availability" 
+                      checked={availabilityFilter} 
+                      onCheckedChange={(checked) => 
+                        setAvailabilityFilter(checked === true)
+                      }
+                    />
+                    <label
+                      htmlFor="availability"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Show only available tradespeople
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         {/* Search results */}
@@ -238,7 +448,6 @@ export default function Trades() {
               ))}
             </div>
           ) : tradespeople.length > 0 ? (
-            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tradespeople.map((person) => (
                 <Card key={person.id} className="overflow-hidden">
@@ -254,9 +463,12 @@ export default function Trades() {
                       <div>
                         <h3 className="font-medium">{person.full_name}</h3>
                         <p className="text-sm text-muted-foreground">{person.serviceCategory}</p>
-                        {person.hourlyRate && (
-                          <p className="text-sm font-medium">£{person.hourlyRate}/hour</p>
-                        )}
+                        <div className="flex items-center gap-2 mt-1">
+                          <StarRating rating={person.avg_rating || 0} size="sm" />
+                          <span className="text-xs text-muted-foreground">
+                            ({person.review_count || 0} reviews)
+                          </span>
+                        </div>
                       </div>
                     </div>
                     
@@ -265,10 +477,17 @@ export default function Trades() {
                     </p>
                     
                     <div className="flex justify-between items-center">
-                      <Button variant="outline" size="sm">
-                        View Profile
-                      </Button>
-                      <MessageButton userId={person.id} label="Contact" />
+                      <div>
+                        {person.hourlyRate && (
+                          <p className="text-sm font-medium">£{person.hourlyRate}/hour</p>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm">
+                          View Profile
+                        </Button>
+                        <MessageButton userId={person.id} label="Contact" size="sm" />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
