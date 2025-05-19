@@ -1,6 +1,4 @@
 
-import { User } from "@supabase/supabase-js";
-
 export interface Tradesperson {
   id: string;
   full_name: string;

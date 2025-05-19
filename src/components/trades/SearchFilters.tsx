@@ -15,7 +15,7 @@ import { StarRating } from "@/components/reviews/StarRating";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Icons } from "@/components/ui/icons";
-import { SearchProps, TradeCategory } from "./TradeTypes";
+import { SearchProps } from "./TradeTypes";
 
 export function SearchFilters({
   loading,
