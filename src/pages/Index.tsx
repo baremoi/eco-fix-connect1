@@ -1,5 +1,5 @@
 
-import React, { Suspense, lazy } from "react";
+import { Suspense, lazy } from "react";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import HeroSection from "@/components/home/HeroSection";
 import { Card } from "@/components/ui/card";
