@@ -1,5 +1,5 @@
 
-// Re-export from our hooks folder implementation
-import { useToast, toast, sonnerToast } from "@/hooks/use-toast";
+import { useToast as useHookedToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 
-export { useToast, toast, sonnerToast };
+export { useHookedToast as useToast, sonnerToast as toast };

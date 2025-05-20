@@ -1,29 +1,21 @@
 
-import { Outlet } from 'react-router-dom';
+import { ReactNode } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { ErrorBoundary } from '@/components/ui/error-boundary';
-import { Suspense } from 'react';
-import ErrorFallback from '@/components/error/ErrorFallback';
 
-const PublicLayout = () => {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const PublicLayout = ({ children }: LayoutProps) => {
+  console.log("Public layout rendering");
   return (
     <div className="flex flex-col min-h-screen">
-      <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Header" />}>
-        <Header />
-      </ErrorBoundary>
-      
+      <Header />
       <main className="flex-1">
-        <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Content" />}>
-          <Suspense fallback={<div className="p-8 text-center">Loading content...</div>}>
-            <Outlet />
-          </Suspense>
-        </ErrorBoundary>
+        {children}
       </main>
-      
-      <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Footer" />}>
-        <Footer />
-      </ErrorBoundary>
+      <Footer />
     </div>
   );
 };

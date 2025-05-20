@@ -1,17 +1,18 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, MapPin, ShieldCheck, Clock, ThumbsUp } from 'lucide-react';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [tradeName, setTradeName] = useState('');
   const [postcode, setPostcode] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Use window.location instead of useNavigate to avoid Router context dependency
-    window.location.href = `/trades?trade=${encodeURIComponent(tradeName)}&postcode=${encodeURIComponent(postcode)}`;
+    navigate(`/trades?trade=${encodeURIComponent(tradeName)}&postcode=${encodeURIComponent(postcode)}`);
   };
 
   return (

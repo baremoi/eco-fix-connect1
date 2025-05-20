@@ -1,5 +1,5 @@
 
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { NavItem } from "./NavItem";
 import { NavItem as NavItemType } from "./NavItems";
 import { ProfileSection } from "./ProfileSection";
@@ -22,11 +22,11 @@ export const DesktopNavigation = ({
   const isActive = (path: string) => location.pathname === path;
   
   return (
-    <aside className="hidden md:flex flex-col w-64 h-screen bg-sidebar-background border-r border-sidebar-border">
+    <aside className="hidden md:flex flex-col w-64 h-screen bg-sidebar border-r border-sidebar-border">
       <div className="p-4">
-        <div className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2">
           <span className="text-eco-600 font-display font-bold text-2xl">Eco<span className="text-sky-600">Fix</span></span>
-        </div>
+        </Link>
       </div>
       
       <div className="flex-1 overflow-y-auto px-3 py-2">
@@ -51,3 +51,4 @@ export const DesktopNavigation = ({
 };
 
 export default DesktopNavigation;
+

@@ -15,31 +15,30 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     strictPort: true,
     headers: {
-      // Set Content-Security-Policy header properly
       'Content-Security-Policy': [
-        // Restrict default sources to same origin and https
-        "default-src 'self' https:",
+        // Restrict default sources to same origin
+        "default-src 'self'",
         
-        // Scripts: Allow trusted sources including cloudflare analytics, unsafe-eval for React dev tools
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.cloudflareinsights.com https://static.cloudflareinsights.com",
+        // Scripts: Allow only from same origin and trusted sources
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co",
         
-        // Styles: Allow same origin and inline styles
+        // Styles: Allow same origin and inline styles (needed for styled-components)
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         
-        // Images: Allow same origin, data URIs, blob and HTTPS sources
-        "img-src 'self' data: https: blob: https://lovable.dev https://i.pravatar.cc",
+        // Images: Allow same origin, data URIs, and HTTPS sources
+        "img-src 'self' data: https: blob: https://lovable.dev",
         
         // Fonts: Allow same origin and Google Fonts
         "font-src 'self' data: https://fonts.gstatic.com",
         
         // Connect (API/XHR/WebSocket): Allow necessary endpoints
-        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:* https://*.supabase.co wss://*.supabase.co https://gquwbmdxvsxkxpauabuw.supabase.co https://*.cloudflareinsights.com",
+        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:* https://gquwbmdxvsxkxpauabuw.supabase.co",
         
         // Frames: Allow only specific trusted sources
         "frame-src 'self' https://accounts.google.com",
         
-        // Media: Allow same origin and https
-        "media-src 'self' https:",
+        // Media: Restrict to same origin
+        "media-src 'self'",
         
         // Object/Embed: Block all plugins
         "object-src 'none'",
@@ -48,16 +47,14 @@ export default defineConfig(({ mode }) => ({
         "base-uri 'self'",
         
         // Form submission: Restrict to same origin
-        "form-action 'self'"
-      ].join('; '),
-      
-      // Security headers
-      'X-Frame-Options': 'SAMEORIGIN',
-      'X-Content-Type-Options': 'nosniff',
-      'Referrer-Policy': 'strict-origin-when-cross-origin',
-      
-      // Add Cache-Control header
-      'Cache-Control': 'max-age=3600, must-revalidate'
+        "form-action 'self'",
+        
+        // Frame ancestors: Prevent clickjacking
+        "frame-ancestors 'self'",
+        
+        // Manifest: Allow same origin
+        "manifest-src 'self'"
+      ].join('; ')
     }
   },
   plugins: [

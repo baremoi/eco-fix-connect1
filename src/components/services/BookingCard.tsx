@@ -1,53 +1,70 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar } from "lucide-react";
-import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
 import { Booking } from "@/data/services";
+import { Calendar, Clock } from "lucide-react";
+import { toast } from "sonner";
 
 interface BookingCardProps {
   booking: Booking;
 }
 
 export function BookingCard({ booking }: BookingCardProps) {
-  const handleManageBooking = () => {
-    toast.success(`Managing booking for ${booking.serviceName}`);
+  const getStatusBadgeColor = (status: string) => {
+    switch (status) {
+      case "upcoming":
+        return "bg-soft-blue text-blue-700";
+      case "completed":
+        return "bg-soft-green text-green-700";
+      case "cancelled":
+        return "bg-soft-red text-red-700";
+      default:
+        return "bg-soft-yellow text-yellow-700";
+    }
+  };
+
+  const handleCancelBooking = () => {
+    toast.success(`Booking for ${booking.serviceName} has been cancelled.`);
   };
 
   return (
-    <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <Badge 
-            variant="outline" 
-            className={`mb-2 ${
-              booking.status === 'upcoming' ? 'bg-soft-blue text-blue-700' :
-              booking.status === 'completed' ? 'bg-soft-green text-green-700' : 
-              'bg-soft-red text-red-700'
-            }`}
-          >
-            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-          </Badge>
-          <Badge variant="outline" className="bg-soft-blue text-blue-700">
-            £{booking.price}
-          </Badge>
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex flex-col md:flex-row justify-between gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between md:justify-start md:gap-2">
+              <h3 className="font-semibold text-lg">{booking.serviceName}</h3>
+              <Badge className={getStatusBadgeColor(booking.status)}>
+                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+              </Badge>
+            </div>
+            <p className="text-muted-foreground">{booking.providerName}</p>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-sm">
+              <div className="flex items-center">
+                <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                <span>{booking.date}</span>
+              </div>
+              <div className="flex items-center">
+                <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                <span>{booking.time}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="text-right">
+              <div className="font-medium">£{booking.price.toFixed(2)}</div>
+              <div className="text-sm text-muted-foreground">Total price</div>
+            </div>
+            {booking.status === "upcoming" && (
+              <Button variant="outline" className="mt-2" onClick={handleCancelBooking}>
+                Cancel Booking
+              </Button>
+            )}
+          </div>
         </div>
-        <CardTitle className="line-clamp-1">{booking.serviceName}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-muted-foreground text-sm mb-4">Provider: {booking.providerName}</p>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4 mr-2" />
-          <span>{booking.date} at {booking.time}</span>
-        </div>
-        {booking.notes && (
-          <p className="mt-3 text-sm text-muted-foreground">{booking.notes}</p>
-        )}
       </CardContent>
-      <CardFooter className="pt-2">
-        <Button onClick={handleManageBooking} className="w-full">Manage Booking</Button>
-      </CardFooter>
     </Card>
   );
 }

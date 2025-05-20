@@ -7,8 +7,8 @@ export default {
         // Restrict default sources to same origin
         "default-src 'self'",
         
-        // Scripts: Allow same origin, inline scripts, unsafe-eval, and specific external sources
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.lovable.dev https://*.cloudflareinsights.com https://static.cloudflareinsights.com",
+        // Scripts: Allow same origin, inline scripts, and specific external sources
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.lovable.dev",
         
         // Styles: Allow same origin and inline styles for Tailwind
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -20,7 +20,7 @@ export default {
         "font-src 'self' data: https://fonts.gstatic.com",
         
         // Connect (API/WebSocket): Allow necessary endpoints - expand for Supabase connections
-        "connect-src 'self' https://*.lovable.dev https://*.supabase.co wss://*.lovable.dev wss://*.supabase.co https://gquwbmdxvsxkxpauabuw.supabase.co https://*.cloudflareinsights.com",
+        "connect-src 'self' https://*.lovable.dev https://*.supabase.co wss://*.lovable.dev https://gquwbmdxvsxkxpauabuw.supabase.co",
         
         // Frames: Allow specific trusted sources
         "frame-src 'self' https://accounts.google.com",
@@ -36,18 +36,22 @@ export default {
         
         // Form submission: Allow same origin and Lovable endpoints
         "form-action 'self' https://*.lovable.dev",
+        
+        // Frame ancestors: Prevent embedding except for Lovable domains
+        "frame-ancestors 'self' https://*.lovable.dev",
+        
+        // Manifest: Allow same origin
+        "manifest-src 'self'"
       ].join('; '),
-
-      // Frame ancestors in a separate header
-      'X-Frame-Options': 'SAMEORIGIN',
 
       // Additional security headers
       'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'SAMEORIGIN',
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       
-      // CORS headers
+      // CORS headers - make more permissive
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -85,16 +89,17 @@ export default {
           // Allow more lenient CSP in development
           'Content-Security-Policy': [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.cloudflareinsights.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline'",
-            "connect-src 'self' ws: wss: http://localhost:* https://*.lovable.dev https://*.supabase.co https://*.cloudflareinsights.com",
+            "connect-src 'self' ws: wss: http://localhost:* https://*.lovable.dev https://*.supabase.co",
             "img-src 'self' data: https: blob:",
             "font-src 'self' data:",
             "frame-src 'self'",
             "media-src 'self'",
             "object-src 'none'",
             "base-uri 'self'",
-            "form-action 'self'"
+            "form-action 'self'",
+            "frame-ancestors 'self'"
           ].join('; ')
         }
       },
@@ -113,4 +118,4 @@ export default {
     project: process.env.LOVABLE_PROJECT_ID,
     apiKey: process.env.LOVABLE_API_KEY
   }
-};
+}; 

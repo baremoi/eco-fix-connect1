@@ -1,8 +1,8 @@
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +45,7 @@ const Header = () => {
       {isOpen && (
         <div className="md:hidden container mx-auto px-4 pb-4">
           <div className="flex flex-col gap-4">
-            <Link
+            <Link 
               to="/how-it-works" 
               className="text-foreground hover:text-eco-600 transition-colors py-2"
               onClick={() => setIsOpen(false)}

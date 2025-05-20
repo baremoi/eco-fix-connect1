@@ -1,111 +1,149 @@
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Suspense, useState, useEffect } from "react";
-import { Toaster } from "@/components/ui/sonner";
-import { ErrorBoundary } from "./components/ui/error-boundary";
-import { AuthProvider } from "./lib/AuthContext";
-import { toast } from "sonner";
-import ErrorFallback from "./components/error/ErrorFallback";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Index from './pages/Index';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import Join from './pages/Join';
+import Trades from './pages/Trades';
+import HowItWorks from './pages/HowItWorks';
+import OAuthCallback from './pages/OAuthCallback';
+import VerifyEmail from './pages/VerifyEmail';
+import Dashboard from './pages/Dashboard';
+import NotFound from './pages/NotFound';
+import UserLayout from './components/Layout'; 
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './lib/AuthContext';
+import PublicLayout from './components/layout/Layout';
+import Profile from './pages/Profile';
+import Bookings from './pages/Bookings';
+import { AccessibilityProvider } from './components/providers/AccessibilityProvider';
+import ProviderDashboard from './pages/provider/ProviderDashboard';
+import Projects from './pages/Projects';
+import Availability from './pages/provider/Availability';
+import Reports from './pages/Reports';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// Pages
-import Projects from "./pages/Projects";
-import Profile from "./pages/Profile";
-import Dashboard from "./pages/Dashboard";
-import Messages from "./pages/Messages";
-import Trades from "./pages/Trades";
-import Register from "./pages/Register";
-import NotFound from "./pages/NotFound";
-import HowItWorks from "./pages/HowItWorks";
-import Index from "./pages/Index";
-
-// Layouts
-import Layout from "./components/Layout";
-import PublicLayout from "./components/layout/Layout";
+// Create a new QueryClient instance
+const queryClient = new QueryClient();
 
 function App() {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Simulate checking app initialization status
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 300);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  // App-level error handler
-  const handleAppError = (error: Error) => {
-    console.error("App-level error:", error);
-    toast.error("An application error occurred");
-  };
-
-  if (!isLoaded) {
-    return <div className="flex h-screen w-full items-center justify-center bg-background">
-      <div className="text-center">
-        <div className="h-16 w-16 mx-auto mb-4 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-        <p className="text-muted-foreground">Loading application...</p>
-      </div>
-    </div>;
-  }
-
+  console.log("App rendering");
+  
   return (
-    <ErrorBoundary 
-      onError={handleAppError}
-      fallback={(error) => <ErrorFallback message="Fatal application error" componentName="Application Root" error={error} />}
-    >
-      <AuthProvider>
-        <Router>
-          <Suspense fallback={
-            <div className="flex h-screen w-full items-center justify-center bg-background">
-              <div className="text-center">
-                <div className="h-16 w-16 mx-auto mb-4 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-                <p className="text-muted-foreground">Loading application...</p>
-              </div>
-            </div>
-          }>
+    <Router>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AccessibilityProvider>
             <Routes>
-              {/* Public routes with public layout */}
-              <Route element={
-                <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Public Layout" />}>
-                  <PublicLayout />
-                </ErrorBoundary>
-              }>
-                <Route path="/" element={<Index />} />
-                <Route path="/trades" element={<Trades />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/how-it-works" element={<HowItWorks />} />
-                {/* Add missing routes for footer links */}
-                <Route path="/contact" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Contact Us</h1><p>This page is under construction.</p></div>} />
-                <Route path="/faq" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">FAQ</h1><p>This page is under construction.</p></div>} />
-                <Route path="/privacy" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Privacy Policy</h1><p>This page is under construction.</p></div>} />
-                <Route path="/terms" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Terms of Service</h1><p>This page is under construction.</p></div>} />
-                <Route path="/join" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Become a Provider</h1><p>This page is under construction.</p></div>} />
-                <Route path="/login" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Login</h1><p>This page is under construction.</p></div>} />
-              </Route>
+              {/* Public routes with PublicLayout */}
+              <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
+              <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+              <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+              <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
+              <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
+              <Route path="/join" element={<PublicLayout><Join /></PublicLayout>} />
+              <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
+              <Route path="/oauth" element={<PublicLayout><OAuthCallback /></PublicLayout>} />
+              <Route path="/email-verification" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
+
+              {/* Protected routes with UserLayout */}
+              <Route 
+                path="/trades" 
+                element={
+                  <ProtectedRoute>
+                    <UserLayout>
+                      <Trades />
+                    </UserLayout>
+                  </ProtectedRoute>
+                } 
+              />
               
-              {/* Authenticated routes with dashboard layout */}
-              <Route element={
-                <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Dashboard Layout" />}>
-                  <Layout />
-                </ErrorBoundary>
-              }>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/messages" element={<Messages />} />
-                <Route path="/messages/project/:projectId" element={<Messages />} />
-                <Route path="/messages/user/:userId" element={<Messages />} />
-              </Route>
+              <Route 
+                path="/bookings" 
+                element={
+                  <ProtectedRoute>
+                    <UserLayout>
+                      <Bookings />
+                    </UserLayout>
+                  </ProtectedRoute>
+                }
+              />
               
-              {/* Catch all for 404 */}
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <UserLayout>
+                      <Dashboard />
+                    </UserLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <UserLayout>
+                      <Profile />
+                    </UserLayout>
+                  </ProtectedRoute>
+                } 
+              />
+
+              {/* Provider routes */}
+              <Route 
+                path="/provider/dashboard" 
+                element={
+                  <ProtectedRoute allowedRoles={["tradesperson"]}>
+                    <UserLayout>
+                      <ProviderDashboard />
+                    </UserLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/provider/projects" 
+                element={
+                  <ProtectedRoute allowedRoles={["tradesperson"]}>
+                    <UserLayout>
+                      <Projects />
+                    </UserLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/provider/availability" 
+                element={
+                  <ProtectedRoute allowedRoles={["tradesperson"]}>
+                    <UserLayout>
+                      <Availability />
+                    </UserLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/provider/reports" 
+                element={
+                  <ProtectedRoute allowedRoles={["tradesperson"]}>
+                    <UserLayout>
+                      <Reports />
+                    </UserLayout>
+                  </ProtectedRoute>
+                } 
+              />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <Toaster position="top-right" />
-          </Suspense>
-        </Router>
-      </AuthProvider>
-    </ErrorBoundary>
+          </AccessibilityProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </Router>
   );
 }
 
