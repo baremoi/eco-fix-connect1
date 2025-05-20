@@ -1,4 +1,3 @@
-
 export default {
   // Server configuration
   server: {
@@ -39,8 +38,7 @@ export default {
         "form-action 'self' https://*.lovable.dev",
       ].join('; '),
 
-      // Frame ancestors in a separate header instead of CSP
-      'Content-Security-Policy-Report-Only': "frame-ancestors 'self'",
+      // Frame ancestors in a separate header
       'X-Frame-Options': 'SAMEORIGIN',
 
       // Additional security headers
@@ -49,7 +47,7 @@ export default {
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       
-      // CORS headers - make more permissive
+      // CORS headers
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',

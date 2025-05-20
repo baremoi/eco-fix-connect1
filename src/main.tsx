@@ -1,11 +1,11 @@
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
-import { ErrorBoundary } from './components/ui/error-boundary'
-import { Toaster } from 'sonner'
-import { toast } from 'sonner'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+import { ErrorBoundary } from './components/ui/error-boundary';
+import { Toaster, toast } from 'sonner';
+import ErrorFallback from './components/error/ErrorFallback';
 
 // Function to render the main application with error handling
 const renderApp = () => {
@@ -17,12 +17,12 @@ const renderApp = () => {
 
     ReactDOM.createRoot(rootElement).render(
       <React.StrictMode>
-        <ErrorBoundary>
+        <ErrorBoundary fallback={<ErrorFallback message="Fatal application error" />}>
           <App />
           <Toaster position="top-right" />
         </ErrorBoundary>
       </React.StrictMode>,
-    )
+    );
   } catch (error) {
     console.error("Fatal error during application initialization:", error);
     // Provide a basic error message when the app fails to initialize
@@ -46,13 +46,23 @@ try {
 
   // Global unhandled error logging
   window.addEventListener('error', (event) => {
-    toast.error('An unexpected error occurred');
     console.error('Unhandled error:', event.error);
+    
+    // Check if it's a CSP error
+    const isCSPError = event.message?.includes("Content Security Policy") || 
+                       event.message?.includes("Refused to execute");
+    
+    if (isCSPError) {
+      console.warn('Content Security Policy violation detected:', event.message);
+      toast.error('Content Security Policy violation detected');
+    } else {
+      toast.error('An unexpected error occurred');
+    }
   });
   
   window.addEventListener('unhandledrejection', (event) => {
-    toast.error('An unexpected promise rejection occurred');
     console.error('Unhandled promise rejection:', event.reason);
+    toast.error('An unexpected promise rejection occurred');
   });
 } catch (error) {
   console.error('Critical failure during bootstrap:', error);

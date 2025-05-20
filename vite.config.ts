@@ -15,14 +15,15 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     strictPort: true,
     headers: {
+      // Set Content-Security-Policy header properly
       'Content-Security-Policy': [
         // Restrict default sources to same origin
         "default-src 'self'",
         
-        // Scripts: Allow from trusted sources, including cloudflare analytics
+        // Scripts: Allow trusted sources including cloudflare analytics and unsafe-eval for necessary functions
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.cloudflareinsights.com https://static.cloudflareinsights.com",
         
-        // Styles: Allow same origin and inline styles (needed for styled-components)
+        // Styles: Allow same origin and inline styles
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         
         // Images: Allow same origin, data URIs, and HTTPS sources
@@ -49,8 +50,8 @@ export default defineConfig(({ mode }) => ({
         // Form submission: Restrict to same origin
         "form-action 'self'"
       ].join('; '),
-      // Set frame-ancestors separately as a proper header (not meta tag)
-      'Content-Security-Policy-Report-Only': "frame-ancestors 'self'",
+      
+      // Set frame-ancestors as a proper header (not meta tag)
       'X-Frame-Options': 'SAMEORIGIN'
     }
   },
