@@ -5,11 +5,17 @@ import { SearchFilters } from "./SearchFilters";
 import { TradeSearchResults } from "./TradeSearchResults";
 import { TradeCategory, TradeSearchFilters, Tradesperson } from "./TradeTypes";
 import { tradesService } from "@/services/tradesService";
+import { toast } from "sonner";
+import { ErrorBoundary } from "../ui/error-boundary";
+import { Spinner } from "../ui/spinner";
+import { Alert, AlertDescription } from "../ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 export function TradesController() {
   const [tradespeople, setTradespeople] = useState<Tradesperson[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<TradeCategory[]>([]);
+  const [error, setError] = useState<string | null>(null);
   
   // Search filter states
   const [filters, setFilters] = useState<TradeSearchFilters>({
@@ -63,27 +69,33 @@ export function TradesController() {
     
     setFilters(newFilters);
     
-    // Load categories and perform initial search if parameters exist
+    // Load categories and perform initial search 
     loadCategories();
-    
-    if (tradeParam || postcodeParam || priceMinParam || ratingParam) {
-      performSearch();
-    } else {
-      setLoading(false);
-    }
+    performSearch(newFilters);
   }, [location.search]);
   
   const loadCategories = async () => {
-    const data = await tradesService.getCategories();
-    setCategories(data);
+    try {
+      const data = await tradesService.getCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error("Failed to load categories:", err);
+      toast.error("Failed to load trade categories");
+      setError("Failed to load categories. Please try again later.");
+    }
   };
   
-  const performSearch = async () => {
+  const performSearch = async (searchFilters = filters) => {
     setLoading(true);
+    setError(null);
     
     try {
-      const results = await tradesService.searchTradespeople(filters);
+      const results = await tradesService.searchTradespeople(searchFilters);
       setTradespeople(results);
+    } catch (err) {
+      console.error("Search failed:", err);
+      toast.error("Failed to search tradespeople");
+      setError("Failed to search tradespeople. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -113,7 +125,7 @@ export function TradesController() {
     navigate(`/trades?${params.toString()}`);
     
     // Execute search
-    performSearch();
+    performSearch(filters);
   };
   
   const handleResetFilters = () => {
@@ -128,26 +140,47 @@ export function TradesController() {
     
     setFilters(resetFilters);
     navigate("/trades");
-    performSearch();
+    performSearch(resetFilters);
   };
-
-  return (
-    <div className="bg-card shadow rounded-lg p-6 mb-8">
-      <SearchFilters 
-        loading={loading}
-        categories={categories}
-        filters={filters}
-        onUpdateFilter={handleUpdateFilter}
-        onSearch={handleSearch}
-        onResetFilters={handleResetFilters}
-      />
-
-      <div className="mt-6">
-        <TradeSearchResults 
+  
+  if (error) {
+    return (
+      <div className="bg-card shadow rounded-lg p-6 mb-8">
+        <Alert variant="destructive" className="mb-4">
+          <AlertTriangle className="h-4 w-4 mr-2" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <SearchFilters 
           loading={loading}
-          tradespeople={tradespeople}
+          categories={categories}
+          filters={filters}
+          onUpdateFilter={handleUpdateFilter}
+          onSearch={handleSearch}
+          onResetFilters={handleResetFilters}
         />
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <ErrorBoundary>
+      <div className="bg-card shadow rounded-lg p-6 mb-8">
+        <SearchFilters 
+          loading={loading}
+          categories={categories}
+          filters={filters}
+          onUpdateFilter={handleUpdateFilter}
+          onSearch={handleSearch}
+          onResetFilters={handleResetFilters}
+        />
+
+        <div className="mt-6">
+          <TradeSearchResults 
+            loading={loading}
+            tradespeople={tradespeople}
+          />
+        </div>
+      </div>
+    </ErrorBoundary>
   );
 }

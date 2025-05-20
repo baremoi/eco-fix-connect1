@@ -87,19 +87,24 @@ export const tradesService = {
       
       console.log("Raw data from query:", data);
       
-      // Transform the data to a more usable format
-      const formattedData = data.map(item => ({
-        id: item.id,
-        full_name: item.full_name || 'Unknown',
-        avatar_url: item.avatar_url,
-        role: item.role,
-        bio: item.bio,
-        // Fix: Access service category name safely, handling array structure correctly
-        serviceCategory: item.tradesperson_services[0]?.service_categories[0]?.name || 'General',
-        hourlyRate: item.tradesperson_services[0]?.hourly_rate,
-        avg_rating: 0,
-        review_count: 0
-      }));
+      // Transform the data to a more usable format with safer data access
+      const formattedData = data?.map(item => {
+        // Safely access nested data with optional chaining and fallbacks
+        const tradeService = item.tradesperson_services?.[0] || {};
+        const serviceCategory = tradeService.service_categories?.[0] || {};
+        
+        return {
+          id: item.id,
+          full_name: item.full_name || 'Unknown',
+          avatar_url: item.avatar_url,
+          role: item.role,
+          bio: item.bio,
+          serviceCategory: serviceCategory.name || 'General',
+          hourlyRate: tradeService.hourly_rate,
+          avg_rating: 0,
+          review_count: 0
+        };
+      }) || [];
       
       console.log("Formatted data:", formattedData);
       
@@ -117,6 +122,7 @@ export const tradesService = {
               review_count: stats.data?.review_count || 0
             };
           } catch (e) {
+            console.error(`Error fetching ratings for ${person.id}:`, e);
             return person;
           }
         })
