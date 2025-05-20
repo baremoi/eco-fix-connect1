@@ -13,14 +13,48 @@ import Layout from "./components/Layout";
 import PublicLayout from "./components/layout/Layout";
 import Index from "./pages/Index";
 import { ErrorBoundary } from "./components/ui/error-boundary";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { toast } from "sonner";
 
 function App() {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Simulate checking app initialization status
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // App-level error handler
+  const handleAppError = (error: Error) => {
+    console.error("App-level error:", error);
+    toast.error("An application error occurred");
+  };
+
+  if (!isLoaded) {
+    return <div className="flex h-screen w-full items-center justify-center bg-background">
+      <div className="text-center">
+        <div className="h-16 w-16 mx-auto mb-4 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+        <p className="text-muted-foreground">Loading application...</p>
+      </div>
+    </div>;
+  }
+
   return (
-    <ErrorBoundary>
+    <ErrorBoundary onError={handleAppError}>
       <AuthProvider>
         <Router>
-          <Suspense fallback={<div className="p-8 text-center">Loading application...</div>}>
+          <Suspense fallback={
+            <div className="flex h-screen w-full items-center justify-center bg-background">
+              <div className="text-center">
+                <div className="h-16 w-16 mx-auto mb-4 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                <p className="text-muted-foreground">Loading application...</p>
+              </div>
+            </div>
+          }>
             <Routes>
               {/* Public routes with public layout */}
               <Route element={

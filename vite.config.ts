@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => ({
         // Restrict default sources to same origin
         "default-src 'self'",
         
-        // Scripts: Allow only from same origin and trusted sources, including unsafe-eval for dev tools
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co",
+        // Scripts: Allow from trusted sources, including cloudflare analytics
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.cloudflareinsights.com",
         
         // Styles: Allow same origin and inline styles (needed for styled-components)
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => ({
         "font-src 'self' data: https://fonts.gstatic.com",
         
         // Connect (API/XHR/WebSocket): Allow necessary endpoints
-        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:* https://*.supabase.co wss://*.supabase.co https://gquwbmdxvsxkxpauabuw.supabase.co",
+        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:* https://*.supabase.co wss://*.supabase.co https://gquwbmdxvsxkxpauabuw.supabase.co https://*.cloudflareinsights.com",
         
         // Frames: Allow only specific trusted sources
         "frame-src 'self' https://accounts.google.com",
@@ -49,12 +49,13 @@ export default defineConfig(({ mode }) => ({
         // Form submission: Restrict to same origin
         "form-action 'self'",
         
-        // Frame ancestors: Prevent clickjacking
-        "frame-ancestors 'self'",
+        // Frame ancestors: Set separately in server configuration
         
         // Manifest: Allow same origin
         "manifest-src 'self'"
-      ].join('; ')
+      ].join('; '),
+      // Set frame-ancestors separately
+      'X-Frame-Options': 'SAMEORIGIN'
     }
   },
   plugins: [

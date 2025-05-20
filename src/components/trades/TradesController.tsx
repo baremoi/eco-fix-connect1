@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SearchFilters } from "./SearchFilters";
@@ -8,6 +9,7 @@ import { toast } from "sonner";
 import { ErrorBoundary } from "../ui/error-boundary";
 import { Alert, AlertDescription } from "../ui/alert";
 import { AlertTriangle } from "lucide-react";
+import { Suspense } from "react";
 
 export function TradesController() {
   const [tradespeople, setTradespeople] = useState<Tradesperson[]>([]);
@@ -30,46 +32,52 @@ export function TradesController() {
   
   // Extract search params on initial load
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const tradeParam = params.get('trade');
-    const postcodeParam = params.get('postcode');
-    const priceMinParam = params.get('priceMin');
-    const priceMaxParam = params.get('priceMax');
-    const ratingParam = params.get('rating');
-    const sortParam = params.get('sort');
-    const availabilityParam = params.get('availability');
-    
-    const newFilters = { ...filters };
-    
-    if (tradeParam) {
-      newFilters.selectedCategory = tradeParam;
+    try {
+      const params = new URLSearchParams(location.search);
+      const tradeParam = params.get('trade');
+      const postcodeParam = params.get('postcode');
+      const priceMinParam = params.get('priceMin');
+      const priceMaxParam = params.get('priceMax');
+      const ratingParam = params.get('rating');
+      const sortParam = params.get('sort');
+      const availabilityParam = params.get('availability');
+      
+      const newFilters = { ...filters };
+      
+      if (tradeParam) {
+        newFilters.selectedCategory = tradeParam;
+      }
+      
+      if (postcodeParam) {
+        newFilters.postcode = postcodeParam;
+      }
+      
+      if (priceMinParam && priceMaxParam) {
+        newFilters.priceRange = [parseInt(priceMinParam), parseInt(priceMaxParam)];
+      }
+      
+      if (ratingParam) {
+        newFilters.ratingFilter = parseInt(ratingParam);
+      }
+      
+      if (sortParam) {
+        newFilters.sortBy = sortParam;
+      }
+      
+      if (availabilityParam === 'true') {
+        newFilters.availabilityFilter = true;
+      }
+      
+      setFilters(newFilters);
+      
+      // Load categories and perform initial search 
+      loadCategories();
+      performSearch(newFilters);
+    } catch (err) {
+      console.error("Error parsing URL parameters:", err);
+      toast.error("There was a problem loading search parameters");
+      setError("Failed to process search parameters");
     }
-    
-    if (postcodeParam) {
-      newFilters.postcode = postcodeParam;
-    }
-    
-    if (priceMinParam && priceMaxParam) {
-      newFilters.priceRange = [parseInt(priceMinParam), parseInt(priceMaxParam)];
-    }
-    
-    if (ratingParam) {
-      newFilters.ratingFilter = parseInt(ratingParam);
-    }
-    
-    if (sortParam) {
-      newFilters.sortBy = sortParam;
-    }
-    
-    if (availabilityParam === 'true') {
-      newFilters.availabilityFilter = true;
-    }
-    
-    setFilters(newFilters);
-    
-    // Load categories and perform initial search 
-    loadCategories();
-    performSearch(newFilters);
   }, [location.search]);
   
   const loadCategories = async () => {
@@ -141,25 +149,6 @@ export function TradesController() {
     performSearch(resetFilters);
   };
   
-  if (error) {
-    return (
-      <div className="bg-card shadow rounded-lg p-6 mb-8">
-        <Alert variant="destructive" className="mb-4">
-          <AlertTriangle className="h-4 w-4 mr-2" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-        <SearchFilters 
-          loading={loading}
-          categories={categories}
-          filters={filters}
-          onUpdateFilter={handleUpdateFilter}
-          onSearch={handleSearch}
-          onResetFilters={handleResetFilters}
-        />
-      </div>
-    );
-  }
-
   return (
     <ErrorBoundary>
       <div className="bg-card shadow rounded-lg p-6 mb-8">
@@ -172,12 +161,26 @@ export function TradesController() {
           onResetFilters={handleResetFilters}
         />
 
-        <div className="mt-6">
-          <TradeSearchResults 
-            loading={loading}
-            tradespeople={tradespeople}
-          />
-        </div>
+        {error ? (
+          <Alert variant="destructive" className="my-4">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        ) : (
+          <div className="mt-6">
+            <Suspense fallback={
+              <div className="py-12 text-center">
+                <div className="h-12 w-12 mx-auto mb-4 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                <p className="text-muted-foreground">Loading trade results...</p>
+              </div>
+            }>
+              <TradeSearchResults 
+                loading={loading}
+                tradespeople={tradespeople}
+              />
+            </Suspense>
+          </div>
+        )}
       </div>
     </ErrorBoundary>
   );

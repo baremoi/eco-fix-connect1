@@ -5,25 +5,55 @@ import App from './App'
 import './index.css'
 import { ErrorBoundary } from './components/ui/error-boundary'
 import { Toaster } from 'sonner'
+import { toast } from 'sonner'
 
-// Try to render the app, but catch any errors during initialization
+// Function to render the main application with error handling
+const renderApp = () => {
+  try {
+    const rootElement = document.getElementById('root');
+    if (!rootElement) {
+      throw new Error('Root element not found');
+    }
+
+    ReactDOM.createRoot(rootElement).render(
+      <React.StrictMode>
+        <ErrorBoundary>
+          <App />
+          <Toaster position="top-right" />
+        </ErrorBoundary>
+      </React.StrictMode>,
+    )
+  } catch (error) {
+    console.error("Fatal error during application initialization:", error);
+    // Provide a basic error message when the app fails to initialize
+    document.body.innerHTML = `
+      <div style="padding: 20px; text-align: center; font-family: system-ui, -apple-system, sans-serif;">
+        <h2 style="color: #e11d48;">Application Error</h2>
+        <p style="margin-bottom: 16px;">We're sorry, but the application failed to initialize.</p>
+        <p style="margin-bottom: 24px; font-size: 0.9rem; color: #6b7280;">${error instanceof Error ? error.message : 'Unknown error'}</p>
+        <button onclick="window.location.reload()" 
+                style="padding: 8px 16px; background-color: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          Refresh Page
+        </button>
+      </div>
+    `;
+  }
+};
+
+// Initialize the app with a global error handler
 try {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <ErrorBoundary>
-        <App />
-        <Toaster position="top-right" />
-      </ErrorBoundary>
-    </React.StrictMode>,
-  )
+  renderApp();
+
+  // Global unhandled error logging
+  window.addEventListener('error', (event) => {
+    toast.error('An unexpected error occurred');
+    console.error('Unhandled error:', event.error);
+  });
+  
+  window.addEventListener('unhandledrejection', (event) => {
+    toast.error('An unexpected promise rejection occurred');
+    console.error('Unhandled promise rejection:', event.reason);
+  });
 } catch (error) {
-  console.error("Failed to render application:", error);
-  // Render a fallback UI when the entire app fails to initialize
-  document.body.innerHTML = `
-    <div style="padding: 20px; text-align: center;">
-      <h2>Something went wrong</h2>
-      <p>The application failed to initialize. Please try refreshing the page.</p>
-      <button onclick="window.location.reload()">Refresh Page</button>
-    </div>
-  `;
+  console.error('Critical failure during bootstrap:', error);
 }
