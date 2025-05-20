@@ -1,3 +1,4 @@
+
 export default {
   // Server configuration
   server: {
@@ -7,7 +8,7 @@ export default {
         // Restrict default sources to same origin
         "default-src 'self'",
         
-        // Scripts: Allow same origin, inline scripts, and specific external sources
+        // Scripts: Allow same origin, inline scripts, unsafe-eval, and specific external sources
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.lovable.dev",
         
         // Styles: Allow same origin and inline styles for Tailwind
@@ -20,7 +21,7 @@ export default {
         "font-src 'self' data: https://fonts.gstatic.com",
         
         // Connect (API/WebSocket): Allow necessary endpoints - expand for Supabase connections
-        "connect-src 'self' https://*.lovable.dev https://*.supabase.co wss://*.lovable.dev https://gquwbmdxvsxkxpauabuw.supabase.co",
+        "connect-src 'self' https://*.lovable.dev https://*.supabase.co wss://*.lovable.dev wss://*.supabase.co https://gquwbmdxvsxkxpauabuw.supabase.co",
         
         // Frames: Allow specific trusted sources
         "frame-src 'self' https://accounts.google.com",
@@ -118,4 +119,4 @@ export default {
     project: process.env.LOVABLE_PROJECT_ID,
     apiKey: process.env.LOVABLE_API_KEY
   }
-}; 
+};

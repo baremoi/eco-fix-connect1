@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => ({
         // Restrict default sources to same origin
         "default-src 'self'",
         
-        // Scripts: Allow only from same origin and trusted sources
+        // Scripts: Allow only from same origin and trusted sources, including unsafe-eval for dev tools
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co",
         
         // Styles: Allow same origin and inline styles (needed for styled-components)
@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => ({
         "font-src 'self' data: https://fonts.gstatic.com",
         
         // Connect (API/XHR/WebSocket): Allow necessary endpoints
-        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:* https://gquwbmdxvsxkxpauabuw.supabase.co",
+        "connect-src 'self' https://accounts.google.com https://www.googleapis.com http://localhost:* ws://localhost:* https://*.supabase.co wss://*.supabase.co https://gquwbmdxvsxkxpauabuw.supabase.co",
         
         // Frames: Allow only specific trusted sources
         "frame-src 'self' https://accounts.google.com",
