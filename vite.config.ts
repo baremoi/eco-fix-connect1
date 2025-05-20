@@ -54,7 +54,10 @@ export default defineConfig(({ mode }) => ({
       // Security headers
       'X-Frame-Options': 'SAMEORIGIN',
       'X-Content-Type-Options': 'nosniff',
-      'Referrer-Policy': 'strict-origin-when-cross-origin'
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      
+      // Add Cache-Control header
+      'Cache-Control': 'max-age=3600, must-revalidate'
     }
   },
   plugins: [

@@ -145,6 +145,12 @@
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+
+  /* Fix for Safari compatibility */
+  [data-sonner-toast][data-swiped=true] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
 }
 
 @layer components {
