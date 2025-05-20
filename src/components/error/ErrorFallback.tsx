@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { RefreshCw, Home, AlertCircle, Bug } from 'lucide-react';
@@ -19,10 +19,27 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({
   message = "Something went wrong",
   componentName = "Component"
 }) => {
-  // Log error to console for debugging
-  React.useEffect(() => {
+  // Log error to console for debugging with enhanced details
+  useEffect(() => {
     if (error) {
-      console.error(`Error in ${componentName}:`, error);
+      console.group(`Error in ${componentName}`);
+      console.error(`Component: ${componentName}`);
+      console.error(`Message: ${message}`);
+      console.error(`Error: ${error.message}`);
+      console.error(`Stack: ${error.stack}`);
+      
+      // Check for specific error types
+      if (error instanceof TypeError) {
+        console.warn('Type Error detected - likely an undefined property was accessed');
+      }
+      if (error.message?.includes('is not a function')) {
+        console.warn('Function Error - trying to call something that is not a function');
+      }
+      if (error.message?.includes('Cannot read property') || error.message?.includes('Cannot read properties')) {
+        console.warn('Null/Undefined Error - trying to access properties on null/undefined');
+      }
+      console.groupEnd();
+      
       toast.error(message || `Error in ${componentName}`);
     }
   }, [error, message, componentName]);

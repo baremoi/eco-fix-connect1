@@ -43,23 +43,29 @@ const featuredTradespeople = [
 const FeaturedTradespeople = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [tradespeople, setTradespeople] = useState(featuredTradespeople);
 
   useEffect(() => {
-    // Simulate data loading
     try {
-      // Add a small delay to simulate loading time
+      console.log('FeaturedTradespeople component mounted');
+      // Simulate data loading
       const timer = setTimeout(() => {
+        console.log('FeaturedTradespeople data loaded');
         setIsLoaded(true);
       }, 300);
       
-      return () => clearTimeout(timer);
+      return () => {
+        console.log('FeaturedTradespeople component unmounting');
+        clearTimeout(timer);
+      };
     } catch (error) {
-      console.error("Error loading featured tradespeople:", error);
+      console.error("Error in FeaturedTradespeople:", error);
       setHasError(true);
       toast.error("Failed to load featured tradespeople");
     }
   }, []);
 
+  // Fallback for error state
   if (hasError) {
     return (
       <section className="py-16">
@@ -73,6 +79,7 @@ const FeaturedTradespeople = () => {
     );
   }
 
+  // Fallback for loading state
   if (!isLoaded) {
     return (
       <section className="py-16">
@@ -87,6 +94,19 @@ const FeaturedTradespeople = () => {
     );
   }
 
+  // Safeguard against null data
+  if (!tradespeople || tradespeople.length === 0) {
+    return (
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-3">Featured Tradespeople</h2>
+          <p className="text-center text-muted-foreground">No featured professionals available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Main render with data
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -94,7 +114,7 @@ const FeaturedTradespeople = () => {
         <p className="text-center text-muted-foreground mb-10">Meet our top-rated eco-conscious professionals</p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredTradespeople.map((person) => (
+          {tradespeople.map((person) => (
             <Card key={person.id} className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="relative">
                 <AspectRatio ratio={16/9}>

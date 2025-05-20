@@ -2,12 +2,12 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { Alert, AlertTitle, AlertDescription } from "./alert";
 import { Button } from "./button";
-import { RefreshCw, AlertCircle } from "lucide-react";
+import { RefreshCw, AlertCircle, Bug } from "lucide-react";
 import { toast } from 'sonner';
 
 interface Props {
   children: ReactNode;
-  fallback?: ReactNode;
+  fallback?: ReactNode | ((error: Error) => ReactNode);
   onError?: (error: Error, info: ErrorInfo) => void;
 }
 
@@ -36,8 +36,17 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log the error to the console
-    console.error("Error caught by ErrorBoundary:", error, errorInfo);
+    // Log the error to the console with more detail
+    console.group("Error caught by ErrorBoundary");
+    console.error("Error:", error);
+    console.error("Component Stack:", errorInfo.componentStack);
+    
+    // Try to extract more meaningful information
+    if (error.stack) {
+      const stackLines = error.stack.split('\n');
+      console.log("Error occurred in:", stackLines.slice(1, 3).join('\n'));
+    }
+    console.groupEnd();
     
     // Store the error info for potential display
     this.setState({ errorInfo });
@@ -68,6 +77,9 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       // Custom fallback UI if provided
       if (this.props.fallback) {
+        if (typeof this.props.fallback === 'function' && this.state.error) {
+          return this.props.fallback(this.state.error);
+        }
         return this.props.fallback;
       }
       
@@ -88,6 +100,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 Try again
               </Button>
               <Button onClick={this.handleReload} variant="default">
+                <Bug className="mr-2 h-4 w-4" />
                 Reload page
               </Button>
             </div>

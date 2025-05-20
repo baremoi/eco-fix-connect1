@@ -7,10 +7,9 @@ import { ErrorBoundary } from './components/ui/error-boundary';
 import { Toaster, toast } from 'sonner';
 import ErrorFallback from './components/error/ErrorFallback';
 
-// Function to log detailed error information
-const logDetailedError = (error: Error | Event, source: string = "unknown") => {
+// Function to log detailed error information with structured output
+const logDetailedError = (error: Error | unknown, source: string = "unknown") => {
   console.group(`Error in ${source}`);
-  console.error(error);
   
   if (error instanceof Error) {
     console.error('Message:', error.message);
@@ -23,7 +22,13 @@ const logDetailedError = (error: Error | Event, source: string = "unknown") => {
       console.warn('Null Reference: Trying to access properties on undefined or null');
     } else if (error.message.includes('is not a function')) {
       console.warn('Function Error: Trying to call something that is not a function');
+    } else if (error.message.includes('lazy') || error.message.includes('Suspense')) {
+      console.warn('Lazy Loading Error: Issue with React.lazy or Suspense component');
+    } else if (error.message.includes('hooks')) {
+      console.warn('React Hooks Error: Rules of hooks may be violated');
     }
+  } else {
+    console.error('Unknown error type:', error);
   }
   
   console.groupEnd();
@@ -32,6 +37,7 @@ const logDetailedError = (error: Error | Event, source: string = "unknown") => {
 // Function to render the main application with enhanced error handling
 const renderApp = () => {
   try {
+    console.log('Starting application rendering process');
     const rootElement = document.getElementById('root');
     if (!rootElement) {
       throw new Error('Root element not found');
@@ -40,6 +46,9 @@ const renderApp = () => {
     ReactDOM.createRoot(rootElement).render(
       <React.StrictMode>
         <ErrorBoundary 
+          onError={(error) => {
+            console.error("Root error boundary caught an error:", error);
+          }}
           fallback={
             <ErrorFallback 
               message="Fatal application error" 
@@ -52,6 +61,7 @@ const renderApp = () => {
         </ErrorBoundary>
       </React.StrictMode>,
     );
+    console.log('Application rendering complete');
   } catch (error) {
     console.error("Fatal error during application initialization:", error);
     logDetailedError(error as Error, "app initialization");
@@ -73,11 +83,13 @@ const renderApp = () => {
 
 // Initialize the app with enhanced global error handler
 try {
+  console.log('Application bootstrap starting');
   renderApp();
 
   // Global unhandled error logging
   window.addEventListener('error', (event) => {
-    logDetailedError(event, 'global error handler');
+    console.log('Global error event caught:', event.type);
+    logDetailedError(event.error || new Error(event.message), 'global error handler');
     
     // Check if it's a CSP error
     const isCSPError = event.message?.includes("Content Security Policy") || 
@@ -86,15 +98,29 @@ try {
     if (isCSPError) {
       console.warn('Content Security Policy violation detected:', event.message);
       toast.error('Content Security Policy violation detected');
+    } else if (event.message?.includes('lazy') || event.filename?.includes('chunk')) {
+      toast.error('Error loading a component. Please try refreshing the page.');
     } else {
       toast.error('An unexpected error occurred');
     }
   });
   
   window.addEventListener('unhandledrejection', (event) => {
+    console.log('Unhandled promise rejection caught');
     logDetailedError(event.reason, 'unhandled promise rejection');
-    toast.error('An unexpected promise rejection occurred');
+    
+    // Specific handling for common promise rejection scenarios
+    const reason = event.reason?.message || String(event.reason);
+    if (reason.includes('fetch') || reason.includes('api') || reason.includes('network')) {
+      toast.error('Network request failed. Please check your connection.');
+    } else if (reason.includes('chunk')) {
+      toast.error('Failed to load necessary resources. Please refresh the page.');
+    } else {
+      toast.error('An unexpected promise rejection occurred');
+    }
   });
+  
+  console.log('Application bootstrap complete');
 } catch (error) {
   console.error('Critical failure during bootstrap:', error);
   logDetailedError(error as Error, 'bootstrap');

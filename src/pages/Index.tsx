@@ -1,5 +1,5 @@
 
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import HeroSection from "@/components/home/HeroSection";
 import { Card } from "@/components/ui/card";
@@ -23,121 +23,124 @@ const LoadingFallback = ({ componentName }: { componentName: string }) => (
   </section>
 );
 
+const SectionErrorBoundary = ({ children, name }: { children: React.ReactNode; name: string }) => {
+  const [hasRetried, setHasRetried] = useState(false);
+  
+  const handleReset = () => {
+    setHasRetried(true);
+    // Force a re-render of the component
+    setTimeout(() => {
+      setHasRetried(false);
+    }, 0);
+  };
+  
+  return (
+    <ErrorBoundary 
+      fallback={(error) => (
+        <section className={`py-16 ${name === 'Testimonials' || name === 'TradeCategories' ? 'bg-muted/30' : ''}`}>
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-3">{name}</h2>
+            <Card className="p-6">
+              <ErrorFallback 
+                error={error}
+                message={`Unable to load ${name.toLowerCase()}`} 
+                componentName={name}
+                resetErrorBoundary={handleReset}
+              />
+            </Card>
+          </div>
+        </section>
+      )}
+    >
+      {children}
+    </ErrorBoundary>
+  );
+};
+
 const Index = () => {
+  const [sectionsToShow, setSectionsToShow] = useState<string[]>([]);
+  
+  // Progressive loading strategy - load sections in stages to isolate issues
+  useEffect(() => {
+    // Start with the most critical sections
+    setSectionsToShow(['FeaturedTradespeople']);
+    
+    // Add more sections after short intervals to isolate potential issues
+    const timer1 = setTimeout(() => {
+      setSectionsToShow(prev => [...prev, 'TradeCategories']);
+    }, 500);
+    
+    const timer2 = setTimeout(() => {
+      setSectionsToShow(prev => [...prev, 'HowItWorks']);
+    }, 1000);
+    
+    const timer3 = setTimeout(() => {
+      setSectionsToShow(prev => [...prev, 'TradesInfoSection', 'Testimonials', 'CTASection']);
+    }, 1500);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
+  }, []);
+  
+  // Helper to check if a section should be rendered
+  const shouldShowSection = (name: string) => sectionsToShow.includes(name);
+
   return (
     <div className="bg-background">
       <ErrorBoundary fallback={<ErrorFallback message="Failed to load homepage content" componentName="HomePage" />}>
         {/* HeroSection is not lazy loaded - render it directly for fast initial load */}
         <HeroSection />
         
-        {/* Each section is isolated in its own error boundary */}
-        <ErrorBoundary fallback={
-          <section className="py-16">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-3">Featured Tradespeople</h2>
-              <Card className="p-6">
-                <ErrorFallback 
-                  message="Unable to load featured tradespeople" 
-                  componentName="FeaturedTradespeople" 
-                />
-              </Card>
-            </div>
-          </section>
-        }>
-          <Suspense fallback={<LoadingFallback componentName="featured tradespeople" />}>
-            <FeaturedTradespeople />
-          </Suspense>
-        </ErrorBoundary>
+        {shouldShowSection('FeaturedTradespeople') && (
+          <SectionErrorBoundary name="Featured Tradespeople">
+            <Suspense fallback={<LoadingFallback componentName="featured tradespeople" />}>
+              <FeaturedTradespeople />
+            </Suspense>
+          </SectionErrorBoundary>
+        )}
         
-        <ErrorBoundary fallback={
-          <section className="py-16 bg-muted/30">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-3">Popular Trade Categories</h2>
-              <Card className="p-6">
-                <ErrorFallback 
-                  message="Unable to load trade categories" 
-                  componentName="TradeCategories" 
-                />
-              </Card>
-            </div>
-          </section>
-        }>
-          <Suspense fallback={<LoadingFallback componentName="trade categories" />}>
-            <TradeCategories />
-          </Suspense>
-        </ErrorBoundary>
+        {shouldShowSection('TradeCategories') && (
+          <SectionErrorBoundary name="Trade Categories">
+            <Suspense fallback={<LoadingFallback componentName="trade categories" />}>
+              <TradeCategories />
+            </Suspense>
+          </SectionErrorBoundary>
+        )}
         
-        <ErrorBoundary fallback={
-          <section className="py-16">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-3">How It Works</h2>
-              <Card className="p-6">
-                <ErrorFallback 
-                  message="Unable to load how it works section" 
-                  componentName="HowItWorks" 
-                />
-              </Card>
-            </div>
-          </section>
-        }>
-          <Suspense fallback={<LoadingFallback componentName="how it works" />}>
-            <HowItWorks />
-          </Suspense>
-        </ErrorBoundary>
+        {shouldShowSection('HowItWorks') && (
+          <SectionErrorBoundary name="How It Works">
+            <Suspense fallback={<LoadingFallback componentName="how it works" />}>
+              <HowItWorks />
+            </Suspense>
+          </SectionErrorBoundary>
+        )}
         
-        <ErrorBoundary fallback={
-          <section className="py-16">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-3">Trades Information</h2>
-              <Card className="p-6">
-                <ErrorFallback 
-                  message="Unable to load trades info section" 
-                  componentName="TradesInfoSection" 
-                />
-              </Card>
-            </div>
-          </section>
-        }>
-          <Suspense fallback={<LoadingFallback componentName="trades information" />}>
-            <TradesInfoSection />
-          </Suspense>
-        </ErrorBoundary>
+        {shouldShowSection('TradesInfoSection') && (
+          <SectionErrorBoundary name="Trades Information">
+            <Suspense fallback={<LoadingFallback componentName="trades information" />}>
+              <TradesInfoSection />
+            </Suspense>
+          </SectionErrorBoundary>
+        )}
         
-        <ErrorBoundary fallback={
-          <section className="py-16 bg-muted/30">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-3">What Our Customers Say</h2>
-              <Card className="p-6">
-                <ErrorFallback 
-                  message="Unable to load testimonials" 
-                  componentName="Testimonials" 
-                />
-              </Card>
-            </div>
-          </section>
-        }>
-          <Suspense fallback={<LoadingFallback componentName="testimonials" />}>
-            <Testimonials />
-          </Suspense>
-        </ErrorBoundary>
+        {shouldShowSection('Testimonials') && (
+          <SectionErrorBoundary name="Testimonials">
+            <Suspense fallback={<LoadingFallback componentName="testimonials" />}>
+              <Testimonials />
+            </Suspense>
+          </SectionErrorBoundary>
+        )}
         
-        <ErrorBoundary fallback={
-          <section className="py-16">
-            <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-3">Ready to Get Started?</h2>
-              <Card className="p-6">
-                <ErrorFallback 
-                  message="Unable to load call to action section" 
-                  componentName="CTASection" 
-                />
-              </Card>
-            </div>
-          </section>
-        }>
-          <Suspense fallback={<LoadingFallback componentName="call to action" />}>
-            <CTASection />
-          </Suspense>
-        </ErrorBoundary>
+        {shouldShowSection('CTASection') && (
+          <SectionErrorBoundary name="Call to Action">
+            <Suspense fallback={<LoadingFallback componentName="call to action" />}>
+              <CTASection />
+            </Suspense>
+          </SectionErrorBoundary>
+        )}
       </ErrorBoundary>
     </div>
   );
