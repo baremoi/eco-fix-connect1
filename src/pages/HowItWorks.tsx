@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 
 const HowItWorks = () => {
   return (
@@ -35,12 +34,12 @@ const HowItWorks = () => {
           </div>
         </div>
         <div className="text-center mt-12">
-          <Link
-            to="/register"
+          <a
+            href="/register"
             className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90"
           >
             Get Started Now
-          </Link>
+          </a>
         </div>
       </main>
     </div>
