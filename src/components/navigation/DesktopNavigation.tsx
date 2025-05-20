@@ -2,21 +2,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { NavItem } from "./NavItem";
 import { NavItem as NavItemType } from "./NavItems";
-import { ProfileSection } from "./ProfileSection";
-import { User } from "@supabase/supabase-js";
 
 type DesktopNavigationProps = {
   navItems: NavItemType[];
-  user: User | null;
-  profile: any;
-  logout: () => void;
 };
 
 export const DesktopNavigation = ({ 
-  navItems, 
-  user, 
-  profile, 
-  logout 
+  navItems
 }: DesktopNavigationProps) => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
@@ -40,12 +32,6 @@ export const DesktopNavigation = ({
           ))}
         </nav>
       </div>
-      
-      <ProfileSection 
-        user={user} 
-        profile={profile} 
-        logout={logout} 
-      />
     </aside>
   );
 };

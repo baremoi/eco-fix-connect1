@@ -5,7 +5,7 @@ import DesktopNavigation from "./navigation/DesktopNavigation";
 import MobileNavigation from "./navigation/MobileNavigation";
 
 const Navigation = () => {
-  const { user, profile, logout } = useAuth();
+  const { user, profile } = useAuth();
 
   // Determine which nav items to show based on user role
   const navItems = getNavItems(profile?.role, !!user);
@@ -14,15 +14,9 @@ const Navigation = () => {
     <>
       <DesktopNavigation 
         navItems={navItems}
-        user={user}
-        profile={profile}
-        logout={logout}
       />
       <MobileNavigation
         navItems={navItems}
-        user={user}
-        profile={profile}
-        logout={logout}
       />
     </>
   );

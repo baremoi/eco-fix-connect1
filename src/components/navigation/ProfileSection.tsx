@@ -1,3 +1,4 @@
+
 import { LogOut, ChevronDown, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ type ProfileSectionProps = {
   profile: any; // Using any for simplicity, but ideally should use a proper type
   logout: () => void;
   mobile?: boolean;
+  topRight?: boolean;
   onCloseSheet?: () => void;
 };
 
@@ -25,7 +27,8 @@ export const ProfileSection = ({
   user, 
   profile, 
   logout, 
-  mobile = false, 
+  mobile = false,
+  topRight = false,
   onCloseSheet 
 }: ProfileSectionProps) => {
   const [open, setOpen] = useState(false);
@@ -77,7 +80,52 @@ export const ProfileSection = ({
     );
   }
   
-  // For desktop view, we'll use the dropdown menu
+  // For top-right display, use a more compact layout
+  if (topRight) {
+    return (
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            className="flex items-center gap-2 px-2 h-auto py-2 hover:bg-accent hover:text-accent-foreground"
+          >
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={profile.avatar_url || undefined} />
+              <AvatarFallback>
+                {profile.full_name?.charAt(0) || user.email?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="font-medium text-sm hidden md:inline">
+              {firstName}
+            </span>
+            <ChevronDown className="h-4 w-4 opacity-50" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel>
+            {profile.full_name || user.email}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link to="/profile" className="cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem 
+            onClick={handleLogout}
+            className="cursor-pointer text-destructive focus:text-destructive"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+  
+  // For desktop sidebar view, use the original layout
   return (
     <div className="p-4 border-t border-sidebar-border">
       <DropdownMenu open={open} onOpenChange={setOpen}>

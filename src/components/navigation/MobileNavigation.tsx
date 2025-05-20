@@ -7,21 +7,13 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { NavItem } from "./NavItem";
 import { NavItem as NavItemType } from "./NavItems";
-import { ProfileSection } from "./ProfileSection";
-import { User } from "@supabase/supabase-js";
 
 type MobileNavigationProps = {
   navItems: NavItemType[];
-  user: User | null;
-  profile: any;
-  logout: () => void;
 };
 
 export const MobileNavigation = ({ 
-  navItems, 
-  user, 
-  profile, 
-  logout 
+  navItems
 }: MobileNavigationProps) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -59,14 +51,6 @@ export const MobileNavigation = ({
                     />
                   ))}
                 </nav>
-                
-                <ProfileSection 
-                  user={user} 
-                  profile={profile} 
-                  logout={logout} 
-                  mobile={true}
-                  onCloseSheet={closeSheet}
-                />
               </ScrollArea>
             </div>
           </SheetContent>
