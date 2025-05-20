@@ -1,3 +1,4 @@
+
 import { User, Settings, LogOut, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import ProfileAvatar from "../shared/ProfileAvatar";
+import { ProfileAvatar } from "../shared/ProfileAvatar";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 
@@ -19,7 +20,6 @@ type ProfileSectionProps = {
   profile: any;
   logout: () => void;
   topRight?: boolean;
-  onClick?: () => void;
   showSettings?: boolean;
 };
 
@@ -28,7 +28,6 @@ export function ProfileSection({
   profile, 
   logout, 
   topRight = false,
-  onClick,
   showSettings = false
 }: ProfileSectionProps) {
   const navigate = useNavigate();
