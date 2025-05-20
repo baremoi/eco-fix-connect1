@@ -33,6 +33,7 @@ export function ProfileSection({
   const navigate = useNavigate();
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
 
   const handleLogout = () => {
     logout();
@@ -43,6 +44,7 @@ export function ProfileSection({
     if (profile) {
       setDisplayName(profile.full_name || user?.email || "User");
       setRole(profile.role || null);
+      setAvatarUrl(profile.avatar_url || "");
     } else if (user?.email) {
       setDisplayName(user.email);
       setRole(null);
@@ -73,7 +75,12 @@ export function ProfileSection({
               topRight ? "w-full justify-end" : "w-auto"
             )}
           >
-            <ProfileAvatar user={user} profile={profile} />
+            <ProfileAvatar 
+              avatarUrl={avatarUrl} 
+              userName={displayName || "User"} 
+              isEditing={false} 
+              onFileChange={() => {}}
+            />
             <span className="sr-only">Toggle user menu</span>
           </Button>
         </DropdownMenuTrigger>
@@ -118,7 +125,12 @@ export function ProfileSection({
         >
           <div className="flex items-center gap-2 max-w-[180px]">
             <div className="flex-shrink-0">
-              <ProfileAvatar user={user} profile={profile} />
+              <ProfileAvatar 
+                avatarUrl={avatarUrl} 
+                userName={displayName || "User"} 
+                isEditing={false} 
+                onFileChange={() => {}}
+              />
             </div>
             <div className="hidden md:block text-left">
               <p className="text-sm font-medium leading-none">{displayName}</p>
