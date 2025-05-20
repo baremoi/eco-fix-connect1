@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,27 +10,27 @@ const Header = () => {
   return (
     <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-10">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="/" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <span className="text-eco-600 font-display font-bold text-2xl">Eco<span className="text-sky-600">Fix</span></span>
-        </a>
+        </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <a href="/how-it-works" className="text-foreground hover:text-eco-600 transition-colors">
+          <Link to="/how-it-works" className="text-foreground hover:text-eco-600 transition-colors">
             How It Works
-          </a>
-          <a href="/trades" className="text-foreground hover:text-eco-600 transition-colors">
+          </Link>
+          <Link to="/trades" className="text-foreground hover:text-eco-600 transition-colors">
             Find Trades
-          </a>
-          <a href="/join" className="text-foreground hover:text-eco-600 transition-colors">
+          </Link>
+          <Link to="/join" className="text-foreground hover:text-eco-600 transition-colors">
             Become a Provider
-          </a>
+          </Link>
           <div className="flex gap-3">
             <Button variant="outline" asChild>
-              <a href="/login">Login</a>
+              <Link to="/login">Login</Link>
             </Button>
             <Button asChild>
-              <a href="/register">Sign Up</a>
+              <Link to="/register">Sign Up</Link>
             </Button>
           </div>
         </nav>
@@ -44,33 +45,33 @@ const Header = () => {
       {isOpen && (
         <div className="md:hidden container mx-auto px-4 pb-4">
           <div className="flex flex-col gap-4">
-            <a 
-              href="/how-it-works" 
+            <Link
+              to="/how-it-works" 
               className="text-foreground hover:text-eco-600 transition-colors py-2"
               onClick={() => setIsOpen(false)}
             >
               How It Works
-            </a>
-            <a 
-              href="/trades" 
+            </Link>
+            <Link 
+              to="/trades" 
               className="text-foreground hover:text-eco-600 transition-colors py-2"
               onClick={() => setIsOpen(false)}
             >
               Find Trades
-            </a>
-            <a 
-              href="/join" 
+            </Link>
+            <Link 
+              to="/join" 
               className="text-foreground hover:text-eco-600 transition-colors py-2"
               onClick={() => setIsOpen(false)}
             >
               Become a Provider
-            </a>
+            </Link>
             <div className="flex flex-col gap-3">
               <Button variant="outline" asChild>
-                <a href="/login" onClick={() => setIsOpen(false)}>Login</a>
+                <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
               </Button>
               <Button asChild>
-                <a href="/register" onClick={() => setIsOpen(false)}>Sign Up</a>
+                <Link to="/register" onClick={() => setIsOpen(false)}>Sign Up</Link>
               </Button>
             </div>
           </div>

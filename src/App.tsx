@@ -1,22 +1,26 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Toaster } from "sonner";
+import { Suspense, useState, useEffect } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { ErrorBoundary } from "./components/ui/error-boundary";
+import { AuthProvider } from "./lib/AuthContext";
+import { toast } from "sonner";
+import ErrorFallback from "./components/error/ErrorFallback";
+
+// Pages
 import Projects from "./pages/Projects";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Messages from "./pages/Messages";
 import Trades from "./pages/Trades";
 import Register from "./pages/Register";
-import { AuthProvider } from "./lib/AuthContext";
 import NotFound from "./pages/NotFound";
+import HowItWorks from "./pages/HowItWorks";
+import Index from "./pages/Index";
+
+// Layouts
 import Layout from "./components/Layout";
 import PublicLayout from "./components/layout/Layout";
-import Index from "./pages/Index";
-import HowItWorks from "./pages/HowItWorks";
-import { ErrorBoundary } from "./components/ui/error-boundary";
-import { Suspense, useState, useEffect } from "react";
-import { toast } from "sonner";
-import ErrorFallback from "./components/error/ErrorFallback";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -71,6 +75,13 @@ function App() {
                 <Route path="/trades" element={<Trades />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
+                {/* Add missing routes for footer links */}
+                <Route path="/contact" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Contact Us</h1><p>This page is under construction.</p></div>} />
+                <Route path="/faq" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">FAQ</h1><p>This page is under construction.</p></div>} />
+                <Route path="/privacy" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Privacy Policy</h1><p>This page is under construction.</p></div>} />
+                <Route path="/terms" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Terms of Service</h1><p>This page is under construction.</p></div>} />
+                <Route path="/join" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Become a Provider</h1><p>This page is under construction.</p></div>} />
+                <Route path="/login" element={<div className="container mx-auto py-8 px-4"><h1 className="text-3xl font-bold mb-4">Login</h1><p>This page is under construction.</p></div>} />
               </Route>
               
               {/* Authenticated routes with dashboard layout */}

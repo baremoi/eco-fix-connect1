@@ -32,9 +32,9 @@ export const MobileNavigation = ({
   return (
     <div className="md:hidden sticky top-0 z-40 bg-background border-b">
       <div className="flex items-center justify-between px-4 h-14">
-        <a href="/" className="flex items-center">
+        <div className="flex items-center">
           <span className="text-eco-600 font-display font-bold text-xl">Eco<span className="text-sky-600">Fix</span></span>
-        </a>
+        </div>
         
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
@@ -43,7 +43,7 @@ export const MobileNavigation = ({
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left">
+          <SheetContent side="left" className="z-50">
             <div className="flex flex-col h-full">
               <div className="mb-6">
                 <p className="text-xl font-bold text-primary mb-2">Eco-Fix Connect</p>
