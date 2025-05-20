@@ -1,5 +1,5 @@
 
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { NavItem } from "./NavItem";
 import { NavItem as NavItemType } from "./NavItems";
 import { ProfileSection } from "./ProfileSection";
