@@ -32,9 +32,9 @@ export const MobileNavigation = ({
   return (
     <div className="md:hidden sticky top-0 z-40 bg-background border-b">
       <div className="flex items-center justify-between px-4 h-14">
-        <Link to="/" className="flex items-center">
+        <a href="/" className="flex items-center">
           <span className="text-eco-600 font-display font-bold text-xl">Eco<span className="text-sky-600">Fix</span></span>
-        </Link>
+        </a>
         
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>

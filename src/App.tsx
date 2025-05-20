@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import PublicLayout from "./components/layout/Layout";
 import Index from "./pages/Index";
+import HowItWorks from "./pages/HowItWorks";
 import { ErrorBoundary } from "./components/ui/error-boundary";
 import { Suspense, useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -69,6 +70,7 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/trades" element={<Trades />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
               </Route>
               
               {/* Authenticated routes with dashboard layout */}
