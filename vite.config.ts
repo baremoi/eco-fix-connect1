@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
         "default-src 'self'",
         
         // Scripts: Allow from trusted sources, including cloudflare analytics
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.cloudflareinsights.com",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.cloudflareinsights.com https://static.cloudflareinsights.com",
         
         // Styles: Allow same origin and inline styles (needed for styled-components)
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -47,14 +47,10 @@ export default defineConfig(({ mode }) => ({
         "base-uri 'self'",
         
         // Form submission: Restrict to same origin
-        "form-action 'self'",
-        
-        // Frame ancestors: Set separately in server configuration
-        
-        // Manifest: Allow same origin
-        "manifest-src 'self'"
+        "form-action 'self'"
       ].join('; '),
-      // Set frame-ancestors separately
+      // Set frame-ancestors separately as a proper header (not meta tag)
+      'Content-Security-Policy-Report-Only': "frame-ancestors 'self'",
       'X-Frame-Options': 'SAMEORIGIN'
     }
   },

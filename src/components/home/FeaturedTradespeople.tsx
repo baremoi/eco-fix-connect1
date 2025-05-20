@@ -1,8 +1,10 @@
 
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Star, Clock, ThumbsUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 // Featured tradespeople data
 const featuredTradespeople = [
@@ -39,6 +41,52 @@ const featuredTradespeople = [
 ];
 
 const FeaturedTradespeople = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    // Simulate data loading
+    try {
+      // Add a small delay to simulate loading time
+      const timer = setTimeout(() => {
+        setIsLoaded(true);
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    } catch (error) {
+      console.error("Error loading featured tradespeople:", error);
+      setHasError(true);
+      toast.error("Failed to load featured tradespeople");
+    }
+  }, []);
+
+  if (hasError) {
+    return (
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-3">Featured Tradespeople</h2>
+          <div className="p-8 text-center text-muted-foreground">
+            Unable to load featured tradespeople at this time.
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-3">Featured Tradespeople</h2>
+          <div className="p-8 text-center">
+            <div className="h-12 w-12 mx-auto mb-4 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+            <p className="text-muted-foreground">Loading top professionals...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -54,6 +102,11 @@ const FeaturedTradespeople = () => {
                     src={person.image} 
                     alt={person.name} 
                     className="object-cover w-full h-full"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null;
+                      target.src = "https://placehold.co/600x400?text=Image+Not+Available";
+                    }}
                   />
                 </AspectRatio>
                 <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-medium px-2 py-1 rounded-full">

@@ -9,7 +9,7 @@ export default {
         "default-src 'self'",
         
         // Scripts: Allow same origin, inline scripts, unsafe-eval, and specific external sources
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.lovable.dev https://*.cloudflareinsights.com",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.lovable.dev https://*.cloudflareinsights.com https://static.cloudflareinsights.com",
         
         // Styles: Allow same origin and inline styles for Tailwind
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -39,7 +39,8 @@ export default {
         "form-action 'self' https://*.lovable.dev",
       ].join('; '),
 
-      // Frame ancestors in a separate header
+      // Frame ancestors in a separate header instead of CSP
+      'Content-Security-Policy-Report-Only': "frame-ancestors 'self'",
       'X-Frame-Options': 'SAMEORIGIN',
 
       // Additional security headers
