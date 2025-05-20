@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SearchFilters } from "./SearchFilters";
@@ -7,7 +6,6 @@ import { TradeCategory, TradeSearchFilters, Tradesperson } from "./TradeTypes";
 import { tradesService } from "@/services/tradesService";
 import { toast } from "sonner";
 import { ErrorBoundary } from "../ui/error-boundary";
-import { Spinner } from "../ui/spinner";
 import { Alert, AlertDescription } from "../ui/alert";
 import { AlertTriangle } from "lucide-react";
 
