@@ -17,6 +17,7 @@ export default function TopBar({ user, profile, logout }: TopBarProps) {
           profile={profile} 
           logout={logout}
           topRight={true}
+          showSettings={true}
         />
       </div>
     </div>
