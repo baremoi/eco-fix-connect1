@@ -41,7 +41,7 @@ export const tradesService = {
       // Add category filter if provided
       if (filters.selectedCategory) {
         console.log("Filtering by category:", filters.selectedCategory);
-        const { data: matchingCategories, error } = await supabase
+        const { data: matchingCategories } = await supabase
           .from('service_categories')
           .select('id, name')
           .ilike('name', `%${filters.selectedCategory}%`);
