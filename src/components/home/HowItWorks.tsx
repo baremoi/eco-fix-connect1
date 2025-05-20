@@ -1,5 +1,4 @@
 
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Home, ThumbsUp, ShieldCheck } from 'lucide-react';
 
@@ -46,7 +45,7 @@ const HowItWorks = () => {
         
         <div className="text-center mt-12">
           <Button asChild size="lg">
-            <Link to="/how-it-works">Learn More</Link>
+            <a href="/how-it-works">Learn More</a>
           </Button>
         </div>
       </div>

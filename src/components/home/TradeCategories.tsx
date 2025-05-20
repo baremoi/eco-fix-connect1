@@ -1,6 +1,4 @@
 
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Home, WrenchIcon, Paintbrush, Sprout, Zap, Wrench } from 'lucide-react';
@@ -16,10 +14,8 @@ const tradeCategories = [
 ];
 
 const TradeCategories = () => {
-  const navigate = useNavigate();
-
   const handleCategoryClick = (categoryName: string) => {
-    navigate(`/trades?trade=${encodeURIComponent(categoryName)}`);
+    window.location.href = `/trades?trade=${encodeURIComponent(categoryName)}`;
   };
 
   return (
@@ -53,7 +49,7 @@ const TradeCategories = () => {
         
         <div className="text-center mt-10">
           <Button asChild variant="outline" size="lg">
-            <Link to="/trades">View All Categories</Link>
+            <a href="/trades">View All Categories</a>
           </Button>
         </div>
       </div>
