@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { Service } from "@/data/services";
+import { Link } from "react-router-dom";
 
 interface ServiceCardProps {
   service: Service;
@@ -26,7 +27,11 @@ export function ServiceCard({ service }: ServiceCardProps) {
             ${service.rate}/{service.rateType}
           </Badge>
         </div>
-        <CardTitle className="line-clamp-1">{service.name}</CardTitle>
+        <CardTitle className="line-clamp-1">
+          <Link to={`/provider/${service.providerId}`} className="hover:underline">
+            {service.name}
+          </Link>
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
         <p className="text-muted-foreground text-sm line-clamp-3 mb-4">{service.description}</p>

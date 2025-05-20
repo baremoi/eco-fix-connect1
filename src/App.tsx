@@ -23,6 +23,7 @@ import ProviderDashboard from './pages/provider/ProviderDashboard';
 import Projects from './pages/Projects';
 import Availability from './pages/provider/Availability';
 import Reports from './pages/Reports';
+import ProviderProfile from './pages/provider/ProviderProfile';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Create a new QueryClient instance
@@ -47,6 +48,9 @@ function App() {
               <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
               <Route path="/oauth" element={<PublicLayout><OAuthCallback /></PublicLayout>} />
               <Route path="/email-verification" element={<PublicLayout><VerifyEmail /></PublicLayout>} />
+              
+              {/* New public route for provider profiles */}
+              <Route path="/provider/:providerId" element={<PublicLayout><ProviderProfile /></PublicLayout>} />
 
               {/* Protected routes with UserLayout */}
               <Route 

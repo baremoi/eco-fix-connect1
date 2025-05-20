@@ -1,176 +1,114 @@
-// Define types for our data
-export interface Service {
+
+export type Service = {
   id: string;
   name: string;
-  description: string;
   category: string;
+  description: string;
   rate: number;
   rateType: string;
   availability: string;
+  providerId: string;
   providerName: string;
-  providerRating: number;
-}
+};
 
-export interface Booking {
-  id: string;
-  serviceName: string;
-  providerName: string;
-  date: string;
-  time: string;
-  price: number;
-  status: "upcoming" | "completed" | "cancelled" | "in-progress";
-  address?: string;  // Added address property as optional
-  notes?: string;    // Added notes property as optional
-}
-
-// Sample services data
 export const servicesData: Service[] = [
   {
-    id: "s1",
-    name: "Solar Panel Installation",
-    description: "Complete solar panel installation service with premium panels and inverters. Includes assessment, design, and setup.",
-    category: "renewable energy",
-    rate: 2500,
-    rateType: "project",
-    availability: "Weekdays",
-    providerName: "EcoSolar Solutions",
-    providerRating: 4.8
-  },
-  {
-    id: "s2",
-    name: "Home Energy Audit",
-    description: "Comprehensive energy audit to identify energy waste and recommend improvements to make your home more efficient.",
-    category: "energy efficiency",
-    rate: 150,
-    rateType: "service",
-    availability: "Mon-Sat",
-    providerName: "Green Home Advisors",
-    providerRating: 4.9
-  },
-  {
-    id: "s3",
-    name: "Rainwater Harvesting System",
-    description: "Design and installation of rainwater collection systems for garden irrigation and other non-potable uses.",
-    category: "water conservation",
-    rate: 1200,
-    rateType: "project",
-    availability: "Weekends",
-    providerName: "AquaEco Systems",
-    providerRating: 4.7
-  },
-  {
-    id: "s4",
-    name: "Organic Garden Setup",
-    description: "Design and setup of organic vegetable gardens using sustainable practices and local plants.",
-    category: "landscaping",
+    id: "1",
+    name: "Sustainable Plumbing Services",
+    category: "Plumbing",
+    description: "Eco-friendly plumbing solutions including water-saving fixtures, leak detection, and greywater systems installation.",
     rate: 45,
     rateType: "hour",
-    availability: "Tue-Sun",
-    providerName: "Urban Harvest",
-    providerRating: 4.5
+    availability: "Weekdays, 8am-6pm",
+    providerId: "1",
+    providerName: "Sarah Johnson"
   },
   {
-    id: "s5",
-    name: "EV Charging Station Installation",
-    description: "Professional installation of home electric vehicle charging stations with electrical upgrades if needed.",
-    category: "renewable energy",
-    rate: 800,
-    rateType: "project",
-    availability: "Weekdays",
-    providerName: "ChargePoint Pros",
-    providerRating: 4.9
-  },
-  {
-    id: "s6",
-    name: "Home Insulation Upgrade",
-    description: "Eco-friendly insulation solutions to improve your home's energy efficiency and reduce heating/cooling costs.",
-    category: "energy efficiency",
-    rate: 1500,
-    rateType: "project",
-    availability: "Mon-Fri",
-    providerName: "Comfort Green",
-    providerRating: 4.6
-  },
-  {
-    id: "s7",
-    name: "LED Lighting Conversion",
-    description: "Full service conversion of your home lighting to energy-efficient LED solutions.",
-    category: "energy efficiency",
-    rate: 75,
+    id: "2",
+    name: "Solar Panel Installation",
+    category: "Renewable Energy",
+    description: "Professional installation of residential and commercial solar panel systems with battery storage options.",
+    rate: 55,
     rateType: "hour",
-    availability: "Mon-Sat",
-    providerName: "Bright Green Electric",
-    providerRating: 4.8
+    availability: "Mon-Sat, 9am-5pm",
+    providerId: "2",
+    providerName: "Michael Chen"
   },
   {
-    id: "s8",
-    name: "Composting System Setup",
-    description: "Design and installation of home composting systems tailored to your space and needs.",
-    category: "waste management",
-    rate: 300,
-    rateType: "service",
-    availability: "Weekends",
-    providerName: "Earth Cycle",
-    providerRating: 4.7
+    id: "3",
+    name: "Energy-Efficient Lighting",
+    category: "Electrical",
+    description: "LED lighting installation and smart lighting systems to reduce energy consumption and lower bills.",
+    rate: 50,
+    rateType: "hour",
+    availability: "Mon-Fri, 8am-7pm",
+    providerId: "3",
+    providerName: "Emma Wilson"
   },
   {
-    id: "s9",
-    name: "Sustainable Flooring Installation",
-    description: "Installation of eco-friendly flooring options including bamboo, cork, and reclaimed wood.",
-    category: "home improvement",
-    rate: 12,
-    rateType: "sqft",
-    availability: "Tue-Sun",
-    providerName: "Green Floors Co.",
-    providerRating: 4.9
-  }
-];
-
-// Sample bookings data
-export const bookingsData: Booking[] = [
-  {
-    id: "b1",
-    serviceName: "Home Energy Audit",
-    providerName: "Green Home Advisors",
-    date: "May 25, 2025",
-    time: "10:00 AM - 12:00 PM",
-    price: 150,
-    status: "upcoming"
+    id: "4",
+    name: "Reclaimed Wood Furniture",
+    category: "Carpentry",
+    description: "Custom furniture made from sustainable or reclaimed woods, built to last generations.",
+    rate: 48,
+    rateType: "hour",
+    availability: "Weekdays, 9am-6pm",
+    providerId: "4",
+    providerName: "James Taylor"
   },
   {
-    id: "b2",
-    serviceName: "Solar Panel Installation",
-    providerName: "EcoSolar Solutions",
-    date: "May 18, 2025",
-    time: "9:00 AM - 5:00 PM",
-    price: 2500,
-    status: "completed"
+    id: "5",
+    name: "Non-Toxic Interior Painting",
+    category: "Painting",
+    description: "Interior painting services using only low-VOC, environmentally friendly paints that are safer for your home.",
+    rate: 40,
+    rateType: "hour",
+    availability: "Mon-Sat, 8am-5pm",
+    providerId: "5",
+    providerName: "Olivia Martinez"
   },
   {
-    id: "b3",
-    serviceName: "LED Lighting Conversion",
-    providerName: "Bright Green Electric",
-    date: "May 10, 2025",
-    time: "1:00 PM - 4:00 PM",
-    price: 225,
-    status: "completed"
+    id: "6",
+    name: "Eco-Insulation Services",
+    category: "Insulation",
+    description: "Home insulation using natural and recycled materials to improve energy efficiency and comfort.",
+    rate: 52,
+    rateType: "hour",
+    availability: "Tue-Sat, 9am-6pm",
+    providerId: "6",
+    providerName: "David Thompson"
   },
   {
-    id: "b4",
-    serviceName: "EV Charging Station Installation",
-    providerName: "ChargePoint Pros",
-    date: "Apr 30, 2025",
-    time: "11:00 AM - 2:00 PM",
-    price: 800,
-    status: "cancelled"
+    id: "7",
+    name: "Green Roof Installation",
+    category: "Landscaping",
+    description: "Design and installation of living roofs that provide insulation, manage stormwater, and support biodiversity.",
+    rate: 60,
+    rateType: "hour",
+    availability: "Mon-Fri, 8am-6pm",
+    providerId: "2",
+    providerName: "Michael Chen"
   },
   {
-    id: "b5",
-    serviceName: "Organic Garden Setup",
-    providerName: "Urban Harvest",
-    date: "Jun 5, 2025",
-    time: "9:00 AM - 2:00 PM",
-    price: 225,
-    status: "upcoming"
+    id: "8",
+    name: "Smart Home Automation",
+    category: "Electrical",
+    description: "Installation of smart thermostats, lighting, and energy monitoring systems to optimize energy usage.",
+    rate: 55,
+    rateType: "hour",
+    availability: "Weekdays, 9am-7pm",
+    providerId: "3",
+    providerName: "Emma Wilson"
+  },
+  {
+    id: "9",
+    name: "Rainwater Harvesting",
+    category: "Plumbing",
+    description: "Installation of rainwater collection and filtration systems for garden irrigation and non-potable water uses.",
+    rate: 48,
+    rateType: "hour",
+    availability: "Mon-Sat, 8am-6pm",
+    providerId: "1",
+    providerName: "Sarah Johnson"
   }
 ];
