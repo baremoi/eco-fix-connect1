@@ -14,7 +14,7 @@ const CTASection = lazy(() => import("@/components/home/CTASection" /* webpackCh
 const TradesInfoSection = lazy(() => import("@/components/home/TradesInfoSection" /* webpackChunkName: "TradesInfoSection" */));
 
 // Component-specific loading states
-const LoadingFallback = ({ componentName }) => (
+const LoadingFallback = ({ componentName }: { componentName: string }) => (
   <section className="py-8">
     <div className="container mx-auto px-4 text-center">
       <div className="h-8 w-8 mx-auto mb-4 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
