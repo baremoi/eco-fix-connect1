@@ -17,17 +17,17 @@ export default defineConfig(({ mode }) => ({
     headers: {
       // Set Content-Security-Policy header properly
       'Content-Security-Policy': [
-        // Restrict default sources to same origin
-        "default-src 'self'",
+        // Restrict default sources to same origin and https
+        "default-src 'self' https:",
         
-        // Scripts: Allow trusted sources including cloudflare analytics and unsafe-eval for necessary functions
+        // Scripts: Allow trusted sources including cloudflare analytics, unsafe-eval for React dev tools
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com https://cdn.gpteng.co https://*.cloudflareinsights.com https://static.cloudflareinsights.com",
         
         // Styles: Allow same origin and inline styles
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         
-        // Images: Allow same origin, data URIs, and HTTPS sources
-        "img-src 'self' data: https: blob: https://lovable.dev",
+        // Images: Allow same origin, data URIs, blob and HTTPS sources
+        "img-src 'self' data: https: blob: https://lovable.dev https://i.pravatar.cc",
         
         // Fonts: Allow same origin and Google Fonts
         "font-src 'self' data: https://fonts.gstatic.com",
@@ -38,8 +38,8 @@ export default defineConfig(({ mode }) => ({
         // Frames: Allow only specific trusted sources
         "frame-src 'self' https://accounts.google.com",
         
-        // Media: Restrict to same origin
-        "media-src 'self'",
+        // Media: Allow same origin and https
+        "media-src 'self' https:",
         
         // Object/Embed: Block all plugins
         "object-src 'none'",
@@ -51,8 +51,10 @@ export default defineConfig(({ mode }) => ({
         "form-action 'self'"
       ].join('; '),
       
-      // Set frame-ancestors as a proper header (not meta tag)
-      'X-Frame-Options': 'SAMEORIGIN'
+      // Security headers
+      'X-Frame-Options': 'SAMEORIGIN',
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'strict-origin-when-cross-origin'
     }
   },
   plugins: [
