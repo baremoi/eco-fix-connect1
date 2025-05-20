@@ -94,6 +94,7 @@ export const tradesService = {
         avatar_url: item.avatar_url,
         role: item.role,
         bio: item.bio,
+        // Fix: Access service category name safely by ensuring we access a property from an object, not from an array
         serviceCategory: item.tradesperson_services[0]?.service_categories?.name || 'General',
         hourlyRate: item.tradesperson_services[0]?.hourly_rate,
         avg_rating: 0,
