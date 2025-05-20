@@ -14,7 +14,7 @@ import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
 import UserLayout from './components/Layout'; 
 import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider } from './lib/AuthContext';
+import { MockAuthProvider } from './lib/mockAuth'; // Import our mock auth provider
 import PublicLayout from './components/layout/Layout';
 import Profile from './pages/Profile';
 import Bookings from './pages/Bookings';
@@ -34,7 +34,7 @@ function App() {
   return (
     <Router>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
+        <MockAuthProvider> {/* Replace AuthProvider with MockAuthProvider */}
           <AccessibilityProvider>
             <Routes>
               {/* Public routes with PublicLayout */}
@@ -141,7 +141,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AccessibilityProvider>
-        </AuthProvider>
+        </MockAuthProvider>
       </QueryClientProvider>
     </Router>
   );

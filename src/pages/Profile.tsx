@@ -1,11 +1,10 @@
 
 import { toast } from "sonner";
-import { api } from "@/lib/api";
+import { mockApi } from "@/lib/mockServices";
 import { Icons } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/lib/AuthContext";
+import { useMockAuth } from "@/lib/mockAuth";
 import { useState, useEffect } from "react";
-import { Database } from "@/types/database.types";
 
 // Import refactored components
 import { PersonalInfo } from "@/components/profile/PersonalInfo";
@@ -14,13 +13,10 @@ import { PreferencesSettings } from "@/components/profile/PreferencesSettings";
 import { ThemeSettings } from "@/components/profile/ThemeSettings";
 import { AccessibilitySettings } from "@/components/profile/AccessibilitySettings";
 
-// Define ProfileData type based on the Database type
-type ProfileData = Database['public']['Tables']['profiles']['Row'];
-
 export default function Profile() {
-  const { profile: authProfile, user } = useAuth();
+  const { profile: authProfile, user } = useMockAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [profileData, setProfileData] = useState<any | null>(null);
 
   console.log("Profile component rendering", { authProfile, user });
 
@@ -39,7 +35,7 @@ export default function Profile() {
         // If not, fetch it
         if (user) {
           console.log("Fetching profile data for user:", user.id);
-          const data = await api.getProfile();
+          const data = await mockApi.getProfile();
           console.log("Profile data loaded:", data);
           setProfileData(data);
         } else {

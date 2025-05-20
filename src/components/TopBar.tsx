@@ -1,14 +1,10 @@
 
 import { ProfileSection } from "./navigation/ProfileSection";
-import { User } from "@supabase/supabase-js";
+import { useMockAuth } from "@/lib/mockAuth";
 
-type TopBarProps = {
-  user: User | null;
-  profile: any;
-  logout: () => void;
-};
+export default function TopBar() {
+  const { user, profile, logout } = useMockAuth();
 
-export default function TopBar({ user, profile, logout }: TopBarProps) {
   return (
     <div className="h-16 border-b border-border bg-background flex items-center justify-end px-4">
       <div className="max-w-[240px]">

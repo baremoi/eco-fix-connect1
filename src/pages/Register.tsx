@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterInput } from "@/lib/auth";
-import { useAuth } from "@/lib/AuthContext";
+import { useMockAuth } from "@/lib/mockAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,7 @@ import { Icons } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Register() {
-  const { register: registerUser, session } = useAuth();
+  const { register: registerUser, session } = useMockAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ export default function Register() {
   const selectedRole = watch("role");
 
   useEffect(() => {
-    // If user is already authenticated and email is verified, redirect to dashboard
-    if (session?.user?.email_confirmed_at) {
+    // If user is already authenticated, redirect to dashboard
+    if (session?.user) {
       navigate("/dashboard");
     }
   }, [session, navigate]);
@@ -47,17 +48,10 @@ export default function Register() {
         confirmPassword: "***REDACTED***"
       });
       
-      // Check if environment variables are loaded
-      console.log("Environment variables loaded:", {
-        supabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
-        supabaseKeyExists: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
-      });
-      
       await registerUser(data);
       setIsSuccess(true);
     } catch (error) {
       console.error("Registration error in component:", error);
-      // Error is already handled by the AuthContext
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +65,7 @@ export default function Register() {
             <Icons.checkCircle className="mx-auto h-12 w-12 text-green-500" />
             <h2 className="text-2xl font-bold">Registration Successful!</h2>
             <p className="text-muted-foreground">
-              Please check your email to verify your account. Once verified, you can login.
+              Your account has been created successfully. You can now login.
             </p>
             <div className="pt-4">
               <Button asChild variant="secondary" className="mx-auto">
@@ -86,6 +80,10 @@ export default function Register() {
               <p className="text-sm text-muted-foreground">
                 Join Eco-Fix Connect and get started
               </p>
+              <div className="bg-amber-100 p-2 rounded text-amber-800 text-center text-sm mt-2">
+                <p>This is a mock authentication system for demonstration.</p>
+                <p>Any password you enter will work for registration.</p>
+              </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

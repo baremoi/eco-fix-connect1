@@ -1,6 +1,6 @@
 
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/lib/AuthContext";
+import { useMockAuth } from "@/lib/mockAuth";
 import { Spinner } from "./ui/spinner";
 
 interface ProtectedRouteProps {
@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
-  const { user, profile, isLoading } = useAuth();
+  const { user, profile, isLoading } = useMockAuth();
   const location = useLocation();
 
   console.log("Protected route check:", { 

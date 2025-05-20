@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/AuthContext";
+import { useMockAuth } from "@/lib/mockAuth";
 import { Button } from "@/components/ui/button";
 
 interface ServiceRequest {
@@ -39,7 +39,7 @@ const mockRequests: ServiceRequest[] = [
 ];
 
 export default function Dashboard() {
-  const { profile } = useAuth();
+  const { profile } = useMockAuth();
   const [requests] = useState<ServiceRequest[]>(mockRequests);
 
   const getStatusColor = (status: ServiceRequest["status"]) => {

@@ -4,17 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@/lib/auth";
-import { useAuth } from "@/lib/AuthContext";
+import { useMockAuth } from "@/lib/mockAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/ui/icons";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { supabaseService } from "@/lib/supabaseService";
 
 export default function Login() {
-  const { login, session } = useAuth();
+  const { login, session } = useMockAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   const [pendingEmail, setPendingEmail] = useState<string>("");
@@ -40,8 +39,8 @@ export default function Login() {
     // Debug session to see what's happening
     console.log("Current session:", session);
     
-    // If user is already authenticated and email is verified, redirect to dashboard
-    if (session?.user?.email_confirmed_at) {
+    // If user is already authenticated, redirect to dashboard
+    if (session?.user) {
       navigate("/dashboard");
     }
   }, [session, navigate]);
@@ -54,10 +53,7 @@ export default function Login() {
       await login(data);
     } catch (error: any) {
       console.error("Login error:", error);
-      // Check if the error is related to email verification
-      if (error.message?.includes("Email not confirmed")) {
-        setEmailVerificationSent(true);
-      }
+      // For mock auth, we don't need email verification logic
     } finally {
       setIsLoading(false);
     }
@@ -73,11 +69,10 @@ export default function Login() {
         return;
       }
       
-      const { error } = await supabaseService.resendVerificationEmail(email);
-      
-      if (error) throw error;
-      
-      toast.success("Verification email resent. Please check your inbox.");
+      // Mock success notification
+      setTimeout(() => {
+        toast.success("Verification email resent. Please check your inbox.");
+      }, 1000);
     } catch (error: any) {
       console.error("Failed to resend verification email:", error);
       toast.error(error.message || "Failed to resend verification email. Please try again.");
@@ -96,6 +91,15 @@ export default function Login() {
           <CardDescription className="text-center">
             Enter your credentials to access your account
           </CardDescription>
+          <div className="bg-amber-100 p-2 rounded text-amber-800 text-center text-sm mt-2">
+            <p>This is a mock authentication system.</p>
+            <p>Use these demo accounts (password: "password"):</p>
+            <ul className="mt-1 list-disc list-inside">
+              <li>user@example.com (User role)</li>
+              <li>tradesperson@example.com (Tradesperson role)</li>
+              <li>admin@example.com (Admin role)</li>
+            </ul>
+          </div>
         </CardHeader>
         
         <CardContent>
