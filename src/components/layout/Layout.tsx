@@ -4,21 +4,24 @@ import Header from './Header';
 import Footer from './Footer';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { Suspense } from 'react';
+import ErrorFallback from '@/components/error/ErrorFallback';
 
 const PublicLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      <ErrorBoundary>
+      <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Header" />}>
         <Header />
       </ErrorBoundary>
+      
       <main className="flex-1">
-        <ErrorBoundary>
+        <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Content" />}>
           <Suspense fallback={<div className="p-8 text-center">Loading content...</div>}>
             <Outlet />
           </Suspense>
         </ErrorBoundary>
       </main>
-      <ErrorBoundary>
+      
+      <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Footer" />}>
         <Footer />
       </ErrorBoundary>
     </div>

@@ -49,12 +49,13 @@ const renderApp = () => {
           onError={(error) => {
             console.error("Root error boundary caught an error:", error);
           }}
-          fallback={
+          fallback={(error) => (
             <ErrorFallback 
+              error={error}
               message="Fatal application error" 
               componentName="Application Root" 
             />
-          }
+          )}
         >
           <App />
           <Toaster position="top-right" />

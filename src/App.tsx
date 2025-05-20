@@ -15,6 +15,7 @@ import Index from "./pages/Index";
 import { ErrorBoundary } from "./components/ui/error-boundary";
 import { Suspense, useState, useEffect } from "react";
 import { toast } from "sonner";
+import ErrorFallback from "./components/error/ErrorFallback";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -29,7 +30,7 @@ function App() {
   }, []);
 
   // App-level error handler
-  const handleAppError = (error: Error) => {
+  const handleAppError = (error: Error, info: any) => {
     console.error("App-level error:", error);
     toast.error("An application error occurred");
   };
@@ -44,7 +45,10 @@ function App() {
   }
 
   return (
-    <ErrorBoundary onError={handleAppError}>
+    <ErrorBoundary 
+      onError={handleAppError}
+      fallback={(error) => <ErrorFallback message="Fatal application error" componentName="Application Root" error={error} />}
+    >
       <AuthProvider>
         <Router>
           <Suspense fallback={
@@ -58,7 +62,7 @@ function App() {
             <Routes>
               {/* Public routes with public layout */}
               <Route element={
-                <ErrorBoundary>
+                <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Public Layout" />}>
                   <PublicLayout />
                 </ErrorBoundary>
               }>
@@ -69,7 +73,7 @@ function App() {
               
               {/* Authenticated routes with dashboard layout */}
               <Route element={
-                <ErrorBoundary>
+                <ErrorBoundary fallback={(error) => <ErrorFallback error={error} componentName="Dashboard Layout" />}>
                   <Layout />
                 </ErrorBoundary>
               }>

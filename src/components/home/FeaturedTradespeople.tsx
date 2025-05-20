@@ -43,7 +43,7 @@ const featuredTradespeople = [
 const FeaturedTradespeople = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [tradespeople, setTradespeople] = useState(featuredTradespeople);
+  const [tradespeople] = useState(featuredTradespeople); // Removed unused setter
 
   useEffect(() => {
     try {

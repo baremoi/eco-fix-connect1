@@ -24,14 +24,12 @@ const LoadingFallback = ({ componentName }: { componentName: string }) => (
 );
 
 const SectionErrorBoundary = ({ children, name }: { children: React.ReactNode; name: string }) => {
-  const [hasRetried, setHasRetried] = useState(false);
+  // We'll use reset capability but implement it differently
+  const [key, setKey] = useState(0);
   
   const handleReset = () => {
-    setHasRetried(true);
-    // Force a re-render of the component
-    setTimeout(() => {
-      setHasRetried(false);
-    }, 0);
+    // Reset by changing the key which forces a re-render
+    setKey(prev => prev + 1);
   };
   
   return (
@@ -52,7 +50,7 @@ const SectionErrorBoundary = ({ children, name }: { children: React.ReactNode; n
         </section>
       )}
     >
-      {children}
+      <div key={key}>{children}</div>
     </ErrorBoundary>
   );
 };
@@ -90,7 +88,7 @@ const Index = () => {
 
   return (
     <div className="bg-background">
-      <ErrorBoundary fallback={<ErrorFallback message="Failed to load homepage content" componentName="HomePage" />}>
+      <ErrorBoundary fallback={(error) => <ErrorFallback message="Failed to load homepage content" componentName="HomePage" error={error} />}>
         {/* HeroSection is not lazy loaded - render it directly for fast initial load */}
         <HeroSection />
         

@@ -78,9 +78,9 @@ export class ErrorBoundary extends Component<Props, State> {
       // Custom fallback UI if provided
       if (this.props.fallback) {
         if (typeof this.props.fallback === 'function' && this.state.error) {
-          return this.props.fallback(this.state.error);
+          return this.props.fallback(this.state.error) as ReactNode;
         }
-        return this.props.fallback;
+        return this.props.fallback as ReactNode;
       }
       
       // Default fallback UI
