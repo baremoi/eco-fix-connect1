@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,9 +10,17 @@ const HeroSection = () => {
   const [tradeName, setTradeName] = useState('');
   const [postcode, setPostcode] = useState('');
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: FormEvent) => {
     e.preventDefault();
-    navigate(`/trades?trade=${encodeURIComponent(tradeName)}&postcode=${encodeURIComponent(postcode)}`);
+    // Create search params object
+    const params = new URLSearchParams();
+    
+    // Only add parameters if they have values
+    if (tradeName) params.append('trade', tradeName);
+    if (postcode) params.append('postcode', postcode);
+    
+    // Navigate to trades page with search parameters
+    navigate(`/trades?${params.toString()}`);
   };
 
   return (
@@ -35,7 +43,6 @@ const HeroSection = () => {
                 className="bg-white text-foreground h-12 pl-9"
                 value={tradeName}
                 onChange={(e) => setTradeName(e.target.value)}
-                required
               />
             </div>
             <div className="sm:col-span-3 relative">
@@ -46,7 +53,6 @@ const HeroSection = () => {
                 className="bg-white text-foreground h-12 pl-9"
                 value={postcode}
                 onChange={(e) => setPostcode(e.target.value)}
-                required
               />
             </div>
             <Button type="submit" size="lg" className="h-12 sm:col-span-1">
