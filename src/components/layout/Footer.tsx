@@ -1,15 +1,13 @@
 
-import { Link } from 'react-router-dom';
-
 const Footer = () => {
   return (
     <footer className="bg-muted mt-auto">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <Link to="/" className="flex items-center">
+            <a href="/" className="flex items-center">
               <span className="text-eco-600 font-display font-bold text-2xl">Eco<span className="text-sky-600">Fix</span></span>
-            </Link>
+            </a>
             <p className="mt-4 text-muted-foreground">
               Connecting UK homeowners with trusted eco-friendly tradespeople for all your home improvement needs.
             </p>
@@ -18,20 +16,20 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link to="/" className="text-muted-foreground hover:text-eco-600 transition-colors">Home</Link></li>
-              <li><Link to="/how-it-works" className="text-muted-foreground hover:text-eco-600 transition-colors">How It Works</Link></li>
-              <li><Link to="/trades" className="text-muted-foreground hover:text-eco-600 transition-colors">Find Trades</Link></li>
-              <li><Link to="/join" className="text-muted-foreground hover:text-eco-600 transition-colors">Become a Provider</Link></li>
+              <li><a href="/" className="text-muted-foreground hover:text-eco-600 transition-colors">Home</a></li>
+              <li><a href="/how-it-works" className="text-muted-foreground hover:text-eco-600 transition-colors">How It Works</a></li>
+              <li><a href="/trades" className="text-muted-foreground hover:text-eco-600 transition-colors">Find Trades</a></li>
+              <li><a href="/join" className="text-muted-foreground hover:text-eco-600 transition-colors">Become a Provider</a></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold text-lg mb-4">Support</h3>
             <ul className="space-y-2">
-              <li><Link to="/contact" className="text-muted-foreground hover:text-eco-600 transition-colors">Contact Us</Link></li>
-              <li><Link to="/faq" className="text-muted-foreground hover:text-eco-600 transition-colors">FAQ</Link></li>
-              <li><Link to="/privacy" className="text-muted-foreground hover:text-eco-600 transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="text-muted-foreground hover:text-eco-600 transition-colors">Terms of Service</Link></li>
+              <li><a href="/contact" className="text-muted-foreground hover:text-eco-600 transition-colors">Contact Us</a></li>
+              <li><a href="/faq" className="text-muted-foreground hover:text-eco-600 transition-colors">FAQ</a></li>
+              <li><a href="/privacy" className="text-muted-foreground hover:text-eco-600 transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-muted-foreground hover:text-eco-600 transition-colors">Terms of Service</a></li>
             </ul>
           </div>
           

@@ -30,7 +30,7 @@ function App() {
   }, []);
 
   // App-level error handler
-  const handleAppError = (error: Error, info: any) => {
+  const handleAppError = (error: Error) => {
     console.error("App-level error:", error);
     toast.error("An application error occurred");
   };
