@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "sonner";
 
 export default function Login() {
-  const { login, session } = useMockAuth();
+  const { signIn, user } = useMockAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   const [pendingEmail, setPendingEmail] = useState<string>("");
@@ -36,21 +36,19 @@ export default function Login() {
   const emailValue = watch("email");
 
   useEffect(() => {
-    // Debug session to see what's happening
-    console.log("Current session:", session);
-    
     // If user is already authenticated, redirect to dashboard
-    if (session?.user) {
+    if (user) {
       navigate("/dashboard");
     }
-  }, [session, navigate]);
+  }, [user, navigate]);
 
   async function onSubmit(data: LoginInput) {
     try {
       console.log("Attempting login with email:", data.email);
       setIsLoading(true);
       setPendingEmail(data.email);
-      await login(data);
+      await signIn(data.email, data.password);
+      navigate("/dashboard");
     } catch (error: any) {
       console.error("Login error:", error);
       // For mock auth, we don't need email verification logic
@@ -96,7 +94,7 @@ export default function Login() {
             <p>Use these demo accounts (password: "password"):</p>
             <ul className="mt-1 list-disc list-inside">
               <li>user@example.com (User role)</li>
-              <li>tradesperson@example.com (Tradesperson role)</li>
+              <li>provider@example.com (Tradesperson role)</li>
               <li>admin@example.com (Admin role)</li>
             </ul>
           </div>

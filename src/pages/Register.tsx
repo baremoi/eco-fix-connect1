@@ -12,7 +12,7 @@ import { Icons } from "@/components/ui/icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Register() {
-  const { register: registerUser, session } = useMockAuth();
+  const { signUp, user } = useMockAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
@@ -34,10 +34,10 @@ export default function Register() {
 
   useEffect(() => {
     // If user is already authenticated, redirect to dashboard
-    if (session?.user) {
+    if (user) {
       navigate("/dashboard");
     }
-  }, [session, navigate]);
+  }, [user, navigate]);
 
   async function onSubmit(data: RegisterInput) {
     try {
@@ -48,7 +48,7 @@ export default function Register() {
         confirmPassword: "***REDACTED***"
       });
       
-      await registerUser(data);
+      await signUp(data.email, data.password, data.name, data.role);
       setIsSuccess(true);
     } catch (error) {
       console.error("Registration error in component:", error);
