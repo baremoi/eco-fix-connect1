@@ -8,6 +8,7 @@ import Layout from "@/components/layout/Layout";
 // Providers and shared components
 import { AccessibilityProvider } from "@/components/providers/AccessibilityProvider";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 
 // Pages
 import Index from "@/pages/Index";
@@ -24,6 +25,7 @@ import ProviderDashboard from "@/pages/provider/ProviderDashboard";
 import ProviderProfile from "@/pages/provider/ProviderProfile";
 import Availability from "@/pages/provider/Availability";
 import BookingsManagement from "@/pages/BookingsManagement";
+import Notifications from "@/pages/Notifications";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
@@ -37,104 +39,114 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MockAuthProvider>
-        <AccessibilityProvider>
-          <Router>
-            <Layout>
-              <Routes>
-                {/* Public routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/trades" element={<Trades />} />
-                <Route path="/how-it-works" element={<HowItWorks />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/provider/:providerId" element={<ProviderProfile />} />
+        <NotificationProvider>
+          <AccessibilityProvider>
+            <Router>
+              <Layout>
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/trades" element={<Trades />} />
+                  <Route path="/how-it-works" element={<HowItWorks />} />
+                  <Route path="/services" element={<Services />} />
+                  <Route path="/provider/:providerId" element={<ProviderProfile />} />
 
-                {/* Protected routes for all authenticated users */}
-                <Route 
-                  path="/profile" 
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/projects" 
-                  element={
-                    <ProtectedRoute>
-                      <Projects />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/bookings" 
-                  element={
-                    <ProtectedRoute>
-                      <BookingsManagement />
-                    </ProtectedRoute>
-                  } 
-                />
+                  {/* Protected routes for all authenticated users */}
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/projects" 
+                    element={
+                      <ProtectedRoute>
+                        <Projects />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/bookings" 
+                    element={
+                      <ProtectedRoute>
+                        <BookingsManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/notifications" 
+                    element={
+                      <ProtectedRoute>
+                        <Notifications />
+                      </ProtectedRoute>
+                    } 
+                  />
 
-                {/* Provider-specific routes */}
-                <Route 
-                  path="/provider/dashboard" 
-                  element={
-                    <ProtectedRoute allowedRoles={["tradesperson"]}>
-                      <ProviderDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/provider/availability" 
-                  element={
-                    <ProtectedRoute allowedRoles={["tradesperson"]}>
-                      <Availability />
-                    </ProtectedRoute>
-                  } 
-                />
+                  {/* Provider-specific routes */}
+                  <Route 
+                    path="/provider/dashboard" 
+                    element={
+                      <ProtectedRoute allowedRoles={["tradesperson"]}>
+                        <ProviderDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/provider/availability" 
+                    element={
+                      <ProtectedRoute allowedRoles={["tradesperson"]}>
+                        <Availability />
+                      </ProtectedRoute>
+                    } 
+                  />
 
-                {/* Admin-specific routes */}
-                <Route 
-                  path="/admin/dashboard" 
-                  element={
-                    <ProtectedRoute allowedRoles={["admin"]}>
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/team" 
-                  element={
-                    <ProtectedRoute allowedRoles={["admin"]}>
-                      <TeamManagement />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/analytics" 
-                  element={
-                    <ProtectedRoute allowedRoles={["admin"]}>
-                      <Analytics />
-                    </ProtectedRoute>
-                  } 
-                />
+                  {/* Admin-specific routes */}
+                  <Route 
+                    path="/admin/dashboard" 
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <AdminDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/team" 
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <TeamManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/analytics" 
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <Analytics />
+                      </ProtectedRoute>
+                    } 
+                  />
 
-                {/* Catch-all for 404s */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
-          </Router>
-          <Toaster position="top-right" expand={false} richColors />
-        </AccessibilityProvider>
+                  {/* Catch-all for 404s */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Layout>
+            </Router>
+            <Toaster position="top-right" expand={false} richColors />
+          </AccessibilityProvider>
+        </NotificationProvider>
       </MockAuthProvider>
     </QueryClientProvider>
   );

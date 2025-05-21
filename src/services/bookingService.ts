@@ -1,4 +1,6 @@
+
 import { toast } from "sonner";
+import { notificationService } from "./notificationService";
 
 export interface BookingRequest {
   providerId: string;
@@ -29,6 +31,7 @@ interface Booking {
   paymentStatus?: 'pending' | 'processing' | 'paid' | 'failed';
   paymentAmount?: number;
   paymentDate?: string;
+  userId?: string; // Add userId to associate with notifications
 }
 
 export interface Review {
@@ -52,6 +55,10 @@ let mockReviews: Review[] = [];
 export const bookingService = {
   createBooking: async (bookingData: BookingRequest): Promise<Booking> => {
     await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
+    
+    const currentUserId = localStorage.getItem('mock_auth_user') ? 
+      JSON.parse(localStorage.getItem('mock_auth_user')!).id : 
+      'unknown-user';
     
     // If payment details are provided, process payment
     let paymentStatus: 'pending' | 'processing' | 'paid' | 'failed' = 'pending';
@@ -85,11 +92,22 @@ export const bookingService = {
       notes: bookingData.notes,
       paymentStatus,
       paymentAmount,
-      paymentDate: paymentAmount ? new Date().toISOString() : undefined
+      paymentDate: paymentAmount ? new Date().toISOString() : undefined,
+      userId: currentUserId
     };
     
     // Add to mock storage
     mockBookings.push(newBooking);
+    
+    // Create notification for the new booking
+    if (currentUserId !== 'unknown-user') {
+      await notificationService.createBookingNotification(
+        currentUserId,
+        newBooking.id,
+        'created',
+        newBooking.serviceName
+      );
+    }
     
     return newBooking;
   },
@@ -109,7 +127,19 @@ export const bookingService = {
     
     const index = mockBookings.findIndex(booking => booking.id === bookingId);
     if (index !== -1) {
+      const booking = mockBookings[index];
       mockBookings[index].status = 'cancelled';
+      
+      // Create notification for canceled booking
+      if (booking.userId) {
+        await notificationService.createBookingNotification(
+          booking.userId,
+          booking.id,
+          'cancelled',
+          booking.serviceName
+        );
+      }
+      
       return true;
     }
     
@@ -121,7 +151,19 @@ export const bookingService = {
     
     const index = mockBookings.findIndex(booking => booking.id === bookingId);
     if (index !== -1) {
+      const booking = mockBookings[index];
       mockBookings[index].status = 'completed';
+      
+      // Create notification for completed booking
+      if (booking.userId) {
+        await notificationService.createBookingNotification(
+          booking.userId,
+          booking.id,
+          'completed',
+          booking.serviceName
+        );
+      }
+      
       return true;
     }
     
@@ -141,6 +183,20 @@ export const bookingService = {
       mockBookings[index].paymentStatus = 'paid';
       mockBookings[index].paymentAmount = paymentDetails.amount;
       mockBookings[index].paymentDate = new Date().toISOString();
+      
+      // Create notification for payment
+      const booking = mockBookings[index];
+      if (booking.userId) {
+        await notificationService.createNotification(
+          booking.userId,
+          'update',
+          'Payment Successful',
+          `Payment for ${booking.serviceName} booking has been processed successfully.`,
+          `/bookings?id=${booking.id}`,
+          booking.id
+        );
+      }
+      
       return true;
     } else {
       mockBookings[index].paymentStatus = 'failed';
@@ -161,6 +217,16 @@ export const bookingService = {
     
     // Add to mock storage
     mockReviews.push(newReview);
+    
+    // Create notification for provider (in a real app, we would store it for the provider)
+    await notificationService.createNotification(
+      review.providerId, // This would be the provider's user ID
+      'update',
+      'New Review Received',
+      `${review.userName} has left a ${review.rating}-star review for your service.`,
+      `/reviews?id=${newReview.id}`,
+      newReview.id
+    );
     
     return newReview;
   },
