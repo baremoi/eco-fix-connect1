@@ -7,14 +7,9 @@ import MobileNavigation from "./navigation/MobileNavigation";
 const Navigation = () => {
   const { user, profile } = useMockAuth();
 
-  // Add bookings to nav items for authenticated users
-  const baseNavItems = getNavItems(profile?.role, !!user);
+  // Get navigation items based on user role
+  const navItems = getNavItems(profile?.role, !!user);
   
-  // Add bookings link for authenticated users
-  const navItems = user 
-    ? [...baseNavItems, { name: "My Bookings", href: "/bookings" }]
-    : baseNavItems;
-
   return (
     <>
       <DesktopNavigation 

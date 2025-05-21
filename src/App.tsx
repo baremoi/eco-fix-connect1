@@ -25,6 +25,11 @@ import ProviderProfile from "@/pages/provider/ProviderProfile";
 import Availability from "@/pages/provider/Availability";
 import BookingsManagement from "@/pages/BookingsManagement";
 
+// Admin pages
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import TeamManagement from "@/pages/admin/TeamManagement";
+import Analytics from "@/pages/admin/Analytics";
+
 // Initialize React Query client
 const queryClient = new QueryClient();
 
@@ -93,6 +98,32 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["tradesperson"]}>
                       <Availability />
+                    </ProtectedRoute>
+                  } 
+                />
+
+                {/* Admin-specific routes */}
+                <Route 
+                  path="/admin/dashboard" 
+                  element={
+                    <ProtectedRoute allowedRoles={["admin"]}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/team" 
+                  element={
+                    <ProtectedRoute allowedRoles={["admin"]}>
+                      <TeamManagement />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/analytics" 
+                  element={
+                    <ProtectedRoute allowedRoles={["admin"]}>
+                      <Analytics />
                     </ProtectedRoute>
                   } 
                 />
