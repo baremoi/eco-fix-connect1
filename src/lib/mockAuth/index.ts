@@ -71,7 +71,7 @@ export function MockAuthProvider({ children }: { children: ReactNode }) {
         signOut: handleSignOut,
         resetPassword: handleResetPassword,
         updatePassword: handleUpdatePassword,
-        refreshProfile: handleRefreshProfile,
+        refreshProfile: handleRefreshProfile
       }}
     >
       {children}
