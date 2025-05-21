@@ -2,14 +2,14 @@
 import { ReactNode } from "react";
 import Navigation from "./Navigation";
 import TopBar from "./TopBar";
-import { useAuth } from "@/lib/AuthContext";
+import { useMockAuth } from "@/lib/mockAuth";
 
 interface LayoutProps {
   children?: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { user, profile, logout } = useAuth();
+  const { user, profile, signOut } = useMockAuth();
   
   return (
     <div className="flex flex-col md:flex-row min-h-screen max-h-screen overflow-hidden">
@@ -17,7 +17,7 @@ export default function Layout({ children }: LayoutProps) {
         <Navigation />
       </div>
       <div className="flex flex-col flex-1">
-        <TopBar user={user} profile={profile} logout={logout} />
+        <TopBar />
         <main className="flex-1 overflow-y-auto p-4">
           {children}
         </main>
