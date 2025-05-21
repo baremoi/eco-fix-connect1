@@ -1,95 +1,159 @@
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from "react";
+import { v4 as uuidv4 } from "uuid";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { MockUser, MockProfile } from './types';
-import { signIn, signOut, signUp, refreshProfile } from './authFunctions';
+// Define types for user and profile
+export type Role = "user" | "tradesperson" | "admin";
 
-interface MockAuthContextValue {
-  user: MockUser | null;
-  profile: MockProfile | null;
-  isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<{ user: MockUser | null; error: string | null; }>;
-  signUp: (email: string, password: string, name: string, role?: string) => Promise<{ user: MockUser | null; error: string | null; }>;
-  signOut: () => void;
-  refreshProfile: () => Promise<void>;
+export interface User {
+  id: string;
+  email: string;
 }
 
-const MockAuthContext = createContext<MockAuthContextValue | null>(null);
+export interface Profile {
+  id: string;
+  userId: string;
+  name: string;
+  role: Role;
+  avatarUrl: string | null;
+}
 
-export const useMockAuth = () => {
-  const context = useContext(MockAuthContext);
-  if (!context) {
-    throw new Error('useMockAuth must be used within a MockAuthProvider');
-  }
-  return context;
-};
+// Mock data for initial users and profiles
+const mockUsers: User[] = [
+  { id: "user-1", email: "user@example.com" },
+  { id: "user-2", email: "tradesperson@example.com" },
+  { id: "user-3", email: "admin@example.com" },
+];
 
-interface MockAuthProviderProps {
+const mockProfiles: Profile[] = [
+  {
+    id: "profile-1",
+    userId: "user-1",
+    name: "John Doe",
+    role: "user",
+    avatarUrl: null,
+  },
+  {
+    id: "profile-2",
+    userId: "user-2",
+    name: "Jane Smith",
+    role: "tradesperson",
+    avatarUrl: null,
+  },
+  {
+    id: "profile-3",
+    userId: "user-3",
+    name: "Admin User",
+    role: "admin",
+    avatarUrl: null,
+  },
+];
+
+// Define the shape of the auth context
+interface AuthContextType {
+  user: User | null;
+  profile: Profile | null;
+  signIn: (email: string, password?: string) => Promise<void>;
+  signOut: () => void;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// Create the auth context
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Create the auth provider component
+interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const MockAuthProvider = ({ children }: MockAuthProviderProps) => {
-  const [user, setUser] = useState<MockUser | null>(null);
-  const [profile, setProfile] = useState<MockProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export const MockAuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  // Load session from localStorage on mount
   useEffect(() => {
-    // Check localStorage for existing user on component mount
-    const storedUser = localStorage.getItem('mock_auth_user');
-    const storedProfile = localStorage.getItem('mock_auth_profile');
-    
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      
-      if (storedProfile) {
-        setProfile(JSON.parse(storedProfile));
-      } else {
-        // If we have a user but no profile, try to fetch it
-        (async () => {
-          await refreshProfile(JSON.parse(storedUser), setProfile);
-        })();
+    const storedSession = localStorage.getItem("mock_session");
+    if (storedSession) {
+      try {
+        const session = JSON.parse(storedSession);
+        setUser(session.user);
+        setProfile(session.profile);
+      } catch (e) {
+        console.error("Error parsing session from localStorage", e);
+        localStorage.removeItem("mock_session");
       }
     }
-    
+  }, []);
+
+  // Sign in function
+  const signIn = useCallback(async (email: string, password?: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const foundUser = mockUsers.find((u) => u.email === email);
+
+    if (!foundUser) {
+      setError("Invalid email or password");
+      setIsLoading(false);
+      return;
+    }
+
+    // For demo purposes, any password will work
+    // In a real app, you'd hash and compare passwords
+    const foundProfile = mockProfiles.find((p) => p.userId === foundUser.id);
+
+    if (!foundProfile) {
+      setError("No profile found for this user");
+      setIsLoading(false);
+      return;
+    }
+
+    // Update state and localStorage
+    setUser(foundUser);
+    setProfile(foundProfile);
+    localStorage.setItem(
+      "mock_session",
+      JSON.stringify({ user: foundUser, profile: foundProfile })
+    );
     setIsLoading(false);
   }, []);
 
-  const authContext = {
+  // Sign out function
+  const signOut = useCallback(() => {
+    setUser(null);
+    setProfile(null);
+    localStorage.removeItem("mock_session");
+  }, []);
+
+  const value = {
     user,
     profile,
+    signIn,
+    signOut,
     isLoading,
-    signIn: async (email: string, password: string) => {
-      const result = await signIn(email, password);
-      if (result.user) {
-        setUser(result.user);
-        if (result.profile) {
-          setProfile(result.profile);
-        }
-      }
-      return result;
-    },
-    signUp: async (email: string, password: string, name: string, role?: string) => {
-      const result = await signUp(email, password, name, role);
-      if (result.user) {
-        setUser(result.user);
-        if (result.profile) {
-          setProfile(result.profile);
-        }
-      }
-      return result;
-    },
-    signOut: () => {
-      signOut();
-      setUser(null);
-      setProfile(null);
-    },
-    refreshProfile: async () => {
-      await refreshProfile(user, setProfile);
-    },
+    error,
   };
 
-  return (
-    <MockAuthContext.Provider value={authContext}>
-      {children}
-    </MockAuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+// Create the useAuth hook
+export const useMockAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
