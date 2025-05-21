@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Spinner } from "@/components/ui/spinner";
-import { Calendar, Clock, AlertCircle } from "lucide-react";
+import { Calendar, Clock, AlertCircle, Star } from "lucide-react";
 import { bookingService } from "@/services/bookingService";
 import { toast } from "sonner";
 import { useMockAuth } from "@/lib/mockAuth";
 import { useNavigate } from "react-router-dom";
+import { ReviewDialog } from "@/components/reviews/ReviewDialog";
 
 // Define a placeholder image for when we don't have a provider image
 const DEFAULT_PROVIDER_IMAGE = "/placeholder-avatar.jpg";
@@ -18,6 +19,10 @@ export default function BookingsManagement() {
   const { user } = useMockAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("upcoming");
+  const [reviewBookingId, setReviewBookingId] = useState<string | null>(null);
+  const [reviewProviderId, setReviewProviderId] = useState<string | null>(null);
+  const [reviewProviderName, setReviewProviderName] = useState<string | null>(null);
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
   // Fetch user's bookings
   const { 
@@ -54,6 +59,28 @@ export default function BookingsManagement() {
     } catch (error) {
       toast.error("An error occurred while cancelling the booking.");
       console.error("Cancel booking error:", error);
+    }
+  };
+
+  const handleReviewBooking = (booking: any) => {
+    setReviewBookingId(booking.id);
+    setReviewProviderId(booking.providerId);
+    setReviewProviderName(booking.providerName);
+    setIsReviewDialogOpen(true);
+  };
+
+  const handleCompleteBooking = async (bookingId: string) => {
+    try {
+      const success = await bookingService.completeBooking(bookingId);
+      if (success) {
+        toast.success("Booking marked as completed");
+        refetch();
+      } else {
+        toast.error("Failed to update booking. Please try again.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating the booking.");
+      console.error("Complete booking error:", error);
     }
   };
 
@@ -125,17 +152,44 @@ export default function BookingsManagement() {
           </div>
         )}
       </CardContent>
-      {booking.status === 'pending' && (
-        <CardFooter className="pt-0">
+      <CardFooter className="pt-0 flex gap-2">
+        {booking.status === 'pending' && (
           <Button
             variant="outline"
-            className="w-full text-destructive hover:text-destructive"
+            className="flex-1 text-destructive hover:text-destructive"
             onClick={() => handleCancelBooking(booking.id)}
           >
             Cancel Booking
           </Button>
-        </CardFooter>
-      )}
+        )}
+        {booking.status === 'confirmed' && (
+          <>
+            <Button
+              variant="outline"
+              className="flex-1 text-destructive hover:text-destructive"
+              onClick={() => handleCancelBooking(booking.id)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => handleCompleteBooking(booking.id)}
+            >
+              Mark Completed
+            </Button>
+          </>
+        )}
+        {booking.status === 'completed' && (
+          <Button 
+            className="flex-1"
+            onClick={() => handleReviewBooking(booking)}
+          >
+            <Star className="mr-2 h-4 w-4" />
+            Leave Review
+          </Button>
+        )}
+      </CardFooter>
     </Card>
   );
 
@@ -165,7 +219,7 @@ export default function BookingsManagement() {
       <Tabs defaultValue="upcoming" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-6">
           <TabsTrigger value="upcoming">Upcoming & Pending</TabsTrigger>
-          <TabsTrigger value="past">Past & Cancelled</TabsTrigger>
+          <TabsTrigger value="past">Past & Completed</TabsTrigger>
         </TabsList>
 
         <TabsContent value="upcoming" className="space-y-4">
@@ -197,11 +251,22 @@ export default function BookingsManagement() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Review Dialog */}
+      {reviewBookingId && reviewProviderId && reviewProviderName && (
+        <ReviewDialog
+          open={isReviewDialogOpen}
+          onOpenChange={setIsReviewDialogOpen}
+          bookingId={reviewBookingId}
+          providerId={reviewProviderId}
+          providerName={reviewProviderName}
+        />
+      )}
     </div>
   );
 }
 
-// Missing Badge component, let's add it
+// Badge component
 function Badge({ children, className }: { children: React.ReactNode, className?: string }) {
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${className}`}>

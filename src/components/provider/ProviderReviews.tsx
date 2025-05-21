@@ -3,16 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Star } from "lucide-react";
-
-interface Review {
-  id: string;
-  userId: string;
-  userName: string;
-  rating: number;
-  date: string;
-  comment: string;
-  userAvatar?: string;
-}
+import { Review } from "@/services/bookingService";
 
 interface ProviderReviewsProps {
   reviews: Review[];
@@ -61,24 +52,24 @@ export default function ProviderReviews({ reviews, isLoading, averageRating, tot
           </div>
           
           <div className="grid grid-cols-5 gap-1 w-full max-w-md">
-            {Array(5)
-              .fill(0)
-              .map((_, i) => {
-                // Calculate percentage based on mock data
-                const percentage = Math.random() * 100;
-                return (
-                  <div key={i} className="flex items-center gap-2">
-                    <div className="text-sm">{5 - i}</div>
-                    <div className="h-2 flex-grow bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-yellow-400 rounded-full" 
-                        style={{ width: `${percentage}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-sm text-muted-foreground">{Math.round(percentage)}%</div>
+            {[5, 4, 3, 2, 1].map((starCount) => {
+              // Calculate percentage based on actual data
+              const reviewsWithThisRating = reviews.filter(review => review.rating === starCount).length;
+              const percentage = reviewsWithThisRating > 0 ? (reviewsWithThisRating / reviews.length) * 100 : 0;
+              
+              return (
+                <div key={starCount} className="flex items-center gap-2">
+                  <div className="text-sm">{starCount}</div>
+                  <div className="h-2 flex-grow bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-yellow-400 rounded-full" 
+                      style={{ width: `${percentage}%` }}
+                    ></div>
                   </div>
-                );
-              })}
+                  <div className="text-sm text-muted-foreground">{Math.round(percentage)}%</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -90,7 +81,7 @@ export default function ProviderReviews({ reviews, isLoading, averageRating, tot
               <div className="flex items-center gap-3">
                 <Avatar>
                   <AvatarImage src={review.userAvatar} alt={review.userName} />
-                  <AvatarFallback>{review.userName.substr(0, 2)}</AvatarFallback>
+                  <AvatarFallback>{review.userName.substr(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
                   <div className="font-medium">{review.userName}</div>
