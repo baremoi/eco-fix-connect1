@@ -69,7 +69,7 @@ export default function ProviderServices({ services, isLoading, providerName, pr
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium">Price</p>
-                  <p className="text-muted-foreground">£{service.price}</p>
+                  <p className="text-muted-foreground">£{service.price.toFixed(2)}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium">Duration</p>
@@ -98,6 +98,7 @@ export default function ProviderServices({ services, isLoading, providerName, pr
           providerName={providerName}
           serviceId={selectedService.id}
           serviceName={selectedService.name}
+          price={selectedService.price}
         />
       )}
     </>

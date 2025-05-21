@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 
 export interface BookingRequest {
@@ -7,6 +6,15 @@ export interface BookingRequest {
   date: string;
   time: string;
   notes?: string;
+  paymentDetails?: PaymentDetails;
+}
+
+export interface PaymentDetails {
+  cardholderName: string;
+  cardNumber: string; // In production, this would be a token from a payment processor
+  expiryDate: string;
+  cvv: string;
+  amount: number;
 }
 
 interface Booking {
@@ -18,6 +26,9 @@ interface Booking {
   time: string;
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
   notes?: string;
+  paymentStatus?: 'pending' | 'processing' | 'paid' | 'failed';
+  paymentAmount?: number;
+  paymentDate?: string;
 }
 
 export interface Review {
@@ -42,6 +53,26 @@ export const bookingService = {
   createBooking: async (bookingData: BookingRequest): Promise<Booking> => {
     await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
     
+    // If payment details are provided, process payment
+    let paymentStatus: 'pending' | 'processing' | 'paid' | 'failed' = 'pending';
+    let paymentAmount: number | undefined = undefined;
+    
+    if (bookingData.paymentDetails) {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // 90% chance of payment success for simulation
+      const paymentSuccessful = Math.random() < 0.9;
+      
+      if (paymentSuccessful) {
+        paymentStatus = 'paid';
+        paymentAmount = bookingData.paymentDetails.amount;
+      } else {
+        paymentStatus = 'failed';
+        throw new Error("Payment processing failed. Please try again.");
+      }
+    }
+    
     // Generate a mock booking response
     const newBooking: Booking = {
       id: `booking-${Date.now()}`,
@@ -51,7 +82,10 @@ export const bookingService = {
       date: bookingData.date,
       time: bookingData.time,
       status: 'pending',
-      notes: bookingData.notes
+      notes: bookingData.notes,
+      paymentStatus,
+      paymentAmount,
+      paymentDate: paymentAmount ? new Date().toISOString() : undefined
     };
     
     // Add to mock storage
@@ -92,6 +126,26 @@ export const bookingService = {
     }
     
     return false;
+  },
+
+  processPayment: async (bookingId: string, paymentDetails: PaymentDetails): Promise<boolean> => {
+    await new Promise(resolve => setTimeout(resolve, 1200)); // Simulate API delay
+    
+    const index = mockBookings.findIndex(booking => booking.id === bookingId);
+    if (index === -1) return false;
+    
+    // Simulate payment processing (90% success rate)
+    const paymentSuccessful = Math.random() < 0.9;
+    
+    if (paymentSuccessful) {
+      mockBookings[index].paymentStatus = 'paid';
+      mockBookings[index].paymentAmount = paymentDetails.amount;
+      mockBookings[index].paymentDate = new Date().toISOString();
+      return true;
+    } else {
+      mockBookings[index].paymentStatus = 'failed';
+      return false;
+    }
   },
 
   // Review related functions
