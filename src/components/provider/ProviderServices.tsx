@@ -1,9 +1,10 @@
 
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
+import { BookingDialog } from "@/components/booking/BookingDialog";
 
 interface Service {
   id: string;
@@ -18,11 +19,16 @@ interface ProviderServicesProps {
   services: Service[];
   isLoading: boolean;
   providerName: string;
+  providerId?: string;
 }
 
-export default function ProviderServices({ services, isLoading, providerName }: ProviderServicesProps) {
-  const handleBookService = (serviceName: string) => {
-    toast.success(`Service request for ${serviceName} has been sent!`);
+export default function ProviderServices({ services, isLoading, providerName, providerId }: ProviderServicesProps) {
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+
+  const handleBookService = (service: Service) => {
+    setSelectedService(service);
+    setIsBookingOpen(true);
   };
 
   if (isLoading) {
@@ -45,7 +51,7 @@ export default function ProviderServices({ services, isLoading, providerName }: 
   }
 
   return (
-    <div>
+    <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service) => (
           <Card key={service.id} className="h-full flex flex-col">
@@ -74,7 +80,7 @@ export default function ProviderServices({ services, isLoading, providerName }: 
             
             <CardFooter>
               <Button 
-                onClick={() => handleBookService(service.name)}
+                onClick={() => handleBookService(service)}
                 className="w-full"
               >
                 Book This Service
@@ -83,6 +89,17 @@ export default function ProviderServices({ services, isLoading, providerName }: 
           </Card>
         ))}
       </div>
-    </div>
+
+      {selectedService && providerId && (
+        <BookingDialog
+          open={isBookingOpen}
+          onOpenChange={setIsBookingOpen}
+          providerId={providerId}
+          providerName={providerName}
+          serviceId={selectedService.id}
+          serviceName={selectedService.name}
+        />
+      )}
+    </>
   );
 }

@@ -3,21 +3,22 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { providerProfileService } from "@/services/providerProfileService";
-import { Provider } from "@/services/data/mockProviders";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Calendar, MessageSquare, Star, StarHalf, Clock } from "lucide-react";
+import { toast } from "sonner";
 
-// Import components we'll create
+// Import components
 import ProviderReviews from "@/components/provider/ProviderReviews";
 import ProviderServices from "@/components/provider/ProviderServices";
 import ProviderAvailability from "@/components/provider/ProviderAvailability";
-import { toast } from "sonner";
+import { BookingDialog } from "@/components/booking/BookingDialog";
 
 export default function ProviderProfile() {
   const { providerId } = useParams<{ providerId: string }>();
   const [activeTab, setActiveTab] = useState("services");
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Fetch provider data
   const { 
@@ -67,7 +68,7 @@ export default function ProviderProfile() {
 
   // Handle booking button click
   const handleBookNow = () => {
-    toast.success(`Booking with ${provider?.name} initiated!`);
+    setIsBookingOpen(true);
   };
 
   if (isLoadingProvider) {
@@ -180,9 +181,17 @@ export default function ProviderProfile() {
             availability={availability} 
             isLoading={isLoadingAvailability}
             providerName={provider.name}
+            providerId={providerId as string}
           />
         </TabsContent>
       </Tabs>
+
+      <BookingDialog
+        open={isBookingOpen}
+        onOpenChange={setIsBookingOpen}
+        providerId={providerId as string}
+        providerName={provider.name}
+      />
     </div>
   );
 }
