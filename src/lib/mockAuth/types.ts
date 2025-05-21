@@ -1,25 +1,17 @@
 
-// Types for our mock authentication system
-
-export type UserRole = "user" | "tradesperson" | "admin";
-
 export interface MockUser {
   id: string;
   email: string;
-  created_at: string;
+  createdAt: string;
 }
+
+export type UserRole = "user" | "tradesperson" | "admin";
 
 export interface MockProfile {
   id: string;
   full_name: string;
-  email: string;
-  role: UserRole;
-  created_at: string;
-  updated_at: string;
   avatar_url?: string;
-  phone?: string;
-  address?: string;
-  bio?: string;
+  role: UserRole;
 }
 
 export interface MockAuthContextType {
@@ -34,8 +26,7 @@ export interface MockAuthContextType {
   refreshProfile: () => Promise<void>;
 }
 
-// Storage keys for mock auth
 export const STORAGE_KEYS = {
-  USER: "mock_user",
-  PROFILE: "mock_profile",
+  USER: 'mock_auth_user',
+  PROFILE: 'mock_auth_profile',
 };

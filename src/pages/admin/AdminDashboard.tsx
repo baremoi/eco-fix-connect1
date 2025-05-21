@@ -1,4 +1,5 @@
-import { useAuth } from "@/lib/AuthContext";
+
+import { useMockAuth } from "@/lib/mockAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Icons } from "@/components/ui/icons";
@@ -95,7 +96,7 @@ const recentUsers: User[] = [
 ];
 
 export default function AdminDashboard() {
-  const { profile } = useAuth();
+  const { profile } = useMockAuth();
   const [users] = useState<User[]>(recentUsers);
 
   return (
@@ -205,7 +206,7 @@ export default function AdminDashboard() {
             <p className="text-muted-foreground mb-4">Manage user accounts, permissions, and roles for platform access.</p>
             <Link to="/admin/team">
               <Button>
-                <Icons.team className="mr-2 h-4 w-4" />
+                <Icons.users className="mr-2 h-4 w-4" />
                 Manage Users
               </Button>
             </Link>

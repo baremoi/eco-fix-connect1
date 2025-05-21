@@ -40,7 +40,7 @@ export default function ProtectedRoute({ children, allowedRoles = [] }: Protecte
   }
 
   // If specific roles are required and user's role is not included
-  if (profile && !allowedRoles.includes(profile.role as any)) {
+  if (profile && !allowedRoles.includes(profile.role)) {
     console.log("User role not allowed:", profile.role, "Required:", allowedRoles);
     
     // Redirect based on user's role

@@ -1,8 +1,28 @@
 
-// Authentication functions for the mock auth system
-import { toast } from "sonner";
-import { mockUsers, mockProfiles } from "./mockData";
-import { UserRole, STORAGE_KEYS, MockUser, MockProfile } from "./types";
+import { MockUser, MockProfile, UserRole, STORAGE_KEYS } from './types';
+import { toast } from 'sonner';
+
+// Mock user database
+const mockUsers: Record<string, { user: MockUser; profile: MockProfile; password: string }> = {
+  'admin@example.com': {
+    user: { id: 'admin-1', email: 'admin@example.com', createdAt: new Date().toISOString() },
+    profile: { id: 'admin-1', full_name: 'Admin User', role: 'admin' },
+    password: 'password123',
+  },
+  'user@example.com': {
+    user: { id: 'user-1', email: 'user@example.com', createdAt: new Date().toISOString() },
+    profile: { id: 'user-1', full_name: 'Regular User', role: 'user' },
+    password: 'password123',
+  },
+  'provider@example.com': {
+    user: { id: 'provider-1', email: 'provider@example.com', createdAt: new Date().toISOString() },
+    profile: { id: 'provider-1', full_name: 'Service Provider', role: 'tradesperson' },
+    password: 'password123',
+  },
+};
+
+// Helper function to simulate API delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Sign in function
 export const signIn = async (
@@ -12,46 +32,37 @@ export const signIn = async (
   setProfile: (profile: MockProfile | null) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
-  console.log("Mock signIn called with:", email);
   setIsLoading(true);
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const foundUser = mockUsers.find(
-    (u) => u.email === email && u.password === password
-  );
-
-  if (foundUser) {
-    // Create a sanitized user object (without password)
-    const sanitizedUser = {
-      id: foundUser.id,
-      email: foundUser.email,
-      created_at: foundUser.created_at,
-    };
-
-    // Find the corresponding profile
-    const foundProfile = mockProfiles.find((p) => p.id === foundUser.id);
-
-    // Store in state and localStorage
-    setUser(sanitizedUser);
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(sanitizedUser));
-
-    if (foundProfile) {
-      setProfile(foundProfile);
-      localStorage.setItem(
-        STORAGE_KEYS.PROFILE,
-        JSON.stringify(foundProfile)
-      );
+  
+  try {
+    // Simulate network delay
+    await delay(1000);
+    
+    const lowercaseEmail = email.toLowerCase();
+    const userData = mockUsers[lowercaseEmail];
+    
+    if (!userData || userData.password !== password) {
+      throw new Error('Invalid email or password');
     }
-
-    toast.success("Signed in successfully");
-  } else {
-    toast.error("Invalid email or password");
-    throw new Error("Invalid email or password");
+    
+    // Set user and profile data
+    const { user, profile } = userData;
+    
+    // Store in localStorage for persistence
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
+    
+    setUser(user);
+    setProfile(profile);
+    
+    toast.success(`Welcome back, ${profile.full_name}`);
+    return { user, profile };
+  } catch (error) {
+    toast.error((error as Error).message);
+    throw error;
+  } finally {
+    setIsLoading(false);
   }
-
-  setIsLoading(false);
 };
 
 // Sign up function
@@ -64,59 +75,51 @@ export const signUp = async (
   setProfile: (profile: MockProfile | null) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
-  console.log("Mock signUp called with:", email, name, role);
   setIsLoading(true);
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  // Check if user already exists
-  const existingUser = mockUsers.find((u) => u.email === email);
-  if (existingUser) {
-    toast.error("User already exists with this email");
+  
+  try {
+    // Simulate network delay
+    await delay(1000);
+    
+    const lowercaseEmail = email.toLowerCase();
+    
+    // Check if user already exists
+    if (mockUsers[lowercaseEmail]) {
+      throw new Error('Email already in use');
+    }
+    
+    // Create new user and profile
+    const id = `user-${Math.random().toString(36).substr(2, 9)}`;
+    const user: MockUser = {
+      id,
+      email: lowercaseEmail,
+      createdAt: new Date().toISOString()
+    };
+    
+    const profile: MockProfile = {
+      id,
+      full_name: name,
+      role
+    };
+    
+    // Add to mock database
+    mockUsers[lowercaseEmail] = { user, profile, password };
+    
+    // Store in localStorage for persistence
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
+    
+    setUser(user);
+    setProfile(profile);
+    
+    toast.success('Account created successfully');
+    return { user, profile };
+  } catch (error) {
+    toast.error((error as Error).message);
+    throw error;
+  } finally {
     setIsLoading(false);
-    throw new Error("User already exists with this email");
   }
-
-  // Create new user ID
-  const newId = `user-${Date.now()}`;
-
-  // Create new user and profile
-  const newUser = {
-    id: newId,
-    email,
-    password, // In a real app, this would be hashed
-    created_at: new Date().toISOString(),
-  };
-
-  const newProfile = {
-    id: newId,
-    full_name: name,
-    email,
-    role,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
-
-  // Add to mock data (in a real app, this would be saved to a database)
-  mockUsers.push(newUser);
-  mockProfiles.push(newProfile);
-
-  // Create a sanitized user object (without password)
-  const sanitizedUser = {
-    id: newUser.id,
-    email: newUser.email,
-    created_at: newUser.created_at,
-  };
-
-  // Store in state and localStorage
-  setUser(sanitizedUser);
-  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(sanitizedUser));
-  setProfile(newProfile);
-  localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(newProfile));
-
-  toast.success("Account created successfully");
-  setIsLoading(false);
 };
 
 // Sign out function
@@ -125,70 +128,88 @@ export const signOut = async (
   setProfile: (profile: MockProfile | null) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
-  console.log("Mock signOut called");
   setIsLoading(true);
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // Clear state and localStorage
-  setUser(null);
-  setProfile(null);
-  localStorage.removeItem(STORAGE_KEYS.USER);
-  localStorage.removeItem(STORAGE_KEYS.PROFILE);
-
-  toast.success("Signed out successfully");
-  setIsLoading(false);
+  
+  try {
+    // Simulate network delay
+    await delay(500);
+    
+    // Clear localStorage
+    localStorage.removeItem(STORAGE_KEYS.USER);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE);
+    
+    // Clear state
+    setUser(null);
+    setProfile(null);
+    
+    toast.success('Logged out successfully');
+  } catch (error) {
+    toast.error((error as Error).message);
+    throw error;
+  } finally {
+    setIsLoading(false);
+  }
 };
 
-// Reset password function
+// Reset password function (mock implementation)
 export const resetPassword = async (
   email: string,
   setIsLoading: (isLoading: boolean) => void
 ) => {
-  console.log("Mock resetPassword called for:", email);
   setIsLoading(true);
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const foundUser = mockUsers.find((u) => u.email === email);
-
-  if (foundUser) {
-    toast.success("Password reset link sent to your email");
-  } else {
-    toast.error("No account found with this email");
-    throw new Error("No account found with this email");
+  
+  try {
+    // Simulate network delay
+    await delay(1000);
+    
+    const lowercaseEmail = email.toLowerCase();
+    
+    // Check if user exists
+    if (!mockUsers[lowercaseEmail]) {
+      // For security reasons, don't reveal if email exists or not
+      toast.success('If an account with this email exists, a password reset link has been sent');
+      return;
+    }
+    
+    // In a real implementation, you would send an email with a reset link
+    toast.success('Password reset link sent to your email');
+  } catch (error) {
+    toast.error((error as Error).message);
+    throw error;
+  } finally {
+    setIsLoading(false);
   }
-
-  setIsLoading(false);
 };
 
-// Update password function
+// Update password function (mock implementation)
 export const updatePassword = async (
   password: string,
   user: MockUser | null,
   setIsLoading: (isLoading: boolean) => void
 ) => {
-  console.log("Mock updatePassword called");
   setIsLoading(true);
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  if (user) {
-    // In a real app, this would update the password in the database
-    const userIndex = mockUsers.findIndex((u) => u.id === user.id);
-    if (userIndex !== -1) {
-      mockUsers[userIndex].password = password;
-      toast.success("Password updated successfully");
+  
+  try {
+    if (!user) {
+      throw new Error('You must be logged in to update your password');
     }
-  } else {
-    toast.error("You must be logged in to update your password");
-    throw new Error("Not authenticated");
+    
+    // Simulate network delay
+    await delay(1000);
+    
+    // Update password in mock database
+    const userData = Object.values(mockUsers).find(u => u.user.id === user.id);
+    if (userData) {
+      userData.password = password;
+    }
+    
+    toast.success('Password updated successfully');
+  } catch (error) {
+    toast.error((error as Error).message);
+    throw error;
+  } finally {
+    setIsLoading(false);
   }
-
-  setIsLoading(false);
 };
 
 // Refresh profile function
@@ -196,24 +217,16 @@ export const refreshProfile = async (
   user: MockUser | null,
   setProfile: (profile: MockProfile | null) => void
 ) => {
-  console.log("Mock refreshProfile called");
+  if (!user) return;
   
-  if (!user) {
-    console.log("Cannot refresh profile: no user logged in");
-    return;
-  }
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // Find the corresponding profile
-  const foundProfile = mockProfiles.find((p) => p.id === user.id);
-
-  if (foundProfile) {
-    setProfile(foundProfile);
-    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(foundProfile));
-    console.log("Profile refreshed:", foundProfile);
-  } else {
-    console.log("No profile found for user:", user.id);
+  try {
+    // Find user data from email
+    const userData = Object.values(mockUsers).find(u => u.user.id === user.id);
+    if (userData) {
+      setProfile(userData.profile);
+      localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(userData.profile));
+    }
+  } catch (error) {
+    console.error('Error refreshing profile:', error);
   }
 };
