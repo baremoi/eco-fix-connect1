@@ -3,16 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Home, WrenchIcon, Paintbrush, Sprout, Zap, Wrench } from 'lucide-react';
+import { 
+  ChevronRight, 
+  Home, 
+  Wrench, 
+  Paintbrush, 
+  Sprout, 
+  Zap, 
+  Car, 
+  Hammer, 
+  Dog, 
+  Scissors, 
+  ShoppingBag
+} from 'lucide-react';
 
-// Trade category data
+// Trade category data with updated categories
 const tradeCategories = [
-  { id: 1, name: 'Plumbing', icon: <WrenchIcon className="h-6 w-6" />, jobs: 56 },
+  { id: 1, name: 'Plumbing', icon: <Wrench className="h-6 w-6" />, jobs: 56 },
   { id: 2, name: 'Electrical', icon: <Zap className="h-6 w-6" />, jobs: 42 },
-  { id: 3, name: 'Gardening', icon: <Sprout className="h-6 w-6" />, jobs: 38 },
-  { id: 4, name: 'Decorating', icon: <Paintbrush className="h-6 w-6" />, jobs: 31 },
-  { id: 5, name: 'Carpentry', icon: <Wrench className="h-6 w-6" />, jobs: 27 },
-  { id: 6, name: 'General Building', icon: <Home className="h-6 w-6" />, jobs: 23 },
+  { id: 3, name: 'Gardener/Landscaper', icon: <Sprout className="h-6 w-6" />, jobs: 38 },
+  { id: 4, name: 'Painter/Decorator', icon: <Paintbrush className="h-6 w-6" />, jobs: 31 },
+  { id: 5, name: 'Carpentry', icon: <Hammer className="h-6 w-6" />, jobs: 27 },
+  { id: 6, name: 'Handyman', icon: <Home className="h-6 w-6" />, jobs: 35 },
+  { id: 7, name: 'Car Wash', icon: <Car className="h-6 w-6" />, jobs: 24 },
+  { id: 8, name: 'Dog Walker', icon: <Dog className="h-6 w-6" />, jobs: 18 },
+  { id: 9, name: 'Hairdresser/Barber', icon: <Scissors className="h-6 w-6" />, jobs: 22 },
+  { id: 10, name: 'Cleaner', icon: <ShoppingBag className="h-6 w-6" />, jobs: 45 },
 ];
 
 const TradeCategories = () => {
@@ -28,7 +44,7 @@ const TradeCategories = () => {
         <h2 className="text-3xl font-bold text-center mb-3">Popular Trade Categories</h2>
         <p className="text-center text-muted-foreground mb-10">Browse our most requested services</p>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {tradeCategories.map((category) => (
             <Card 
               key={category.id} 

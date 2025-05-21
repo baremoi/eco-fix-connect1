@@ -50,6 +50,11 @@ export const bookingService = {
     return [...mockBookings];
   },
   
+  getBookingById: async (bookingId: string): Promise<Booking | undefined> => {
+    await new Promise(resolve => setTimeout(resolve, 300)); // Simulate API delay
+    return mockBookings.find(booking => booking.id === bookingId);
+  },
+  
   cancelBooking: async (bookingId: string): Promise<boolean> => {
     await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
     
